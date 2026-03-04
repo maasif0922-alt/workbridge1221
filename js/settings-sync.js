@@ -183,7 +183,7 @@ window.syncSettingsUI = function () {
                     <i class="fa-solid fa-circle-check" style="color:#10b981"></i> Verified Promotion
                 </div>`;
         }
-    } else {
-        if (videoSection) videoSection.style.display = 'block';
     }
-});
+};
+
+document.addEventListener('DOMContentLoaded', window.syncSettingsUI);
