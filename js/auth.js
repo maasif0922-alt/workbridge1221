@@ -25,12 +25,22 @@ function parseJwt(token) {
 
 // Google Auth Callback Handler
 window.handleCredentialResponse = function (response) {
-    const responsePayload = parseJwt(response.credential);
-    console.log("ID: " + responsePayload.sub);
-    console.log('Full Name: ' + responsePayload.name);
-    console.log('Email: ' + responsePayload.email);
+    try {
+        if (!response || !response.credential) {
+            console.error('Invalid Google response');
+            return;
+        }
 
-    if (responsePayload && responsePayload.email) {
+        const responsePayload = parseJwt(response.credential);
+        if (!responsePayload || !responsePayload.email) {
+            console.error('Failed to decode Google JWT');
+            return;
+        }
+
+        console.log("ID: " + responsePayload.sub);
+        console.log('Full Name: ' + responsePayload.name);
+        console.log('Email: ' + responsePayload.email);
+
         // Show loading state in modal (optional, but good UX)
         const modalSubtitle = document.getElementById('auth-modal-subtitle');
         if (modalSubtitle) modalSubtitle.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating with Google...';
@@ -88,6 +98,10 @@ window.handleCredentialResponse = function (response) {
                 window.location.href = './home.html';
             }
         }, 1500);
+    } catch (error) {
+        console.error('Error handling Google credential response:', error);
+        const modalSubtitle = document.getElementById('auth-modal-subtitle');
+        if (modalSubtitle) modalSubtitle.innerHTML = 'Google sign-in encountered an error. Please use email/password instead.';
     }
 };
 
@@ -214,12 +228,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         email: email,
                         role: role,
                         isVerified: isVerified,
-                        profileStatus: role === 'admin' ? 'approved' : (JSON.parse(localStorage.getItem('workbridge_user'))?.profileStatus || 'pending'),
-                        earning_plan: selectedPlan || null, // Store selected earning plan
+                        profileStatus: role === 'admin' ? 'approved' : 'approved', // Simplified - allow login
+                        earning_plan: selectedPlan || null,
                         loginDate: new Date().toISOString()
                     }));
 
-                    // Sync with all users list if not exists
+                    // Only add to all users list if not already exists
                     let allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
                     if (!allUsers.find(u => u.email === email)) {
                         const newUser = {
@@ -227,17 +241,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             email: email,
                             role: role,
                             isVerified: isVerified,
-                            profileStatus: 'pending',
+                            profileStatus: 'approved',
                             earning_plan: selectedPlan || null,
                             loginDate: new Date().toISOString()
                         };
                         allUsers.push(newUser);
                         localStorage.setItem('workbridge_all_users', JSON.stringify(allUsers));
-
-                        // Create approval request for new users logging in
-                        if (role !== 'admin' && typeof createApprovalRequest === 'function') {
-                            createApprovalRequest(newUser);
-                        }
                     }
 
                     // We will initialize the earning profile if they selected a plan

@@ -695,7 +695,7 @@
                 <div id="g_id_onload"
                     data-client_id="308431344271-bersc4ijmq99glsi9530apft4ci8ji60.apps.googleusercontent.com"
                     data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
-                    data-auto_prompt="true">
+                    data-auto_prompt="false">
                 </div>
                 <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
                     data-text="continue_with" data-size="large" data-logo_alignment="left" data-width="400">
@@ -712,14 +712,14 @@
             <!-- Tabs -->
             <div style="display: flex; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
                 <button id="tab-login-btn" onclick="switchAuthTab('login')"
-                    style="flex: 1; padding: 0.75rem; background: none; border: none; border-bottom: 2px solid transparent; font-weight: 600; font-size: 1rem; cursor: pointer; color: var(--text-secondary);">Sign
+                    style="flex: 1; padding: 0.75rem; background: none; border: none; border-bottom: 2px solid var(--primary-color); font-weight: 700; font-size: 1rem; cursor: pointer; color: var(--primary-color);">Sign
                     In</button>
                 <button id="tab-signup-btn" onclick="switchAuthTab('signup')"
-                    style="flex: 1; padding: 0.75rem; background: none; border: none; border-bottom: 2px solid var(--primary-color); font-weight: 700; font-size: 1rem; cursor: pointer; color: var(--primary-color);">Register</button>
+                    style="flex: 1; padding: 0.75rem; background: none; border: none; border-bottom: 2px solid transparent; font-weight: 600; font-size: 1rem; cursor: pointer; color: var(--text-secondary);">Register</button>
             </div>
 
             <!-- Login Form -->
-            <form id="login-form-element" style="display: none;">
+            <form id="login-form-element" style="display: block;">
                 <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label
                         style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">Email
@@ -757,7 +757,7 @@
             </form>
 
             <!-- Signup Form -->
-            <form id="signup-form-element" style="display: block;">
+            <form id="signup-form-element" style="display: none;">
                 <div class="form-group" style="margin-bottom: 1.25rem;">
                     <label
                         style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">Full
