@@ -3,6 +3,12 @@
  * Handles login, logout, and session simulation
  */
 
+// Profile Approval System Integration
+// Make sure profile-approval.js is loaded before this file
+if (typeof createApprovalRequest === 'undefined') {
+    console.warn('profile-approval.js not loaded. Approval system will not work.');
+}
+
 // JWT Decoding Utility for Google Social Auth
 function parseJwt(token) {
     try {
@@ -41,7 +47,7 @@ window.handleCredentialResponse = function (response) {
                 email: email,
                 role: role,
                 isVerified: isVerified,
-                profileStatus: role === 'admin' ? 'approved' : 'none',
+                profileStatus: role === 'admin' ? 'approved' : 'pending',
                 loginDate: new Date().toISOString(),
                 method: 'google'
             };
@@ -52,6 +58,12 @@ window.handleCredentialResponse = function (response) {
             if (!allUsers.find(u => u.email === email)) {
                 allUsers.push(userObj);
                 localStorage.setItem('workbridge_all_users', JSON.stringify(allUsers));
+            }
+
+            // Create approval request for non-admin users
+            if (role !== 'admin' && typeof createApprovalRequest === 'function') {
+                createApprovalRequest(userObj);
+                console.log('Approval request created for Google user:', email);
             }
 
             // Initialize earning profile if user
@@ -110,16 +122,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     const role = email.toLowerCase() === 'maasif0922@gmail.com' ? 'admin' : 'user';
                     const isVerified = (role === 'admin');
 
-                    localStorage.setItem('workbridge_user', JSON.stringify({
+                    const userData = {
                         name: name,
                         email: email,
                         phone: fullPhone,
                         role: role,
                         isVerified: isVerified,
-                        profileStatus: role === 'admin' ? 'approved' : 'none',
+                        profileStatus: role === 'admin' ? 'approved' : 'pending',
                         earning_plan: selectedPlan || "Free Visitor Plan",
                         loginDate: new Date().toISOString()
-                    }));
+                    };
+
+                    localStorage.setItem('workbridge_user', JSON.stringify(userData));
+
+                    // Add user to all users list and create approval request if not admin
+                    let allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
+                    if (!allUsers.find(u => u.email === email)) {
+                        allUsers.push(userData);
+                        localStorage.setItem('workbridge_all_users', JSON.stringify(allUsers));
+                    }
+
+                    // Create approval request for non-admin users
+                    if (role !== 'admin' && typeof createApprovalRequest === 'function') {
+                        createApprovalRequest(userData);
+                        console.log('Approval request created for new user:', email);
+                    }
 
                     if (selectedPlan || !selectedPlan) {
                         // Always initialize earning profile for new users just in case
@@ -187,10 +214,31 @@ document.addEventListener('DOMContentLoaded', () => {
                         email: email,
                         role: role,
                         isVerified: isVerified,
-                        profileStatus: role === 'admin' ? 'approved' : (JSON.parse(localStorage.getItem('workbridge_user'))?.profileStatus || 'none'),
+                        profileStatus: role === 'admin' ? 'approved' : (JSON.parse(localStorage.getItem('workbridge_user'))?.profileStatus || 'pending'),
                         earning_plan: selectedPlan || null, // Store selected earning plan
                         loginDate: new Date().toISOString()
                     }));
+
+                    // Sync with all users list if not exists
+                    let allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
+                    if (!allUsers.find(u => u.email === email)) {
+                        const newUser = {
+                            name: email.split('@')[0],
+                            email: email,
+                            role: role,
+                            isVerified: isVerified,
+                            profileStatus: 'pending',
+                            earning_plan: selectedPlan || null,
+                            loginDate: new Date().toISOString()
+                        };
+                        allUsers.push(newUser);
+                        localStorage.setItem('workbridge_all_users', JSON.stringify(allUsers));
+
+                        // Create approval request for new users logging in
+                        if (role !== 'admin' && typeof createApprovalRequest === 'function') {
+                            createApprovalRequest(newUser);
+                        }
+                    }
 
                     // We will initialize the earning profile if they selected a plan
                     if (selectedPlan || role === 'user') {
