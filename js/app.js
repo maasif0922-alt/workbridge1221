@@ -534,7 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (loginLink) {
                 loginLink.outerHTML = `
                     <div class="user-avatar-nav" onclick="window.location.href='user-profile.html'" style="cursor: pointer; background: var(--primary-color); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                        ${user.name.charAt(0).toUpperCase()}
+                        ${(user.name || 'U').charAt(0).toUpperCase()}
                     </div>
                 `;
             }
@@ -598,8 +598,57 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
     `;
 
-    // Inject Modal into body
+    const premiumModalHtml = `
+        <div id="premium-modal" class="modal">
+            <div class="modal-content" style="max-width: 500px; padding: 2.5rem;">
+                <span class="close-modal" id="close-premium-modal">&times;</span>
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="width: 60px; height: 60px; background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.8rem;">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <h2 id="premium-plan-title" style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary);">Premium Plan</h2>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Upgrade your account to unlock all features.</p>
+                </div>
+                
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid var(--border-color);">
+                    <h3 style="font-size: 1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-building-columns"></i> Payment Accounts
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.9rem;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--text-secondary);">JazzCash/Easypaisa:</span>
+                            <strong class="dynamic-inv-jazzcash">0301-2233445</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--text-secondary);">Bank Account:</span>
+                            <strong class="dynamic-inv-bankname">HBL Bank</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--text-secondary);">Acc Number:</span>
+                            <strong class="dynamic-inv-accnum">1234 5678 9012</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--text-secondary);">Account Title:</span>
+                            <strong class="dynamic-inv-acctitle">WorkBridge Admin</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">After payment, send your screenshot to our WhatsApp for activation.</p>
+                    <a href="https://wa.me/923012233445" id="premium-whatsapp-btn" target="_blank" class="btn btn-whatsapp" style="width: 100%; padding: 1rem; border-radius: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;">
+                        <i class="fa-brands fa-whatsapp"></i> Send Payment Proof 
+                    </a>
+                </div>
+                
+                <p style="font-size: 0.75rem; text-align: center; color: var(--text-secondary);">Plan will be activated within 1-2 hours of verification.</p>
+            </div>
+        </div>
+    `;
+
+    // Inject Modals into body
     document.body.insertAdjacentHTML('beforeend', modalHtml);
+    document.body.insertAdjacentHTML('beforeend', premiumModalHtml);
 
     // Inject Button into navbar after logo
     const logo = document.querySelector('.logo');
@@ -645,6 +694,11 @@ document.addEventListener('DOMContentLoaded', () => {
         closeAppBtn.onclick = () => appModal.style.display = "none";
     }
 
+    const closePremiumBtn = document.getElementById("close-premium-modal");
+    if (closePremiumBtn) {
+        closePremiumBtn.onclick = () => document.getElementById("premium-modal").style.display = "none";
+    }
+
     const appForm = document.getElementById("application-form");
     if (appForm) {
         appForm.onsubmit = (e) => {
@@ -659,6 +713,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (event.target == appModal) {
             appModal.style.display = "none";
+        }
+        if (event.target == document.getElementById("premium-modal")) {
+            document.getElementById("premium-modal").style.display = "none";
         }
     }
 });
@@ -1179,6 +1236,35 @@ function submitApplication() {
 
         alert(`Your ${type === 'job_apply' ? 'application' : 'proposal'} has been sent successfully!`);
     }, 1200);
+}
+
+// Global Premium Modal function
+window.openPremiumModal = function (planName, price) {
+    const user = JSON.parse(localStorage.getItem('workbridge_user'));
+    if (!user) {
+        alert("Please login to join this plan.");
+        openLoginModal();
+        return;
+    }
+
+    const modal = document.getElementById('premium-modal');
+    const titleEl = document.getElementById('premium-plan-title');
+    const whatsappBtn = document.getElementById('premium-whatsapp-btn');
+    const settings = JSON.parse(localStorage.getItem('workbridge_settings') || '{}');
+
+    if (modal && titleEl) {
+        titleEl.textContent = planName + ' ($' + price + ')';
+
+        // Use global admin WhatsApp if available
+        const adminWA = settings.whatsapp || '923012233445';
+        const msg = encodeURIComponent(`I want to join the ${planName} ($${price}). My email: ${user.email}`);
+        whatsappBtn.href = `https://wa.me/${adminWA}?text=${msg}`;
+
+        modal.style.display = 'flex';
+
+        // Re-sync dynamic bank details if sync script is active
+        if (window.syncSettingsUI) window.syncSettingsUI();
+    }
 }
 
 // Initialize dynamic content based on page
