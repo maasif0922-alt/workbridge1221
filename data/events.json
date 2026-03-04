@@ -1,0 +1,80 @@
+[
+  {
+    "id": "ramadan-2026",
+    "active": true,
+    "type": "ramadan",
+    "title": "Ramadan Mubarak 2026",
+    "startDate": "2026-02-18",
+    "endDate": "2026-03-19",
+    "message": "Is barkat mahine mein mustahiqeen ki madad karen aur ajar kamayein. WorkBridge Foundation aapke saath hai.",
+    "ashras": [
+      {
+        "name": "Rehmat",
+        "days": "1-10",
+        "message": "Pehla Ashra: Allah ki Rehmat ka nuzool."
+      },
+      {
+        "name": "Maghfirat",
+        "days": "11-20",
+        "message": "Dosra Ashra: Gunahon se Maafi aur Maghfirat."
+      },
+      {
+        "name": "Nijat",
+        "days": "21-30",
+        "message": "Teesra Ashra: Jahannam se Nijat ka waqt."
+      }
+    ],
+    "fazail": [
+      "Ramadan is the month of the Quran.",
+      "Lailat-ul-Qadr is better than a thousand months.",
+      "Fasting is a shield against evil.",
+      "The smell of a fasting person's breath is beloved to Allah."
+    ],
+    "timings": {
+      "city": "Lahore",
+      "sehri": "04:52 AM",
+      "iftari": "06:05 PM"
+    },
+    "images": [
+      "https://images.unsplash.com/photo-1580974511931-bb4a13e170a1?auto=format&fit=crop&q=80&w=600",
+      "https://images.unsplash.com/photo-1542385381-43286392079f?auto=format&fit=crop&q=80&w=600",
+      "https://images.unsplash.com/photo-1563283259-22a945d8b2d1?auto=format&fit=crop&q=80&w=600"
+    ],
+    "donations": [
+      {
+        "id": "dastarkhwan",
+        "label": "Iftar Dastarkhwan",
+        "description": "Feed a fasting worker for Rs. 300."
+      },
+      {
+        "id": "zakat",
+        "label": "Zakat-al-Mal",
+        "description": "Your 2.5% can change their lifetime."
+      },
+      {
+        "id": "sadqa",
+        "label": "Sadqa / Jariyah",
+        "description": "Continuous rewards for your support."
+      }
+    ]
+  },
+  {
+    "id": "eid-fitr-2026",
+    "active": false,
+    "type": "general",
+    "title": "Eid ul Fitr Celebration",
+    "startDate": "2026-03-20",
+    "endDate": "2026-03-22",
+    "message": "Celebrate Eid by sharing your happiness with the hard-working community.",
+    "images": [
+      "https://images.unsplash.com/photo-1594246830573-047f3b60331f?auto=format&fit=crop&q=80&w=600"
+    ],
+    "donations": [
+      {
+        "id": "eid-gift",
+        "label": "Eid Gifts",
+        "description": "Gifts and clothes for workers' children."
+      }
+    ]
+  }
+]

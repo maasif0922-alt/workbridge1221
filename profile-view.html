@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Profile | WorkBridge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="home.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span>
+            </a>
+            <div class="nav-links">
+                <a href="home.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="profiles.html">Freelancers</a>
+                <a href="news.html">News</a>
+                <a href="home.html#home-donations">Donation</a>
+                <a href="home.html#earning-plans">Earning</a>
+                <a href="javascript:void(0)" onclick="openLoginModal()">Login</a>
+            </div>
+            <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- Profile Header -->
+    <section class="section" style="padding-top: 3rem; background: var(--bg-color);">
+        <div class="container">
+            <button onclick="history.back()" class="back-btn" style="margin-bottom: 1.5rem;"><i
+                    class="fa-solid fa-arrow-left"></i> Back</button>
+            <div
+                style="background: white; padding: 2.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border: 1px solid var(--border-color);">
+                <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
+                    <div style="position: relative;">
+                        <img id="view-profile-img"
+                            src="https://ui-avatars.com/api/?name=User&background=random&size=120" alt="User Profile"
+                            style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--surface-color);">
+                    </div>
+                    <div style="flex: 1; min-width: 250px;">
+                        <h1 id="view-profile-name"
+                            style="font-size: 1.8rem; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.8rem;">
+                            Loading...
+                            <span id="view-badge-verified" class="badge-verified"
+                                style="display: none; font-size: 0.9rem; padding: 0.3rem 0.8rem;"><i
+                                    class="fa-solid fa-circle-check"></i> Verified</span>
+                        </h1>
+                        <p id="view-profile-title" style="color: var(--text-secondary); margin-bottom: 0.8rem;">
+                            Professional Freelancer</p>
+
+                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 1rem;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.2rem; font-weight: 700; color: var(--primary-color);"
+                                    id="view-stat-likes">0</div>
+                                <div
+                                    style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">
+                                    Total Likes</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.2rem; font-weight: 700; color: #10b981;"
+                                    id="view-stat-earnings">Rs 0</div>
+                                <div
+                                    style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">
+                                    Monthly Earning</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.2rem; font-weight: 700; color: #f59e0b;" id="view-stat-rating">
+                                    <i class="fa-solid fa-star"></i> 5.0
+                                </div>
+                                <div
+                                    style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">
+                                    Star Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <a id="view-whatsapp-btn" href="#" target="_blank" class="btn btn-whatsapp"
+                            style="text-decoration: none;">
+                            <i class="fa-brands fa-whatsapp"></i> Contact Me
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2.5rem;">
+                <!-- Sidebar -->
+                <div>
+                    <div
+                        style="background: white; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 1.2rem; font-size: 1.1rem;">About</h3>
+                        <p id="view-profile-about"
+                            style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                            This freelancer hasn't added an about section yet.
+                        </p>
+                    </div>
+
+                    <div
+                        style="background: white; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                        <h3 style="margin-bottom: 1.2rem; font-size: 1.1rem;">User Info</h3>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.8rem; color: var(--text-secondary);">
+                                <i class="fa-solid fa-calendar" style="width: 20px;"></i>
+                                <span id="view-joined-date">Joined Jan 2026</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.8rem; color: var(--text-secondary);">
+                                <i class="fa-solid fa-location-dot" style="width: 20px;"></i>
+                                <span id="view-location">Remote / Pakistan</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Posts -->
+                <div>
+                    <h3 style="margin-bottom: 1.5rem; font-size: 1.3rem;">Listings by this User</h3>
+                    <div id="view-user-posts" class="cards-grid" style="grid-template-columns: 1fr; gap: 1.5rem;">
+                        <p style="text-align:center; padding: 1rem; color: var(--text-secondary);">Loading posts...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom" style="margin-top: 0;">
+                &copy; 2026 WorkBridge (KaamLink). All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="./js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userEmail = urlParams.get('email');
+
+            if (!userEmail) {
+                window.location.href = 'profiles.html';
+                return;
+            }
+
+            // In a real app, you'd fetch user data from a server. 
+            // Here we look for them in localStorage posts or mock them.
+            const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+            const userPosts = posts.filter(p => p.userId === userEmail);
+
+            // Mock user info based on their posts
+            if (userPosts.length > 0) {
+                const firstPost = userPosts[0];
+                document.getElementById('view-profile-name').innerHTML = `${firstPost.userName} <span class="badge-verified" style="display: ${firstPost.userVerified ? 'flex' : 'none'}; font-size: 0.9rem; padding: 0.3rem 0.8rem;"><i class="fa-solid fa-circle-check"></i> Verified</span>`;
+                document.getElementById('view-profile-img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstPost.userName)}&background=random&size=120`;
+                document.getElementById('view-whatsapp-btn').href = `https://wa.me/${firstPost.contact || ''}?text=Hi ${firstPost.userName}, I found your profile on WorkBridge.`;
+
+                // Calculate Stats
+                const totalLikes = userPosts.reduce((sum, p) => sum + (p.likes || 0), 0);
+                document.getElementById('view-stat-likes').textContent = totalLikes;
+
+                // Mock earnings and rating for public view
+                document.getElementById('view-stat-earnings').textContent = 'Rs ' + (userPosts.length * 5000 + 10000);
+                document.getElementById('view-stat-rating').innerHTML = `<i class="fa-solid fa-star"></i> ${firstPost.userVerified ? '5.0' : '4.8'}`;
+
+                // Render their posts
+                renderUserSpecificPosts(userEmail);
+            } else {
+                // Fallback for mock profiles in profiles.html if clicked
+                // We'll just show technical mock data for now
+                document.getElementById('view-profile-name').textContent = 'WorkBridge Professional';
+                document.getElementById('view-user-posts').innerHTML = '<p style="text-align:center; padding: 1rem; color: var(--text-secondary);">No active listings found for this user.</p>';
+            }
+        });
+
+        function renderUserSpecificPosts(email) {
+            const container = document.getElementById('view-user-posts');
+            const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+            const userPosts = posts.filter(p => p.userId === email && p.status === 'approved');
+
+            if (userPosts.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding: 1rem; color: var(--text-secondary);">No public listings found.</p>';
+                return;
+            }
+
+            container.innerHTML = userPosts.map(post => {
+                const isJob = post.id.startsWith('job');
+                return `
+                    <div class="card" style="margin-bottom: 1rem;">
+                        <div class="card-body" style="padding: 1.25rem;">
+                            <h3 class="card-title">${post.title}</h3>
+                            <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0.5rem 0;">${post.description.substring(0, 100)}...</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                                <span class="badge ${isJob ? 'badge-wage' : 'badge-remote'}">${post.type || (isJob ? 'Job' : 'Service')}</span>
+                                <div style="font-weight: 700; color: var(--primary-color);">Rs ${post.salary || post.price || 'Negotiable'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+
+</html>

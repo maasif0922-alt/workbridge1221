@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkBridge Admin - Manage Advertisements</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="./js/auth-guard.js"></script>
+    <style>
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .admin-card {
+            background: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-xl);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .preview-pane {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .preview-header {
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-save {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-md);
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            filter: brightness(1.1);
+        }
+
+        /* Mocking Hero Ad Box for Preview */
+        .mock-hero {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            border: 1px dashed #cbd5e1;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body style="background: #f1f5f9;">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span> <span
+                    style="font-weight: 400; color: var(--text-secondary); margin-left:10px;">| Admin</span>
+            </a>
+            <div class="nav-links">
+                <a href="dashboard.html"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+                <a href="index.html">View Site</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header style="margin-top: 4rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 800;">Manage Hero Advertisements</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">Customize the featured ad box on the homepage
+                hero section.</p>
+        </header>
+
+        <div class="admin-layout">
+            <!-- Form Side -->
+            <div class="admin-card">
+                <form id="ad-form">
+                    <label class="form-label">Ad Icon (FontAwesome Class)</label>
+                    <input type="text" id="ad-icon-input" class="form-control"
+                        placeholder="e.g. fa-bullhorn, fa-star, fa-gift" value="fa-bullhorn">
+
+                    <label class="form-label">Ad Title</label>
+                    <input type="text" id="ad-title-input" class="form-control" placeholder="Enter bold heading"
+                        value="Promote Your Business Here">
+
+                    <label class="form-label">Ad Description</label>
+                    <textarea id="ad-text-input" class="form-control" rows="3"
+                        placeholder="Enter ad copy">Reach thousands of daily visitors with a premium sponsored placement. Click to learn more!</textarea>
+
+                    <label class="form-label">Destination Link (URL)</label>
+                    <input type="text" id="ad-link-input" class="form-control" placeholder="https://..." value="#">
+
+                    <button type="submit" class="btn-save">
+                        <i class="fa-solid fa-floppy-disk"></i> Save & Publish Ad
+                    </button>
+                </form>
+            </div>
+
+            <!-- Preview Side -->
+            <div class="preview-pane">
+                <div class="preview-header">
+                    <i class="fa-solid fa-eye"></i> LIVE PREVIEW
+                </div>
+                <div class="mock-hero">
+                    <div class="hero-ad-box" style="margin: 0; position: relative;">
+                        <span class="ad-badge">Free Promotion</span>
+                        <div class="ad-icon-wrapper">
+                            <i id="preview-icon" class="fa-solid fa-bullhorn"></i>
+                        </div>
+                        <div class="ad-content">
+                            <h4 id="preview-title">Promote Your Business Here</h4>
+                            <p id="preview-text">Reach thousands of daily visitors with a premium sponsored placement.
+                                Click to learn more!</p>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    style="margin-top: 1.5rem; padding: 1rem; background: #fffbeb; border: 1px solid #fef3c7; border-radius: 8px; font-size: 0.85rem; color: #92400e;">
+                    <i class="fa-solid fa-circle-exclamation"></i> <strong>Note:</strong> Changes saved here will be
+                    visible to all users on the homepage.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('ad-form');
+        const iconInput = document.getElementById('ad-icon-input');
+        const titleInput = document.getElementById('ad-title-input');
+        const textInput = document.getElementById('ad-text-input');
+        const linkInput = document.getElementById('ad-link-input');
+
+        const pIcon = document.getElementById('preview-icon');
+        const pTitle = document.getElementById('preview-title');
+        const pText = document.getElementById('preview-text');
+
+        // Load existing data
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedAd = localStorage.getItem('heroAd');
+            if (savedAd) {
+                const data = JSON.parse(savedAd);
+                iconInput.value = data.icon || 'fa-bullhorn';
+                titleInput.value = data.title || '';
+                textInput.value = data.text || '';
+                linkInput.value = data.link || '#';
+                updatePreview();
+            }
+        });
+
+        // Live Preview Logic
+        function updatePreview() {
+            pIcon.className = `fa-solid ${iconInput.value}`;
+            pTitle.textContent = titleInput.value;
+            pText.textContent = textInput.value;
+        }
+
+        [iconInput, titleInput, textInput].forEach(input => {
+            input.addEventListener('input', updatePreview);
+        });
+
+        // Save Logic
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            const adData = {
+                icon: iconInput.value,
+                title: titleInput.value,
+                text: textInput.value,
+                link: linkInput.value
+            };
+            localStorage.setItem('heroAd', JSON.stringify(adData));
+
+            // Visual feedback
+            const btn = document.querySelector('.btn-save');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Published Successfully!';
+            btn.style.background = '#10b981';
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = 'var(--primary-color)';
+            }, 3000);
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - WorkBridge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <style>
+        .legal-content {
+            background: var(--surface-color);
+            padding: 3rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            margin: 2rem 0;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body style="background: #f1f5f9;">
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="javascript:void(0)" onclick="openLoginModal()">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header style="margin-top: 4rem; text-align: center;">
+            <h1 style="font-size: 3rem; font-weight: 800;">Privacy Policy</h1>
+            <p style="color: var(--text-secondary);">Last updated: 2026</p>
+        </header>
+
+        <div id="privacy-body" class="legal-content">
+            Loading privacy policy...
+        </div>
+    </div>
+
+    <script src="./js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('workbridge_legal');
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('privacy-body').textContent = data.privacy || 'Privacy Policy has not been updated yet.';
+            } else {
+                document.getElementById('privacy-body').textContent = 'Your data privacy is important to us. We only collect essential information.';
+            }
+        });
+    </script>
+</body>
+
+</html>

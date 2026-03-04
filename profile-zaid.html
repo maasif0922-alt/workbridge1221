@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaid Hussain | WorkBridge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="profiles.html">Freelancers</a>
+                <a href="dashboard.html">Login</a>
+            </div>
+            <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- Profile Detail -->
+    <section class="section" style="padding-top: 4rem;">
+        <div class="container"
+            style="max-width: 800px; padding: 2rem; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);">
+            <button onclick="history.back()" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap; text-align: left; align-items: center;">
+                <img src="https://ui-avatars.com/api/?name=Zaid+Hussain&background=random" alt="Zaid Hussain"
+                    style="width: 150px; height: 150px; border-radius: 50%;">
+                <div>
+                    <h1 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--text-color);">Zaid Hussain</h1>
+                    <p style="font-size: 1.2rem; color: var(--primary-color); margin-bottom: 1rem;">Plumber</p>
+                    <div style="margin-bottom: 1rem;">
+                        <span style="color: #f59e0b;"><i class="fa-solid fa-star"></i> 4.0</span> (85 Reviews)
+                        <span style="margin: 0 1rem; color: var(--border-color);">|</span>
+                        <span><i class="fa-solid fa-location-dot"></i> Karachi, PK</span>
+                    </div>
+                </div>
+                <div style="flex: 1; text-align: right; min-width: 200px;">
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <a href="https://wa.me/923000000002?text=Hi%20Zaid%20Hussain%2C%20I%20found%20your%20profile%20on%20WorkBridge."
+                            target="_blank" class="btn btn-whatsapp"
+                            style="flex: 1; text-decoration: none; justify-content: center;"><i
+                                class="fa-brands fa-whatsapp"></i> WhatsApp Me</a>
+                        <button class="btn-share"
+                            onclick="shareContent('Zaid Hussain - Plumber', 'Check out my profile on WorkBridge!', window.location.href)"
+                            title="Share Profile" style="width: 45px; height: 45px;">
+                            <i class="fa-solid fa-share-nodes"></i>
+                        </button>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%;">Hire Me</button>
+                </div>
+            </div>
+            <div style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 2rem;">
+                <h3>About Me</h3>
+                <p style="color: var(--text-secondary); line-height: 1.6; margin-top: 1rem;">
+                    Providing high-quality plumbing services across Karachi. Whether it's tricky pipe fittings, geyser
+                    installations, or fixing urgent leak repairs, I arrive on time and complete the job perfectly.
+                </p>
+                <div style="margin-top: 2rem;">
+                    <h3>Skills</h3>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem;">
+                        <span
+                            style="padding: 0.5rem 1rem; background: var(--bg-color); border-radius: var(--radius-full); font-size: 0.85rem;">Pipe
+                            Fittings</span>
+                        <span
+                            style="padding: 0.5rem 1rem; background: var(--bg-color); border-radius: var(--radius-full); font-size: 0.85rem;">Geyser
+                            Repair</span>
+                        <span
+                            style="padding: 0.5rem 1rem; background: var(--bg-color); border-radius: var(--radius-full); font-size: 0.85rem;">Leakages</span>
+                        <span
+                            style="padding: 0.5rem 1rem; background: var(--bg-color); border-radius: var(--radius-full); font-size: 0.85rem;">Sanitary
+                            Works</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom" style="margin-top: 0;">
+                &copy; 2026 WorkBridge (KaamLink). All rights reserved.
+            </div>
+        </div>
+    </footer>
+    <script src="./js/app.js"></script>
+</body>
+
+</html>

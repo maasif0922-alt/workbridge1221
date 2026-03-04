@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkBridge Admin - Manage Video Advertisements</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="./js/auth-guard.js"></script>
+    <style>
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .admin-card {
+            background: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-xl);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .preview-pane {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .preview-header {
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-save {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-md);
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            filter: brightness(1.1);
+        }
+
+        /* Mocking Video Ad Box for Preview */
+        .mock-video-ad-section {
+            background: var(--surface-color);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            display: block;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            text-align: center;
+        }
+
+        .mock-video-ad-section::before {
+            content: 'PAID PROMOTION';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-bottom-left-radius: 12px;
+            letter-spacing: 1px;
+            z-index: 10;
+        }
+
+        .mock-video-ad-header {
+            margin-bottom: 1rem;
+        }
+
+        .mock-video-ad-header h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .mock-video-ad-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+            line-height: 1.4;
+        }
+
+        .mock-video-ad-container {
+            width: 100%;
+            aspect-ratio: 5 / 4;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #0f172a;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mock-video-placeholder-content {
+            text-align: center;
+            color: #64748b;
+        }
+
+        .mock-video-placeholder-content i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #334155;
+            display: block;
+        }
+
+        .mock-video-ad-footer {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mock-btn-ad-click {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body style="background: #f1f5f9;">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span> <span
+                    style="font-weight: 400; color: var(--text-secondary); margin-left:10px;">| Admin</span>
+            </a>
+            <div class="nav-links">
+                <a href="dashboard.html"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+                <a href="index.html">View Site</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header style="margin-top: 4rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 800;">Manage Video Promotions</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">Configure the premium 5:4 video spot on the
+                homepage.</p>
+        </header>
+
+        <div class="admin-layout">
+            <!-- Form Side -->
+            <div class="admin-card">
+                <form id="video-ad-form">
+                    <label class="form-label"
+                        style="display: flex; align-items: center; gap: 10px; cursor: pointer; background: #eff6ff; padding: 1rem; border-radius: 8px; border: 1px solid #bfdbfe; margin-bottom: 2rem;">
+                        <input type="checkbox" id="setting-video-active"
+                            style="width: 20px; height: 20px; accent-color: var(--primary-color);">
+                        <span style="font-size: 1rem; font-weight: 800; color: var(--primary-color);">Enable Video
+                            Promotion on Homepage</span>
+                    </label>
+
+                    <label class="form-label">Video URL (YouTube Embed or .mp4)</label>
+                    <input type="text" id="setting-video-url" class="form-control"
+                        placeholder="https://www.youtube.com/embed/...">
+                    <small
+                        style="color: var(--text-secondary); display: block; margin-top: -1rem; margin-bottom: 1.5rem;">For
+                        YouTube, use the "Embed" URL link. (e.g. youtube.com/embed/VIDEO_ID)</small>
+
+                    <label class="form-label">Promo Title</label>
+                    <input type="text" id="setting-video-title" class="form-control"
+                        placeholder="e.g. Premium Business Ad">
+
+                    <label class="form-label">Promo Description</label>
+                    <textarea id="setting-video-desc" class="form-control" rows="3"
+                        placeholder="Briefly describe the promotion..."></textarea>
+
+                    <label class="form-label">Call To Action (Click Link)</label>
+                    <input type="text" id="setting-video-link" class="form-control"
+                        placeholder="https://wa.me/923012233445 or https://example.com">
+                    <small
+                        style="color: var(--text-secondary); display: block; margin-top: -1rem; margin-bottom: 1.5rem;">Where
+                        users will be redirected when they click "Visit Website".</small>
+
+                    <button type="submit" class="btn-save">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Video Settings
+                    </button>
+                </form>
+            </div>
+
+            <!-- Preview Side -->
+            <div class="preview-pane">
+                <div class="preview-header">
+                    <i class="fa-solid fa-eye"></i> HOMEPAGE PREVIEW
+                </div>
+
+                <div class="mock-video-ad-section" id="mock-section" style="opacity: 0.5;">
+                    <div class="mock-video-ad-header">
+                        <h3 id="preview-title"><i class="fa-solid fa-star"></i> Featured Promotion</h3>
+                    </div>
+                    <p class="mock-video-ad-description" id="preview-desc">
+                        Promote your business here to reach thousands of daily visitors. Contact us for paid
+                        sponsorship!
+                    </p>
+                    <div class="mock-video-ad-container" id="preview-container">
+                        <div class="mock-video-placeholder-content">
+                            <i class="fa-solid fa-bullhorn"></i>
+                            <p>Video Preview</p>
+                            <small id="preview-url-text">No Source Provided</small>
+                        </div>
+                    </div>
+                    <div class="mock-video-ad-footer">
+                        <div class="mock-btn-ad-click">
+                            <span id="preview-btn-text">Promote Here</span> <i class="fa-solid fa-external-link"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-top: 1.5rem; padding: 1rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; font-size: 0.85rem; color: #166534;">
+                    <i class="fa-solid fa-circle-info"></i> <strong>Note:</strong> Aspect ratio is fixed to 5:4
+                    automatically. Video will stretch to cover block.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('video-ad-form');
+        const activeCheck = document.getElementById('setting-video-active');
+        const urlInput = document.getElementById('setting-video-url');
+        const titleInput = document.getElementById('setting-video-title');
+        const descInput = document.getElementById('setting-video-desc');
+        const linkInput = document.getElementById('setting-video-link');
+
+        // Preview Elements
+        const pSection = document.getElementById('mock-section');
+        const pTitle = document.getElementById('preview-title');
+        const pDesc = document.getElementById('preview-desc');
+        const pContainer = document.getElementById('preview-container');
+        const pUrlText = document.getElementById('preview-url-text');
+        const pBtnText = document.getElementById('preview-btn-text');
+
+        // Load existing data
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedSettings = localStorage.getItem('workbridge_settings');
+            if (savedSettings) {
+                const s = JSON.parse(savedSettings);
+                activeCheck.checked = s.videoActive || false;
+                urlInput.value = s.videoUrl || '';
+                titleInput.value = s.videoTitle || '';
+                descInput.value = s.videoDesc || '';
+                linkInput.value = s.videoLink || '';
+            }
+            updatePreview();
+        });
+
+        // Live Preview Logic
+        function updatePreview() {
+            // Opacity reflects active state
+            pSection.style.opacity = activeCheck.checked ? '1' : '0.5';
+
+            pTitle.innerHTML = `<i class="fa-solid fa-star"></i> ${titleInput.value || 'Featured Promotion'}`;
+            pDesc.textContent = descInput.value || 'Promote your business here to reach thousands of daily visitors.';
+
+            pBtnText.textContent = linkInput.value ? 'Visit Promoter Website' : 'Promote Here';
+
+            // Video preview logic
+            if (urlInput.value) {
+                if (urlInput.value.includes('youtube.com') || urlInput.value.includes('youtu.be')) {
+                    let embedUrl = urlInput.value;
+                    if (!embedUrl.includes('embed/')) {
+                        const videoId = urlInput.value.split('v=')[1] || urlInput.value.split('/').pop();
+                        embedUrl = `https://www.youtube.com/embed/${videoId.split('&')[0]}?autoplay=0&mute=1`;
+                    }
+                    pContainer.innerHTML = `<iframe width="100%" height="100%" src="${embedUrl}" frameborder="0" allowfullscreen style="border: none;"></iframe>`;
+                } else if (urlInput.value.endsWith('.mp4') || urlInput.value.endsWith('.webm')) {
+                    pContainer.innerHTML = `<video controls style="width: 100%; height: 100%; object-fit: cover;"><source src="${urlInput.value}" type="video/mp4"></video>`;
+                } else {
+                    pContainer.innerHTML = `<div class="mock-video-placeholder-content"><i class="fa-solid fa-play"></i><p>Video Connected</p><small>Preview Unavailable</small></div>`;
+                }
+            } else {
+                pContainer.innerHTML = `<div class="mock-video-placeholder-content"><i class="fa-solid fa-bullhorn"></i><p>Video Preview</p><small>No Source Provided</small></div>`;
+            }
+        }
+
+        [activeCheck, urlInput, titleInput, descInput, linkInput].forEach(input => {
+            input.addEventListener('input', updatePreview);
+            input.addEventListener('change', updatePreview);
+        });
+
+        // Save Logic
+        form.onsubmit = (e) => {
+            e.preventDefault();
+
+            // First load existing settings to append to them rather than overwrite
+            let s = {};
+            const savedSettings = localStorage.getItem('workbridge_settings');
+            if (savedSettings) {
+                s = JSON.parse(savedSettings);
+            }
+
+            s.videoActive = activeCheck.checked;
+            s.videoUrl = urlInput.value;
+            s.videoTitle = titleInput.value;
+            s.videoDesc = descInput.value;
+            s.videoLink = linkInput.value;
+
+            localStorage.setItem('workbridge_settings', JSON.stringify(s));
+
+            // Visual feedback
+            const btn = document.querySelector('.btn-save');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Published Successfully!';
+            btn.style.background = '#10b981';
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = 'var(--primary-color)';
+            }, 3000);
+        };
+    </script>
+</body>
+
+</html>

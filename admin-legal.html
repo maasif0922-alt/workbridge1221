@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkBridge Admin - Legal Documents</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="./js/auth-guard.js"></script>
+    <style>
+        .admin-card {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            margin-top: 2rem;
+        }
+
+        .editor-container {
+            margin-top: 1.5rem;
+        }
+
+        .legal-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            border: none;
+            background: none;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body style="background: #f1f5f9;">
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span> <span
+                    style="font-weight: 400; color: var(--text-secondary); margin-left:10px;">| Admin</span>
+            </a>
+            <div class="nav-links">
+                <a href="dashboard.html"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header style="margin-top: 4rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 800;">Legal Documents</h1>
+            <p style="color: var(--text-secondary);">Manage Terms of Service and Privacy Policy content.</p>
+        </header>
+
+        <div class="admin-card">
+            <div class="legal-tabs">
+                <button class="tab-btn active" onclick="switchDoc('tos')">Terms of Service</button>
+                <button class="tab-btn" onclick="switchDoc('privacy')">Privacy Policy</button>
+            </div>
+
+            <div class="editor-container">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;" id="doc-title">Terms of Service
+                    Content (Markdown/HTML Support)</label>
+                <textarea id="legal-content">
+# Terms of Service
+Welcome to WorkBridge. By using our platform, you agree to...
+                </textarea>
+                <button class="btn btn-primary" style="margin-top: 1.5rem; width: 100%; padding: 1rem;"
+                    onclick="saveLegal()">Update Document</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDoc = 'tos';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('workbridge_legal');
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('legal-content').value = data.tos || '# Terms of Service\nWelcome to WorkBridge...';
+            }
+        });
+
+        function switchDoc(type) {
+            currentDoc = type;
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+
+            // Handle clicking the button directly vs manual call
+            if (event && event.target) {
+                event.target.classList.add('active');
+            } else {
+                buttons[type === 'tos' ? 0 : 1].classList.add('active');
+            }
+
+            const title = document.getElementById('doc-title');
+            const content = document.getElementById('legal-content');
+
+            const saved = localStorage.getItem('workbridge_legal');
+            const data = saved ? JSON.parse(saved) : { tos: '', privacy: '' };
+
+            if (type === 'tos') {
+                title.innerText = 'Terms of Service Content (Markdown/HTML Support)';
+                content.value = data.tos || '# Terms of Service\nWelcome to WorkBridge. By using our platform, you agree to...';
+            } else {
+                title.innerText = 'Privacy Policy Content (Markdown/HTML Support)';
+                content.value = data.privacy || '# Privacy Policy\nYour data privacy is important to us. We collect...';
+            }
+        }
+
+        function saveLegal() {
+            const content = document.getElementById('legal-content').value;
+            const saved = localStorage.getItem('workbridge_legal');
+            const data = saved ? JSON.parse(saved) : { tos: '', privacy: '' };
+
+            data[currentDoc] = content;
+            localStorage.setItem('workbridge_legal', JSON.stringify(data));
+
+            alert('Legal document updated successfully!');
+        }
+    </script>
+</body>
+
+</html>

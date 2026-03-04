@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | WorkBridge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="./js/auth-guard.js"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="home.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span>
+            </a>
+            <div class="nav-links">
+                <a href="home.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="profiles.html">Freelancers</a>
+                <a href="news.html">News</a>
+                <a href="home.html#home-donations">Donation</a>
+                <a href="home.html#earning-plans">Earning</a>
+                <a href="javascript:void(0)" onclick="openLoginModal()">Login</a>
+            </div>
+            <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- Profile Header -->
+    <section class="section" style="padding-top: 3rem; background: var(--bg-color);">
+        <div class="container">
+            <button onclick="history.back()" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <div
+                style="background: white; padding: 2.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border: 1px solid var(--border-color);">
+                <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
+                    <div style="position: relative;">
+                        <img id="profile-img" src="https://ui-avatars.com/api/?name=User&background=random&size=120"
+                            alt="User Profile"
+                            style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--surface-color);">
+                        <button id="change-photo-btn"
+                            style="position: absolute; bottom: 5px; right: 5px; background: var(--primary-color); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer;"><i
+                                class="fa-solid fa-camera"></i></button>
+                    </div>
+                    <div style="flex: 1; min-width: 250px;">
+                        <h1 id="profile-name-display"
+                            style="font-size: 1.8rem; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.8rem;">
+                            Welcome Back!
+                            <span class="badge-verified" style="font-size: 0.9rem; padding: 0.3rem 0.8rem;"><i
+                                    class="fa-solid fa-circle-check"></i> Verified</span>
+                        </h1>
+                        <p id="profile-title-display" style="color: var(--text-secondary); margin-bottom: 0.8rem;">
+                            Update your professional title to attract more clients.</p>
+                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 1rem;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.2rem; font-weight: 700; color: var(--primary-color);"
+                                    id="stat-likes">0</div>
+                                <div
+                                    style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">
+                                    Total Likes</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.2rem; font-weight: 700; color: #10b981;" id="stat-earnings">Rs
+                                    0</div>
+                                <div
+                                    style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">
+                                    Monthly Earning</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.2rem; font-weight: 700; color: #f59e0b;" id="stat-rating">
+                                    <i class="fa-solid fa-star"></i> 5.0
+                                </div>
+                                <div
+                                    style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">
+                                    Star Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <button id="edit-profile-btn" class="btn btn-primary"><i class="fa-solid fa-pen"></i> Edit
+                            Profile</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2.5rem;">
+                <!-- Sidebar -->
+                <div>
+                    <div id="verification-section"
+                        style="background: #f8fafc; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px dashed var(--border-color); margin-bottom: 2rem; display: none;">
+                        <h3 style="margin-bottom: 0.8rem; font-size: 1.1rem; color: var(--primary-color);"><i
+                                class="fa-solid fa-shield-halved"></i> Profile Status</h3>
+                        <div id="verification-status-box">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+
+                    <div
+                        style="background: white; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 1.2rem; font-size: 1.1rem;">My Stats</h3>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-secondary);">Jobs Applied</span>
+                                <span style="font-weight: 600;">12</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-secondary);">Ongoing Projects</span>
+                                <span style="font-weight: 600;">3</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-secondary);">Earnings</span>
+                                <span style="font-weight: 600; color: #10b981;">Rs 25,000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="background: white; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                        <h3 style="margin-bottom: 1.2rem; font-size: 1.1rem;">Quick Links</h3>
+                        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem;">
+                            <li><a href="javascript:void(0)" onclick="switchView('activity')" class="quick-link active"
+                                    style="color: var(--primary-color); text-decoration: none; display: flex; align-items: center; gap: 0.8rem; font-weight: 600;"><i
+                                        class="fa-solid fa-clock-rotate-left" style="width: 20px;"></i> Recent
+                                    Activity</a></li>
+                            <li><a href="javascript:void(0)" onclick="switchView('proposals')" class="quick-link"
+                                    style="color: var(--text-color); text-decoration: none; display: flex; align-items: center; gap: 0.8rem;"><i
+                                        class="fa-solid fa-file-invoice" style="width: 20px;"></i> My Proposals</a></li>
+                            <li><a href="javascript:void(0)" onclick="switchView('saved')" class="quick-link"
+                                    style="color: var(--text-color); text-decoration: none; display: flex; align-items: center; gap: 0.8rem;"><i
+                                        class="fa-solid fa-heart" style="width: 20px;"></i> Saved Jobs</a></li>
+                            <li><a href="javascript:void(0)" onclick="switchView('settings')" class="quick-link"
+                                    style="color: var(--text-color); text-decoration: none; display: flex; align-items: center; gap: 0.8rem;"><i
+                                        class="fa-solid fa-gear" style="width: 20px;"></i> Account Settings</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Active View Container -->
+                <div id="active-view-container">
+                    <div
+                        style="background: white; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                        <h3 id="view-title" style="margin-bottom: 1.5rem; font-size: 1.3rem;">My Recent Activity</h3>
+                        <div id="view-content" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <!-- Activity content (default) -->
+                            <div
+                                style="padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; gap: 1rem;">
+                                <div
+                                    style="background: #f0fdf4; color: #166534; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <div>
+                                    <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">Job Posted Successfully</h4>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary);">Your job "Need Graphic
+                                        Designer for Logo" is now live.</p>
+                                    <span style="font-size: 0.75rem; color: #94a3b8;">2 hours ago</span>
+                                </div>
+                            </div>
+                            <div
+                                style="padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; gap: 1rem;">
+                                <div
+                                    style="background: #eef2ff; color: #3730a3; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </div>
+                                <div>
+                                    <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">Proposal Sent</h4>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary);">You sent a proposal for
+                                        "Website Data Entry" project.</p>
+                                    <span style="font-size: 0.75rem; color: #94a3b8;">Yesterday</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- My Posts Section -->
+                    <div
+                        style="background: white; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-top: 2rem;">
+                        <h3 style="margin-bottom: 1.5rem; font-size: 1.3rem;">My Posts</h3>
+                        <div id="user-posts-container" class="cards-grid"
+                            style="grid-template-columns: 1fr; gap: 1.5rem;">
+                            <!-- Dynamic posts will be injected here -->
+                            <p style="text-align:center; padding: 1rem; color: var(--text-secondary);">Loading your
+                                posts...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Edit Profile Modal -->
+    <div id="edit-profile-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-modal" id="close-edit-modal">&times;</span>
+            <h2 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Edit Profile</h2>
+            <form id="edit-profile-form">
+                <div class="form-group" style="margin-bottom: 1.2rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Full Name</label>
+                    <input type="text" id="edit-name" class="form-control" placeholder="Enter your name"
+                        style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);"
+                        required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.2rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Profession / Title</label>
+                    <input type="text" id="edit-title" class="form-control"
+                        placeholder="e.g. Graphic Designer / Developer"
+                        style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);"
+                        required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem;">
+                    <div class="form-group">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Experience
+                            (Years)</label>
+                        <input type="number" id="edit-exp" class="form-control" placeholder="Years" min="0"
+                            style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">WhatsApp Number</label>
+                        <div style="display: flex; gap: 5px;">
+                            <select id="edit-country-code"
+                                style="width: 80px; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                <option value="+92">+92</option>
+                                <option value="+91">+91</option>
+                                <option value="+971">+971</option>
+                                <option value="+44">+44</option>
+                                <option value="+1">+1</option>
+                            </select>
+                            <input type="tel" id="edit-whatsapp" class="form-control" placeholder="3XXXXXXXXX"
+                                style="flex: 1; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);"
+                                required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Work Details &
+                        Skills</label>
+                    <textarea id="edit-about" class="form-control"
+                        style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); min-height: 100px;"
+                        placeholder="Detail your work history and specific skills (e.g. Logo Design, React, plumbing...)"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">Save Profile
+                    Settings</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- OTP Verification Modal -->
+    <div id="otp-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div style="font-size: 3rem; color: #25d366; margin-bottom: 1rem;">
+                <i class="fa-brands fa-whatsapp"></i>
+            </div>
+            <h2 style="margin-bottom: 1rem;">WhatsApp Verification</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">We've sent a 6-digit OTP to your WhatsApp
+                number. Please enter it below to verify.</p>
+
+            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 1.5rem;">
+                <input type="text" maxlength="6" id="otp-input"
+                    style="width: 200px; padding: 1rem; font-size: 1.5rem; text-align: center; border: 2px solid var(--border-color); border-radius: var(--radius-md); letter-spacing: 5px; font-weight: 700;">
+            </div>
+
+            <button onclick="submitOTP()" class="btn btn-primary" style="width: 100%; padding: 1rem;">Verify &
+                Continue</button>
+            <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+                Didn't receive code? <a href="javascript:void(0)" onclick="resendOTP()"
+                    style="color: var(--primary-color); font-weight: 600;">Resend OTP</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom" style="margin-top: 0;">
+                &copy; 2026 WorkBridge (KaamLink). All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="./js/app.js"></script>
+    <script>
+        // Modal & Display Elements
+        const editModal = document.getElementById('edit-profile-modal');
+        const editBtn = document.getElementById('edit-profile-btn');
+        const closeEditModal = document.getElementById('close-edit-modal');
+        const editForm = document.getElementById('edit-profile-form');
+        const nameDisplay = document.getElementById('profile-name-display');
+        const titleDisplay = document.getElementById('profile-title-display');
+
+        // Profile Data Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('workbridge_user'));
+            const earningProfile = JSON.parse(localStorage.getItem('earning_profile') || '{}');
+            const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+
+            if (user) {
+                // Initialize display
+                nameDisplay.innerHTML = `${user.name || 'User'} <span class="badge-verified" style="font-size: 0.9rem; padding: 0.3rem 0.8rem; display: ${user.profileStatus === 'approved' ? 'flex' : 'none'};"><i class="fa-solid fa-circle-check"></i> Verified</span>`;
+                titleDisplay.textContent = user.title || 'Professional Freelancer';
+
+                // Handle Edit Button Restriction
+                if (user.hasEdited && user.profileStatus !== 'approved' && user.role !== 'admin') {
+                    if (editBtn) {
+                        editBtn.disabled = true;
+                        editBtn.innerHTML = '<i class="fa-solid fa-lock"></i> Edit Locked';
+                        editBtn.style.opacity = '0.6';
+                        editBtn.style.cursor = 'not-allowed';
+                    }
+                }
+
+                // Verification Status Logic
+                const verSection = document.getElementById('verification-section');
+                const verBox = document.getElementById('verification-status-box');
+                const profileStatus = user.profileStatus || 'none';
+
+                if (user.role === 'user' && verSection && verBox) {
+                    verSection.style.display = 'block';
+
+                    if (profileStatus === 'none') {
+                        verBox.innerHTML = `
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Complete your professional profile and verify WhatsApp to start posting.</p>
+                            <button onclick="submitForVerification()" class="btn btn-primary" style="width: 100%; font-size: 0.9rem; padding: 0.6rem;">Verify WhatsApp</button>
+                        `;
+                    } else if (profileStatus === 'pending') {
+                        verBox.innerHTML = `
+                            <div style="background: #fffbe6; color: #d4a017; padding: 1rem; border-radius: 8px; font-size: 0.85rem;">
+                                <i class="fa-solid fa-clock"></i> <strong>Admin Review Pending</strong>
+                                <p style="margin-top: 0.5rem;">Your profile is under review. You can post after admin approval. Expected time: 24h.</p>
+                            </div>
+                        `;
+                    } else if (profileStatus === 'approved') {
+                        verBox.innerHTML = `
+                            <div style="background: #dcfce7; color: #166534; padding: 1rem; border-radius: 8px; font-size: 0.85rem;">
+                                <i class="fa-solid fa-certificate"></i> <strong>Verified Professional</strong>
+                                <p style="margin-top: 0.5rem;">Your account is fully active. You can now post jobs and services!</p>
+                            </div>
+                        `;
+
+                        // Add "Create Post" button to dashboard
+                        const postsContainer = document.getElementById('user-posts-container');
+                        if (postsContainer) {
+                            const postBtn = document.createElement('div');
+                            postBtn.style.textAlign = 'center';
+                            postBtn.style.marginBottom = '2rem';
+                            postBtn.innerHTML = `
+                                <button onclick="window.openPostModal()" class="btn btn-primary" style="padding: 1rem 2rem; border-radius: 50px; font-weight: 700; box-shadow: var(--shadow-md);">
+                                    <i class="fa-solid fa-plus"></i> Create New Post
+                                </button>
+                            `;
+                            postsContainer.parentNode.insertBefore(postBtn, postsContainer);
+                        }
+                    } else if (profileStatus === 'rejected') {
+                        verBox.innerHTML = `
+                            <div style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; font-size: 0.85rem;">
+                                <i class="fa-solid fa-circle-xmark"></i> <strong>Rejected</strong>
+                                <p style="margin-top: 0.5rem;">Please update your profile information and try again.</p>
+                                <button onclick="submitForVerification()" class="btn btn-primary" style="width: 100%; font-size: 0.9rem; padding: 0.6rem; margin-top: 0.5rem;">Resubmit</button>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Calculate Stats
+                const userPosts = posts.filter(p => p.userId === user.email);
+                const totalLikes = userPosts.reduce((sum, p) => sum + (p.likes || 0), 0);
+
+                document.getElementById('stat-likes').textContent = totalLikes;
+                document.getElementById('stat-earnings').textContent = `Rs ${earningProfile.earnings || 0}`;
+                document.getElementById('stat-rating').innerHTML = `<i class="fa-solid fa-star"></i> ${user.rating || '5.0'}`;
+
+                if (user.profileImg) {
+                    document.getElementById('profile-img').src = user.profileImg;
+                }
+            }
+        });
+
+        if (editBtn) {
+            editBtn.onclick = () => {
+                const user = JSON.parse(localStorage.getItem('workbridge_user'));
+
+                // Restriction Check
+                if (user.hasEdited && user.profileStatus !== 'approved' && user.role !== 'admin') {
+                    alert('You have already edited your profile. Please wait for admin verification.');
+                    return;
+                }
+
+                document.getElementById('edit-name').value = user?.name || '';
+                document.getElementById('edit-title').value = user?.title || '';
+                document.getElementById('edit-exp').value = user?.experience || '0';
+                document.getElementById('edit-about').value = user?.about || '';
+
+                // Handle WhatsApp parsing for the form
+                if (user?.whatsapp) {
+                    const countryCodes = ["+92", "+91", "+971", "+44", "+1"];
+                    let code = "+92";
+                    let number = user.whatsapp;
+
+                    for (let c of countryCodes) {
+                        if (user.whatsapp.startsWith(c)) {
+                            code = c;
+                            number = user.whatsapp.replace(c, "");
+                            break;
+                        }
+                    }
+
+                    document.getElementById('edit-country-code').value = code;
+                    document.getElementById('edit-whatsapp').value = number;
+                }
+
+                editModal.style.display = 'flex';
+            };
+        }
+
+        if (closeEditModal) {
+            closeEditModal.onclick = () => editModal.style.display = 'none';
+        }
+
+        editForm.onsubmit = (e) => {
+            e.preventDefault();
+            const newName = document.getElementById('edit-name').value;
+            const newTitle = document.getElementById('edit-title').value;
+            const newExp = document.getElementById('edit-exp').value;
+            const newWhatsApp = document.getElementById('edit-country-code').value + document.getElementById('edit-whatsapp').value;
+            const newAbout = document.getElementById('edit-about').value;
+
+            const user = JSON.parse(localStorage.getItem('workbridge_user'));
+            user.name = newName;
+            user.title = newTitle;
+            user.experience = newExp;
+            user.whatsapp = newWhatsApp;
+            user.about = newAbout;
+
+            // New Logic: Reset status on edit
+            user.profileStatus = 'pending';
+            user.hasEdited = true;
+
+            localStorage.setItem('workbridge_user', JSON.stringify(user));
+
+            // Sync with all users for admin review
+            let allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
+            const userIdx = allUsers.findIndex(u => u.email === user.email);
+            if (userIdx !== -1) {
+                allUsers[userIdx] = user;
+            } else {
+                allUsers.push(user);
+            }
+            localStorage.setItem('workbridge_all_users', JSON.stringify(allUsers));
+
+            nameDisplay.innerHTML = `${newName} <span class="badge-verified" style="font-size: 0.9rem; padding: 0.3rem 0.8rem; display: ${user.profileStatus === 'approved' ? 'flex' : 'none'};"><i class="fa-solid fa-circle-check"></i> Verified</span>`;
+            titleDisplay.textContent = newTitle;
+
+            // Update stats or other displays if visible
+            if (document.getElementById('view-profile-about')) {
+                document.getElementById('view-profile-about').textContent = newAbout || 'No about info provided.';
+            }
+
+            // Success feedback
+            const saveBtn = editForm.querySelector('button[type="submit"]');
+            const originalText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Profile Updated!';
+            saveBtn.style.backgroundColor = '#10b981';
+
+            setTimeout(() => {
+                editModal.style.display = 'none';
+                saveBtn.innerHTML = originalText;
+                saveBtn.style.background = 'var(--primary-color)';
+            }, 1000);
+        };
+
+        window.submitForVerification = function () {
+            const user = JSON.parse(localStorage.getItem('workbridge_user'));
+            if (!user) return;
+
+            if (!user.name || !user.title || !user.whatsapp) {
+                alert('Please complete your profile details (Name, Title, and WhatsApp) before verifying.');
+                if (editModal) editModal.style.display = 'flex';
+                return;
+            }
+
+            // Trigger OTP
+            if (window.sendWhatsAppOTP && window.sendWhatsAppOTP(user.email, user.whatsapp)) {
+                document.getElementById('otp-modal').style.display = 'flex';
+            } else {
+                // Fallback if OTP system is mocked/unavailable
+                user.profileStatus = 'pending';
+                localStorage.setItem('workbridge_user', JSON.stringify(user));
+                let allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
+                const idx = allUsers.findIndex(u => u.email === user.email);
+                if (idx !== -1) allUsers[idx] = user; else allUsers.push(user);
+                localStorage.setItem('workbridge_all_users', JSON.stringify(allUsers));
+
+                alert('Profile submitted for review! Please wait up to 24 hours for admin approval.');
+                window.location.reload();
+            }
+        };
+
+        window.submitOTP = function () {
+            const otpValue = document.getElementById('otp-input').value;
+            const user = JSON.parse(localStorage.getItem('workbridge_user'));
+
+            const result = window.verifyWhatsAppOTP(user.email, otpValue);
+
+            if (result.success) {
+                user.profileStatus = 'pending'; // Moves to Admin Approval status
+                localStorage.setItem('workbridge_user', JSON.stringify(user));
+
+                alert('WhatsApp Verified! Your profile is now pending admin approval. Please wait 24 hours.');
+                window.location.reload();
+            } else {
+                alert(result.message);
+            }
+        };
+
+        window.resendOTP = function () {
+            const user = JSON.parse(localStorage.getItem('workbridge_user'));
+            if (window.sendWhatsAppOTP(user.email, user.whatsapp)) {
+                alert('A new OTP has been sent to your WhatsApp.');
+            }
+        };
+
+        // View Switching Logic
+        function switchView(view) {
+            const title = document.getElementById('view-title');
+            const content = document.getElementById('view-content');
+            const links = document.querySelectorAll('.quick-link');
+
+            links.forEach(link => {
+                link.style.color = 'var(--text-color)';
+                link.style.fontWeight = '400';
+            });
+
+            event.currentTarget.style.color = 'var(--primary-color)';
+            event.currentTarget.style.fontWeight = '600';
+
+            if (view === 'activity') {
+                title.textContent = 'My Recent Activity';
+                content.innerHTML = `
+                    <div style="padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; gap: 1rem;">
+                        <div style="background: #f0fdf4; color: #166534; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-check"></i></div>
+                        <div>
+                            <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">Job Posted Successfully</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary);">Your job "Need Graphic Designer for Logo" is now live.</p>
+                            <span style="font-size: 0.75rem; color: #94a3b8;">2 hours ago</span>
+                        </div>
+                    </div>
+                `;
+            } else if (view === 'proposals') {
+                title.textContent = 'My Proposals';
+                content.innerHTML = `
+                    <div style="border: 1px solid var(--border-color); padding: 1.5rem; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="font-size: 1rem;">Website Data Entry</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary);">Status: <span style="color: var(--primary-color); font-weight: 600;">Pending</span></p>
+                        </div>
+                        <button class="btn" style="border: 1px solid var(--border-color); font-size: 0.85rem;">View Details</button>
+                    </div>
+                    <p style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">You have 1 active proposal.</p>
+                `;
+            } else if (view === 'saved') {
+                title.textContent = 'Saved Jobs';
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 3rem 0;">
+                        <i class="fa-solid fa-heart-crack" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                        <p style="color: var(--text-secondary);">You haven't saved any jobs yet.</p>
+                        <a href="jobs.html" class="btn btn-primary" style="margin-top: 1rem; display: inline-block; text-decoration: none;">Browse Jobs</a>
+                    </div>
+                `;
+            } else if (view === 'settings') {
+                title.textContent = 'Account Settings';
+                content.innerHTML = `
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
+                            <div>
+                                <h4 style="font-size: 1rem;">Email Notifications</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary);">Receive updates about new jobs</p>
+                            </div>
+                            <input type="checkbox" checked style="width: 20px; height: 20px;">
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
+                            <div>
+                                <h4 style="font-size: 1rem;">Public Profile</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary);">Allow clients to find you</p>
+                            </div>
+                            <input type="checkbox" checked style="width: 20px; height: 20px;">
+                        </div>
+                        <button class="btn" style="color: #ef4444; border: 1px solid #fee2e2; background: #fef2f2;">Delete Account</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Photo Change Mockup
+        document.getElementById('change-photo-btn').onclick = () => {
+            alert('Profile picture upload feature coming soon! (Select an image to update)');
+        };
+
+
+    </script>
+</body>
+
+</html>

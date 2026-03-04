@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WorkBridge Path & Image Diagnostic Tool</title>
+    <style>
+        :root {
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --surface: #ffffff;
+            --bg: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            padding: 40px;
+            line-height: 1.6;
+            background: var(--bg);
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--surface);
+            padding: 24px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        h1 {
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        h3 {
+            margin-top: 0;
+            color: #334155;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .status {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .warning {
+            background: #fffbe6;
+            color: #92400e;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        .path-test {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .help-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>WorkBridge Diagnostics</h1>
+        <p>Deployment Image & Path Verification Tool</p>
+
+        <div class="card">
+            <h3>1. Core Environment</h3>
+            <div class="path-test">
+                <span>Protocol:</span>
+                <span id="env-protocol">Checking...</span>
+            </div>
+            <div class="path-test">
+                <span>Domain:</span>
+                <span id="env-domain">Checking...</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>2. Asset Reachability (Relative Paths)</h3>
+            <div id="asset-results">
+                <!-- Results injected here -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>3. Local Image Folder Guessing</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">We are checking common folders where
+                images might be stored.</p>
+            <div id="folder-results">
+                <!-- Results injected here -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>4. Path String Analysis</h3>
+            <p>If you see any path in your HTML starting with <code>/</code> (root) or <code>C:\</code> (local disk), it
+                will likely break on live servers.</p>
+            <div id="string-check">
+                Scanning current page...
+            </div>
+        </div>
+
+        <div class="help-box">
+            <strong><i class="fa-solid fa-lightbulb"></i> Pro Tip:</strong>
+            If "images/logo.png" (lower case) fails but "Images/logo.png" (Capital) works, your server is <strong>Case
+                Sensitive</strong> (Linux). Always use lowercase for files and folders to avoid this.
+        </div>
+    </div>
+
+    <script>
+        // Environment
+        document.getElementById('env-protocol').textContent = window.location.protocol;
+        document.getElementById('env-protocol').className = 'status ' + (window.location.protocol === 'https:' ? 'success' : 'warning');
+        document.getElementById('env-domain').textContent = window.location.hostname || 'Local File';
+
+        function createResultLine(containerId, label, path, statusType, note = '') {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = 'path-test';
+            div.innerHTML = `
+                <span>${label} <code style="color:#6366f1">${path}</code></span>
+                <div>
+                    ${note ? `<small style="margin-right:10px; color:#64748b">${note}</small>` : ''}
+                    <span class="status ${statusType}">${statusType}</span>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        async function checkPath(path, label, containerId) {
+            try {
+                const response = await fetch(path, { method: 'HEAD' });
+                if (response.ok) {
+                    createResultLine(containerId, label, path, 'success');
+                } else {
+                    createResultLine(containerId, label, path, 'error', `Code ${response.status}`);
+                }
+            } catch (err) {
+                createResultLine(containerId, label, path, 'error', 'Network Error');
+            }
+        }
+
+        // Test Core Assets
+        checkPath('css/styles.css', 'Styles:', 'asset-results');
+        checkPath('js/app.js', 'Main JS:', 'asset-results');
+        checkPath('JS/app.js', 'Case Test:', 'asset-results');
+
+        // Guess Folders (by checking a dummy favicon or common names)
+        const commonImages = ['images/', 'img/', 'assets/', 'Assets/', 'Images/'];
+        commonImages.forEach(folder => {
+            checkPath(folder, 'Check Folder:', 'folder-results');
+        });
+
+        // Scan for common mistakes in the DOM
+        const badPaths = [];
+        document.querySelectorAll('img, script, link').forEach(el => {
+            const src = el.src || el.href;
+            if (src && (src.includes('C%3A') || src.includes('file:///'))) {
+                badPaths.push(`Absolute Local Path: ${src}`);
+            }
+        });
+
+        const stringCheck = document.getElementById('string-check');
+        if (badPaths.length > 0) {
+            stringCheck.innerHTML = `<span class="status error">ISSUES FOUND</span><pre>${badPaths.join('\n')}</pre>`;
+        } else {
+            stringCheck.innerHTML = `<span class="status success">NO ABSOLUTE LOCAL PATHS DETECTED</span>`;
+        }
+    </script>
+</body>
+
+</html>

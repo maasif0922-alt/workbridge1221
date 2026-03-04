@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest News | WorkBridge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="./js/auth-guard.js"></script>
+</head>
+
+<body style="background-color: var(--bg-color);">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="home.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span>
+            </a>
+            <div class="nav-links">
+                <a href="home.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="profiles.html">Freelancers</a>
+                <a href="news.html" class="active">News</a>
+                <a href="home.html#home-donations">Donation</a>
+                <a href="home.html#earning-plans">Earning</a>
+                <a href="javascript:void(0)" onclick="openLoginModal()">Login</a>
+            </div>
+            <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <header class="section"
+        style="padding: 4rem 0; text-align: center; background: linear-gradient(-45deg, #f8fafc, #f1f5f9);">
+        <div class="container">
+            <button onclick="history.back()" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <h1 class="section-title">Latest News & Blog</h1>
+            <p class="section-subtitle">Read about platform updates, success stories, and industry trends.</p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <!-- Reuse news-grid from styles.css -->
+            <div class="news-grid" id="news-full-grid">
+                <!-- News items loaded dynamically via js/news-system.js -->
+                <div style="text-align: center; grid-column: 1/-1; padding: 3rem;">
+                    <i class="fa-solid fa-circle-notch fa-spin"
+                        style="font-size: 2rem; color: var(--primary-color);"></i>
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">Loading latest news...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-social" style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem;">
+                <a href="#" class="social-fb" target="_blank" title="Facebook"
+                    style="display: none; width: 32px; height: 32px; border-radius: 50%; background: #1e293b; color: white; align-items: center; justify-content: center; text-decoration: none; font-size: 0.9rem;">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-ig" target="_blank" title="Instagram"
+                    style="display: none; width: 32px; height: 32px; border-radius: 50%; background: #1e293b; color: white; align-items: center; justify-content: center; text-decoration: none; font-size: 0.9rem;">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="#" class="social-tw" target="_blank" title="Twitter (X)"
+                    style="display: none; width: 32px; height: 32px; border-radius: 50%; background: #1e293b; color: white; align-items: center; justify-content: center; text-decoration: none; font-size: 0.9rem;">
+                    <i class="fa-brands fa-x-twitter"></i>
+                </a>
+                <a href="#" class="social-li" target="_blank" title="LinkedIn"
+                    style="display: none; width: 32px; height: 32px; border-radius: 50%; background: #1e293b; color: white; align-items: center; justify-content: center; text-decoration: none; font-size: 0.9rem;">
+                    <i class="fa-brands fa-linkedin-in"></i>
+                </a>
+                <a href="#" class="social-tk" target="_blank" title="TikTok"
+                    style="display: none; width: 32px; height: 32px; border-radius: 50%; background: #1e293b; color: white; align-items: center; justify-content: center; text-decoration: none; font-size: 0.9rem;">
+                    <i class="fa-brands fa-tiktok"></i>
+                </a>
+                <a href="#" class="social-yt" target="_blank" title="YouTube"
+                    style="display: none; width: 32px; height: 32px; border-radius: 50%; background: #1e293b; color: white; align-items: center; justify-content: center; text-decoration: none; font-size: 0.9rem;">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+            </div>
+            <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                &copy; 2026 WorkBridge (KaamLink). All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="./js/settings-sync.js"></script>
+
+    <script src="./js/news-data.js"></script>
+    <script src="./js/news-system.js"></script>
+    <!-- Auth Modal (Login/Signup) -->
+    <div id="login-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button onclick="closeLoginModal()"
+                style="position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: color 0.3s;"
+                onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='#94a3b8'">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div
+                    style="width: 65px; height: 65px; background: rgba(37, 99, 235, 0.1); color: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.8rem;">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <h2 id="auth-modal-title"
+                    style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-primary);">
+                    Join WorkBridge</h2>
+                <p id="auth-modal-subtitle" style="color: var(--text-secondary);">Sign in to your account or create
+                    a new one.</p>
+            </div>
+
+            <!-- Google Social Login -->
+            <div id="google-auth-container" style="margin-bottom: 1.5rem;">
+                <div id="g_id_onload"
+                    data-client_id="308431344271-bersc4ijmq99glsi9530apft4ci8ji60.apps.googleusercontent.com"
+                    data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
+                    data-auto_prompt="true">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
+                    data-text="continue_with" data-size="large" data-logo_alignment="left" data-width="400">
+                </div>
+            </div>
+
+            <div
+                style="display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.85rem;">
+                <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+                <span>OR</span>
+                <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+            </div>
+
+            <!-- Tabs -->
+            <div style="display: flex; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                <button id="tab-login-btn" onclick="switchAuthTab('login')"
+                    style="flex: 1; padding: 0.75rem; background: none; border: none; border-bottom: 2px solid transparent; font-weight: 600; font-size: 1rem; cursor: pointer; color: var(--text-secondary);">Sign
+                    In</button>
+                <button id="tab-signup-btn" onclick="switchAuthTab('signup')"
+                    style="flex: 1; padding: 0.75rem; background: none; border: none; border-bottom: 2px solid var(--primary-color); font-weight: 700; font-size: 1rem; cursor: pointer; color: var(--primary-color);">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form-element" style="display: none;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label
+                        style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">Email
+                        Address</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-envelope"
+                            style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                        <input type="email" id="login-email" required placeholder="user@workbridge.com"
+                            style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <label style="font-weight: 600; color: var(--text-primary);">Password</label>
+                        <a href="javascript:void(0)"
+                            style="font-size: 0.85rem; color: var(--primary-color); text-decoration: none;">Forgot?</a>
+                    </div>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-key"
+                            style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                        <input type="password" id="login-password" required placeholder="••••••••"
+                            style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary"
+                    style="width: 100%; padding: 1rem; border-radius: 12px; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 1rem; cursor: pointer;">
+                    Sign In Now <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+                <div style="text-align: center; font-size: 0.9rem; color: var(--text-secondary);">
+                    Don't have an account? <a href="javascript:void(0)" onclick="switchAuthTab('signup')"
+                        style="color: var(--primary-color); font-weight: 700; text-decoration: none;">Register
+                        Here</a>
+                </div>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signup-form-element" style="display: block;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label
+                        style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">Full
+                        Name</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-user"
+                            style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                        <input type="text" id="signup-name" required placeholder="John Doe"
+                            style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label
+                        style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">Email
+                        Address</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-envelope"
+                            style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                        <input type="email" id="signup-email" required placeholder="user@example.com"
+                            style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label
+                        style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">Contact
+                        Number</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-phone"
+                            style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; z-index: 10;"></i>
+                        <div class="phone-input-group">
+                            <select id="signup-country-code" class="form-control country-code-select"
+                                style="padding-left: 2.5rem; width: 110px;">
+                                <option value="+92">+92 (PK)</option>
+                                <option value="+91">+91 (IN)</option>
+                                <option value="+971">+971 (AE)</option>
+                                <option value="+966">+966 (SA)</option>
+                                <option value="+44">+44 (UK)</option>
+                                <option value="+1">+1 (US)</option>
+                            </select>
+                            <input type="tel" id="signup-phone" required placeholder="3XXXXXXXXX"
+                                style="width: 100%; padding: 0.8rem 1rem 0.8rem 1rem; border: 1px solid var(--border-color); border-left: none; border-radius: 0 12px 12px 0; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label
+                        style="font-weight: 600; color: var(--text-primary); display:block; margin-bottom:0.5rem;">Password</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-key"
+                            style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                        <input type="password" id="signup-password" required placeholder="••••••••"
+                            style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary"
+                    style="width: 100%; padding: 1rem; border-radius: 12px; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 1rem; cursor: pointer;">
+                    Create Account <i class="fa-solid fa-user-plus"></i>
+                </button>
+                <div style="text-align: center; font-size: 0.9rem; color: var(--text-secondary);">
+                    Already have an account? <a href="javascript:void(0)" onclick="switchAuthTab('login')"
+                        style="color: var(--primary-color); font-weight: 700; text-decoration: none;">Sign In</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="./js/auth.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+
+</html>

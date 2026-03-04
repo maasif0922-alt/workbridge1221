@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkBridge Admin - Manage Events</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="./js/auth-guard.js"></script>
+    <style>
+        .admin-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--surface-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-header h1 {
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .event-list {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .event-tab {
+            padding: 1rem 1.5rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-tab:hover {
+            border-color: var(--primary-color);
+        }
+
+        .event-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            background: #fff;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .section-title-sm {
+            font-size: 1.1rem;
+            margin: 1.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .dynamic-list-item {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .dynamic-list-item input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+        }
+
+        .btn-remove {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0 1rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-remove:hover {
+            background: #dc2626;
+        }
+
+        .instructions {
+            background: #eff6ff;
+            color: #1e3a8a;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid #bfdbfe;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .instructions code {
+            background: #dbeafe;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body style="background: #f1f5f9;">
+
+    <nav class="navbar" style="position: relative; z-index: 10;">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span> <span
+                    style="font-size: 1rem; color: #64748b; font-weight: normal; margin-left:10px;">| Admin Panel</span>
+            </a>
+            <div class="nav-links">
+                <a href="dashboard.html" class="btn" style="border: 1px solid var(--border-color);"><i
+                        class="fa-solid fa-arrow-left"></i> Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="admin-container reveal active">
+
+            <div class="instructions">
+                <strong><i class="fa-solid fa-circle-info"></i> How to apply updates:</strong> <br>
+                1. Make your desired changes in the form below.<br>
+                2. Click <strong>Apply to Form</strong> to lock them in locally.<br>
+                3. Click <strong>Download events.json</strong> to get the updated file.<br>
+                4. Replace the old file located at <code>data/events.json</code> in your project folder with this new
+                downloaded file.
+            </div>
+
+            <div class="admin-header">
+                <h1 style="font-size: 1.5rem;"><i class="fa-solid fa-calendar-star"></i> Manage Event Widget
+                    Configurations</h1>
+            </div>
+
+            <div class="event-list" id="event-tabs">
+                <!-- Tabs generated by JS -->
+            </div>
+
+            <form id="event-form" style="display: none; animation: fadeIn 0.3s ease;">
+                <div class="form-grid">
+                    <div class="form-group form-group-full"
+                        style="background:#f0fdf4; padding:1.25rem; border-radius:12px; border:1px solid #bbf7d0;">
+                        <label style="display:flex; align-items:center; gap:12px; cursor:pointer; margin:0;">
+                            <input type="checkbox" id="field-active"
+                                style="width:24px; height:24px; accent-color: #16a34a; cursor:pointer;">
+                            <span style="font-size:1.1rem; color:#166534; font-weight:700;">Set as Active Event (Forces
+                                display regardless of date)</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Event ID (Internal Identifier)</label>
+                        <input type="text" id="field-id" readonly
+                            style="background:#f8fafc; color:#64748b; cursor:not-allowed;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Event Template Type</label>
+                        <select id="field-type">
+                            <option value="ramadan">Ramadan (Special Islamic Layout)</option>
+                            <option value="general">General (Standard Layout)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label>Event Title</label>
+                        <input type="text" id="field-title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Auto-Start Date</label>
+                        <input type="date" id="field-start">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Auto-End Date</label>
+                        <input type="date" id="field-end">
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label>Main Announcement Message</label>
+                        <textarea id="field-message" rows="3" required></textarea>
+                    </div>
+
+                    <!-- Ramadan Specific Fields -->
+                    <div id="ramadan-fields" class="form-group-full"
+                        style="display: none; background: #fafafa; padding: 1.5rem; border-radius: 12px; border: 1px solid #e5e5e5;">
+                        <h3 class="section-title-sm" style="margin-top:0; color: #0f172a;"><i class="fa-solid fa-moon"
+                                style="color:var(--primary-color);"></i> Ramadan Specific Settings</h3>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Target City</label>
+                                <input type="text" id="field-city" placeholder="e.g. Lahore">
+                            </div>
+                            <div class="form-group">
+                                <label>Sehri End Time</label>
+                                <input type="text" id="field-sehri" placeholder="e.g. 04:52 AM">
+                            </div>
+                            <div class="form-group">
+                                <label>Iftari Time</label>
+                                <input type="text" id="field-iftari" placeholder="e.g. 06:05 PM">
+                            </div>
+                        </div>
+
+                        <h4 class="section-title-sm" style="margin-top:1.5rem; font-size:1rem; color: #0f172a;">Ramadan
+                            Fazail (Benefits/Virtues)</h4>
+                        <div id="fazail-container">
+                            <!-- Dynamic Fazail -->
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="addFazail()"
+                            style="margin-top:0.5rem;"><i class="fa-solid fa-plus"></i> Add Fazail Point</button>
+                    </div>
+
+                    <div class="form-group-full">
+                        <h3 class="section-title-sm" style="color: #0f172a;"><i class="fa-solid fa-images"
+                                style="color:var(--primary-color);"></i> Image Slider (URLs)</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom: 1rem;">Provide full
+                            URLs to external images (Unsplash, Imgur, etc.)</p>
+                        <div id="images-container">
+                            <!-- Dynamic images -->
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="addImage()"
+                            style="margin-top:0.5rem;"><i class="fa-solid fa-plus"></i> Add Image URL</button>
+                    </div>
+
+                    <div class="form-group-full">
+                        <h3 class="section-title-sm" style="color: #0f172a;"><i class="fa-solid fa-hand-holding-dollar"
+                                style="color:var(--primary-color);"></i> Donation Target Causes</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom: 1rem;">These appear as
+                            quick-select buttons in the widget.</p>
+                        <div id="donations-container">
+                            <!-- Dynamic donations -->
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="addDonation()"
+                            style="margin-top:0.5rem;"><i class="fa-solid fa-plus"></i> Add Donation Cause</button>
+                    </div>
+
+                </div>
+
+                <div class="action-buttons">
+                    <button type="button" class="btn" onclick="discardChanges()"
+                        style="background:#f1f5f9; color:var(--text-primary);"><i class="fa-solid fa-rotate-left"></i>
+                        Discard Form Changes</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEventLocally()"><i
+                            class="fa-solid fa-floppy-disk"></i> Apply to Form</button>
+                    <button type="button" class="btn btn-whatsapp" onclick="downloadJSON()"
+                        style="background:#10b981; font-weight: 800;"><i class="fa-solid fa-download"></i> Download
+                        events.json</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let eventsData = [];
+        let currentEventIndex = -1;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load from events.js logic (Simulating import since we can't easily fetch it directly due to CORS)
+            // For the admin panel, we will require the user to paste their JS data or just edit from a default template
+            const defaultEvents = [
+                {
+                    "id": "ramadan-2026",
+                    "active": true,
+                    "type": "ramadan",
+                    "title": "Ramadan Mubarak 2026",
+                    "startDate": "2026-02-18",
+                    "endDate": "2026-03-19",
+                    "message": "Is barkat mahine mein mustahiqeen ki madad karen aur ajar kamayein. WorkBridge Foundation aapke saath hai.",
+                    "ashras": [
+                        { "name": "Rehmat", "days": "1-10", "message": "Pehla Ashra: Allah ki Rehmat ka nuzool." },
+                        { "name": "Maghfirat", "days": "11-20", "message": "Dosra Ashra: Gunahon se Maafi aur Maghfirat." },
+                        { "name": "Nijat", "days": "21-30", "message": "Teesra Ashra: Jahannam se Nijat ka waqt." }
+                    ],
+                    "fazail": [
+                        "Ramadan is the month of the Quran.",
+                        "Lailat-ul-Qadr is better than a thousand months.",
+                        "Fasting is a shield against evil.",
+                        "The smell of a fasting person's breath is beloved to Allah."
+                    ],
+                    "timings": { "city": "Lahore", "sehri": "04:52 AM", "iftari": "06:05 PM" },
+                    "images": [
+                        "https://images.unsplash.com/photo-1580974511931-bb4a13e170a1?auto=format&fit=crop&q=80&w=600",
+                        "https://images.unsplash.com/photo-1542385381-43286392079f?auto=format&fit=crop&q=80&w=600",
+                        "https://images.unsplash.com/photo-1563283259-22a945d8b2d1?auto=format&fit=crop&q=80&w=600"
+                    ],
+                    "donations": [
+                        { "id": "dastarkhwan", "label": "Iftar Dastarkhwan", "description": "Feed a fasting worker for Rs. 300." },
+                        { "id": "zakat", "label": "Zakat-al-Mal", "description": "Your 2.5% can change their lifetime." },
+                        { "id": "sadqa", "label": "Sadqa / Jariyah", "description": "Continuous rewards for your support." }
+                    ]
+                },
+                {
+                    "id": "eid-fitr-2026",
+                    "active": false,
+                    "type": "general",
+                    "title": "Eid ul Fitr Celebration",
+                    "startDate": "2026-03-20",
+                    "endDate": "2026-03-22",
+                    "message": "Celebrate Eid by sharing your happiness with the hard-working community.",
+                    "images": [
+                        "https://images.unsplash.com/photo-1594246830573-047f3b60331f?auto=format&fit=crop&q=80&w=600"
+                    ],
+                    "donations": [
+                        { "id": "eid-gift", "label": "Eid Gifts", "description": "Gifts and clothes for workers' children." }
+                    ]
+                }
+            ];
+
+            eventsData = defaultEvents;
+            renderTabs();
+            if (eventsData.length > 0) selectEvent(0);
+        });
+
+        function renderTabs() {
+            const tabsContainer = document.getElementById('event-tabs');
+            tabsContainer.innerHTML = '';
+            eventsData.forEach((ev, index) => {
+                const tab = document.createElement('div');
+                tab.className = `event-tab ${index === currentEventIndex ? 'active' : ''}`;
+
+                let iconClass = ev.type === 'ramadan' ? 'fa-moon' : 'fa-star';
+                let activeBadge = ev.active ? '<span style="background:#22c55e; color:white; font-size:0.65rem; padding:2px 6px; border-radius:4px; margin-left:8px;">ACTIVE</span>' : '';
+
+                tab.innerHTML = `<i class="fa-solid ${iconClass}"></i> ${ev.title} ${activeBadge}`;
+                tab.onclick = () => selectEvent(index);
+                tabsContainer.appendChild(tab);
+            });
+        }
+
+        function selectEvent(index) {
+            currentEventIndex = index;
+            renderTabs();
+            populateForm(eventsData[index]);
+            document.getElementById('event-form').style.display = 'block';
+        }
+
+        function populateForm(ev) {
+            document.getElementById('field-active').checked = ev.active;
+            document.getElementById('field-id').value = ev.id;
+            document.getElementById('field-type').value = ev.type;
+            document.getElementById('field-title').value = ev.title;
+            document.getElementById('field-start').value = ev.startDate || '';
+            document.getElementById('field-end').value = ev.endDate || '';
+            document.getElementById('field-message').value = ev.message || '';
+
+            // Handle Type Change
+            const typeSelect = document.getElementById('field-type');
+            const ramadanFields = document.getElementById('ramadan-fields');
+
+            const toggleRamadan = () => {
+                ramadanFields.style.display = typeSelect.value === 'ramadan' ? 'block' : 'none';
+            };
+            typeSelect.onchange = toggleRamadan;
+            toggleRamadan();
+
+            // Populate Ramadan Specifics
+            if (ev.timings) {
+                document.getElementById('field-city').value = ev.timings.city || '';
+                document.getElementById('field-sehri').value = ev.timings.sehri || '';
+                document.getElementById('field-iftari').value = ev.timings.iftari || '';
+            } else {
+                document.getElementById('field-city').value = '';
+                document.getElementById('field-sehri').value = '';
+                document.getElementById('field-iftari').value = '';
+            }
+
+            // Populate Fazail
+            const fazailContainer = document.getElementById('fazail-container');
+            fazailContainer.innerHTML = '';
+            if (ev.fazail) {
+                ev.fazail.forEach((f) => addFazail(f));
+            }
+
+            // Populate Images
+            const imagesContainer = document.getElementById('images-container');
+            imagesContainer.innerHTML = '';
+            if (ev.images) {
+                ev.images.forEach(img => addImage(img));
+            }
+
+            // Populate Donations
+            const donationsContainer = document.getElementById('donations-container');
+            donationsContainer.innerHTML = '';
+            if (ev.donations) {
+                ev.donations.forEach(d => addDonation(d.id, d.label, d.description));
+            }
+        }
+
+        function addFazail(val = '') {
+            const div = document.createElement('div');
+            div.className = 'dynamic-list-item fazail-item-input';
+            div.innerHTML = `
+                <input type="text" placeholder="E.g. Fasting is a shield..." value="${val}">
+                <button type="button" class="btn-remove" onclick="this.parentElement.remove()" title="Remove point"><i class="fa-solid fa-trash"></i></button>
+            `;
+            document.getElementById('fazail-container').appendChild(div);
+        }
+
+        function addImage(val = '') {
+            const div = document.createElement('div');
+            div.className = 'dynamic-list-item img-item-input';
+            div.innerHTML = `
+                <input type="url" placeholder="https://image-url..." value="${val}">
+                <button type="button" class="btn-remove" onclick="this.parentElement.remove()" title="Remove image"><i class="fa-solid fa-trash"></i></button>
+            `;
+            document.getElementById('images-container').appendChild(div);
+        }
+
+        function addDonation(id = '', label = '', desc = '') {
+            const div = document.createElement('div');
+            div.className = 'dynamic-list-item donation-item-input';
+            div.style.flexWrap = 'wrap';
+            div.style.gap = '0.75rem';
+            div.style.marginBottom = '1rem';
+            div.style.padding = '1rem';
+            div.style.background = '#f8fafc';
+            div.style.border = '1px dashed var(--border-color)';
+            div.style.borderRadius = '8px';
+
+            div.innerHTML = `
+                <div style="display:flex; gap:0.75rem; width:100%;">
+                    <input type="text" class="don-id" placeholder="Internal ID (e.g. zakat)" value="${id}" style="flex:1;">
+                    <input type="text" class="don-label" placeholder="Display Label (e.g. Zakat-al-Mal)" value="${label}" style="flex:2;">
+                    <button type="button" class="btn-remove" onclick="this.parentElement.parentElement.remove()" title="Remove donation cause"><i class="fa-solid fa-trash"></i></button>
+                </div>
+                <input type="text" class="don-desc" placeholder="Short Description (appears on form)" value="${desc}" style="width:100%;">
+            `;
+            document.getElementById('donations-container').appendChild(div);
+        }
+
+        function saveEventLocally() {
+            if (currentEventIndex < 0) return;
+
+            const ev = eventsData[currentEventIndex];
+
+            const makeActive = document.getElementById('field-active').checked;
+            if (makeActive) {
+                // Deactivate all others
+                eventsData.forEach(e => e.active = false);
+            }
+            ev.active = makeActive;
+
+            ev.type = document.getElementById('field-type').value;
+            ev.title = document.getElementById('field-title').value;
+            ev.startDate = document.getElementById('field-start').value;
+            ev.endDate = document.getElementById('field-end').value;
+            ev.message = document.getElementById('field-message').value;
+
+            if (ev.type === 'ramadan') {
+                ev.timings = {
+                    city: document.getElementById('field-city').value,
+                    sehri: document.getElementById('field-sehri').value,
+                    iftari: document.getElementById('field-iftari').value
+                };
+
+                ev.fazail = Array.from(document.querySelectorAll('.fazail-item-input input'))
+                    .map(i => i.value)
+                    .filter(v => v.trim() !== '');
+            } else {
+                delete ev.timings;
+                delete ev.fazail;
+            }
+
+            ev.images = Array.from(document.querySelectorAll('.img-item-input input'))
+                .map(i => i.value)
+                .filter(v => v.trim() !== '');
+
+            ev.donations = Array.from(document.querySelectorAll('.donation-item-input')).map(el => {
+                return {
+                    id: el.querySelector('.don-id').value,
+                    label: el.querySelector('.don-label').value,
+                    description: el.querySelector('.don-desc').value
+                };
+            }).filter(d => d.label.trim() !== '');
+
+            renderTabs();
+            alert('Form changes saved into local memory successfully! \n\nIMPORTANT: Click "Download events.json" to get your file and update the site.');
+        }
+
+        function discardChanges() {
+            if (confirm('Are you sure you want to discard unsaved form changes?')) {
+                selectEvent(currentEventIndex);
+            }
+        }
+
+        function downloadJSON() {
+            // Reconstruct the events.js file with the new array
+            const dataObj = JSON.stringify(eventsData, null, 2);
+            const fullJSFile = `document.addEventListener('DOMContentLoaded', () => {
+    const eventWidgetContainer = document.getElementById('event-widget-container-hero');
+    if (!eventWidgetContainer) return;
+
+    const events = ${dataObj};
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let activeEvent = events.find(e => e.active);
+
+    if (!activeEvent) {
+        activeEvent = events.find(e => {
+            const start = new Date(e.startDate);
+            const end = new Date(e.endDate);
+            return today >= start && today <= end;
+        });
+    }
+
+    if (activeEvent) {
+        // AI Simulation: Randomize the content slightly to make it look "Managed by AI"
+        if (activeEvent.fazail && activeEvent.fazail.length > 2) {
+            activeEvent.fazail = activeEvent.fazail.sort(() => 0.5 - Math.random()).slice(0, 2);
+        }
+        if (activeEvent.images && activeEvent.images.length > 1) {
+            activeEvent.images = activeEvent.images.sort(() => 0.5 - Math.random());
+        }
+
+        renderEventWidget(activeEvent);
+    }
+
+    function renderEventWidget(event) {
+        const isRamadan = event.type === 'ramadan';
+
+        let html = \`
+            <div id="event-widget" class="event-widget integrated-vertical" style="margin-top: 0; box-shadow: var(--shadow-lg);">
+                <div class="event-header">
+                    <h3><i class="fa-solid fa-moon"></i> \${event.title}</h3>
+                    <span style="font-size: 0.7rem; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;" title="Content dynamically managed by WorkBridge AI"><i class="fa-solid fa-robot"></i> AI</span>
+                </div>
+                <div class="event-body">
+                    <div class="event-image-slider">
+                        \${event.images.map((img, i) => \`<img src="\${img}" class="\${i === 0 ? 'active' : ''}" alt="Event Image">\`).join('')}
+                    </div>
+                    <p class="event-msg">\${event.message}</p>
+        \`;
+
+        if (isRamadan) {
+            const today = new Date();
+            const start = new Date(event.startDate);
+            const timeDiff = today.getTime() - start.getTime();
+            const dayOfRamadan = Math.max(1, Math.floor(timeDiff / (1000 * 3600 * 24)) + 1);
+
+            const ashraIndex = dayOfRamadan <= 10 ? 0 : (dayOfRamadan <= 20 ? 1 : 2);
+
+            html += \`
+                    <div class="ramadan-info">
+                        <div class="ashra-info">
+                            <span class="badge-ashra \${ashraIndex === 0 ? 'active' : ''}">\${event.ashras[0].name}</span>
+                            <span class="badge-ashra \${ashraIndex === 1 ? 'active' : ''}">\${event.ashras[1].name}</span>
+                            <span class="badge-ashra \${ashraIndex === 2 ? 'active' : ''}">\${event.ashras[2].name}</span>
+                        </div>
+                        <div class="timings-box">
+                            <div class="timing-item">
+                                <span>Sehri</span>
+                                <strong>\${event.timings.sehri}</strong>
+                            </div>
+                            <div class="timing-item">
+                                <span>Iftari</span>
+                                <strong>\${event.timings.iftari}</strong>
+                            </div>
+                        </div>
+                        <p class="timing-city"><i class="fa-solid fa-location-dot"></i> \${event.timings.city}</p>
+                        
+                        \${event.fazail ? \`
+                            <div class="fazail-box">
+                                <p class="fazail-title"><i class="fa-solid fa-star"></i> Ramadan Fazail</p>
+                                <ul class="fazail-list">
+                                    \${event.fazail.map(f => \`<li class="fazail-item"><i class="fa-solid fa-circle-check"></i> <span>\${f}</span></li>\`).join('')}
+                                </ul>
+                            </div>
+                        \` : ''}
+                    </div>
+            \`;
+        }
+
+        html += \`
+                    <div class="donation-buttons">
+                        <button class="btn-donate-main" id="main-donate-btn">Donate Now</button>
+                        <div class="donation-options">
+                            \${event.donations.map(d => \`
+                                <div class="donation-option-item" onclick="openDonationForm('\${d.label}')">
+                                    <i class="fa-solid fa-heart"></i>
+                                    <span>\${d.label}</span>
+                                </div>
+                            \`).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donation Form Modal -->
+            <div id="eventDonationModal" class="modal-overlay">
+                <div class="donation-modal">
+                    <div class="modal-header">
+                        <h2><i class="fa-solid fa-heart" style="color: #ef4444;"></i> Support <span id="selected-cause"></span></h2>
+                        <button id="close-donation-modal" class="close-btn" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="event-donation-form">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name</label>
+                                <input type="text" placeholder="Enter your name" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Amount (Rs)</label>
+                                <input type="number" placeholder="Enter amount" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Payment Method</label>
+                                <select required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                                    <option value="easypaisa">EasyPaisa</option>
+                                    <option value="jazzcash">JazzCash</option>
+                                    <option value="bank">Bank Transfer</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; border-radius: 8px; font-weight: 700;">Confirm Donation</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        \`;
+
+        eventWidgetContainer.innerHTML = html;
+        setupWidgetInteractions();
+    }
+
+    function setupWidgetInteractions() {
+        const widget = document.getElementById('event-widget');
+        const donationModal = document.getElementById('eventDonationModal');
+        const closeDonationModal = document.getElementById('close-donation-modal');
+        const mainDonateBtn = document.getElementById('main-donate-btn');
+
+        if (mainDonateBtn) {
+            mainDonateBtn.onclick = () => openDonationForm('General Donation');
+        }
+
+        closeDonationModal.onclick = () => donationModal.style.display = 'none';
+
+        document.addEventListener('click', (event) => {
+            if (event.target == donationModal) {
+                donationModal.style.display = 'none';
+            }
+        });
+
+        const form = document.getElementById('event-donation-form');
+        if (form) {
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                alert('JazakAllah! Your donation request has been received. Our team will contact you soon.');
+                donationModal.style.display = 'none';
+                form.reset();
+            };
+        }
+
+        // Image slider auto-advance with Ken Burns effect simulation
+        const images = widget.querySelectorAll('.event-image-slider img');
+        if (images.length > 0) {
+            images[0].classList.add('active'); // Ensure at least one is active on load
+        }
+        if (images.length > 1) {
+            let currentImg = 0;
+            setInterval(() => {
+                images.forEach(img => img.classList.remove('active'));
+                currentImg = (currentImg + 1) % images.length;
+                images[currentImg].classList.add('active');
+            }, 5000); // 5 seconds interval
+        }
+    }
+
+    window.openDonationForm = function (cause) {
+        const modal = document.getElementById('eventDonationModal');
+        const causeSpan = document.getElementById('selected-cause');
+        if (modal && causeSpan) {
+            causeSpan.textContent = cause;
+            modal.style.display = 'flex';
+        }
+    };
+});`;
+
+            const dataStr = "data:text/javascript;charset=utf-8," + encodeURIComponent(fullJSFile);
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", "events.js");
+            document.body.appendChild(dlAnchorElem);
+            dlAnchorElem.click();
+            document.body.removeChild(dlAnchorElem);
+        }
+    </script>
+</body>
+
+</html>

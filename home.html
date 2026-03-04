@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | WorkBridge Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="./js/auth-guard.js"></script>
+    <style>
+        .floating-support {
+            position: fixed;
+            bottom: 6rem;
+            left: 2rem;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .support-btn {
+            width: 60px;
+            height: 60px;
+            background: #25d366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            position: relative;
+        }
+
+        .support-btn::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #25d366;
+            animation: pulse-green 2s infinite;
+        }
+
+        .support-label {
+            background: var(--surface-color);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            transform: translateX(-10px);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .floating-support:hover .support-label {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @keyframes pulse-green {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="home.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span>
+            </a>
+            <div class="nav-links">
+                <a href="home.html" class="active">Home</a>
+                <a href="services.html">Services</a>
+                <a href="profiles.html">Freelancers</a>
+                <a href="news.html">News</a>
+                <a href="#home-donations">Donation</a>
+                <a href="#earning-plans">Earning</a>
+                <a href="javascript:void(0)" onclick="openLoginModal()">Login</a>
+                <button class="theme-toggle" id="themeToggleBtn" title="Change Theme">
+                    <i class="fa-solid fa-palette"></i>
+                </button>
+            </div>
+            <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- Donation Ticker (Top) -->
+    <div class="donation-ticker">
+        <div class="ticker-label">
+            <a href="donations.html?cause=General%20Donation"
+                style="text-decoration: none; color: inherit; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-heart heart-pulse"></i> SUPPORT
+            </a>
+            <div class="ai-badge-ticker" id="ai-donation-status" title="Content managed by AI">
+                <i class="fa-solid fa-robot"></i> AI
+            </div>
+        </div>
+        <div class="ticker-wrapper" id="donation-ticker-wrapper" style="animation-duration: 80s;">
+            <a href="donations.html?cause=General%20Donation" class="ticker-item">
+                <i class="fa-solid fa-mosque"></i> Jannat mein apna ghar banayein - Aaj hi kisi mustahiq mazdoor ki
+                madad karein.
+            </a>
+            <a href="donations.html?cause=General%20Donation" class="ticker-item">
+                <i class="fa-solid fa-hand-holding-dollar"></i> Your $1 donation can solve someone's major life
+                struggle. Give Sadaqah today!
+            </a>
+            <a href="donations.html?cause=General%20Donation" class="ticker-item">
+                <i class="fa-solid fa-children"></i> Apne pyaaro ke naam ka sadaqa dein aur kisi bache ki taleem ka
+                zariya banain.
+            </a>
+            <a href="donations.html?cause=General%20Donation" class="ticker-item">
+                <i class="fa-solid fa-circle-check"></i> 100% Transparent - Har rupaiya zaroorat-mand tak pahuchega.
+                Click to help!
+            </a>
+            <a href="donations.html?cause=General%20Donation" class="ticker-item">
+                <i class="fa-solid fa-moon"></i> Help a worker's family today and earn rewards for Hereafter.
+            </a>
+        </div>
+    </div>
+
+    <!-- News Ticker (Below) -->
+    <div class="news-ticker" style="border-top: 1px solid var(--border-color);">
+        <div class="ticker-label">
+            <span>LATEST</span>
+            <div class="ai-badge-ticker" id="ai-news-status" title="Content managed by AI">
+                <i class="fa-solid fa-robot"></i> AI
+            </div>
+        </div>
+        <div class="ticker-wrapper" id="news-ticker-wrapper" style="animation-duration: 70s;">
+            <a href="news-detail.html" class="ticker-item"><i class="fa-solid fa-briefcase"></i> 5 New Job Openings in
+                Lahore for Data Entry Operators</a>
+            <a href="news-detail.html" class="ticker-item"><i class="fa-solid fa-star"></i> Pro Tip: Complete your
+                profile to get 2x more visibility!</a>
+            <a href="news-detail.html" class="ticker-item"><i class="fa-solid fa-hand-holding-hand"></i> New Service
+                Category: Home Maintenance now available in Islamabad</a>
+            <a href="news-detail.html" class="ticker-item"><i class="fa-solid fa-bell"></i> Join our WorkBridge
+                Community for daily updates and tips</a>
+            <a href="news-detail.html" class="ticker-item"><i class="fa-solid fa-bolt"></i> Fast Hire: Urgent Plumber
+                needed in Karachi - Check Jobs Page</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <!-- Background Slider for Watermark -->
+        <div class="hero-bg-slider" id="bgSlider">
+            <img src="./images/hero-1.png" class="bg-slide active" alt="Office Background">
+            <img src="./images/hero-2.png" class="bg-slide" alt="Tech Work Background">
+            <img src="./images/hero-3.png" class="bg-slide" alt="Coworking Space">
+        </div>
+
+        <div class="container" style="position: relative; z-index: 5;">
+            <!-- Advertisement Box (Moved to Top) -->
+            <div class="hero-ad-box" id="hero-ad-link" onclick="window.open('#', '_blank')"
+                style="margin-left: 0; margin-right: auto;">
+                <span class="ad-badge">Free Promotion</span>
+                <div class="ad-icon-wrapper">
+                    <i class="fa-solid fa-bullhorn" id="hero-ad-icon"></i>
+                </div>
+                <div class="ad-content">
+                    <h4 id="hero-ad-title">Promote Your Business Here</h4>
+                    <p id="hero-ad-text">Reach thousands of daily visitors with a premium sponsored placement. Click to
+                        learn
+                        more!</p>
+                </div>
+            </div>
+
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <h1 class="hero-title-compact">Find Global Talent & Jobs</h1>
+                    <p class="hero-subtitle-compact">Connect with exceptional professionals or discover your next career
+                        move instantly.</p>
+
+                    <div class="search-container compact-search-wizard" id="search-wizard">
+                        <div class="wizard-tabs">
+                            <button class="tab-btn active" onclick="switchWizardTab('jobs')">Jobs</button>
+                            <button class="tab-btn" onclick="switchWizardTab('services')">Services</button>
+                        </div>
+
+                        <!-- Step 1: Category -->
+                        <div class="wizard-step active" id="wizard-step-1">
+                            <label><i class="fa-solid fa-briefcase"></i> Select Category</label>
+                            <div class="wizard-input-group">
+                                <select id="home-search-category" class="search-input">
+                                    <option value="">All Categories</option>
+                                    <!-- Options populated by app.js -->
+                                </select>
+                                <button class="btn btn-primary" type="button" onclick="nextWizardStep(2)">Next <i
+                                        class="fa-solid fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Location -->
+                        <div class="wizard-step" id="wizard-step-2" style="display: none;">
+                            <label><i class="fa-solid fa-location-dot"></i> Choose Location</label>
+                            <div class="wizard-input-group">
+                                <select id="home-search-country" class="search-input" onchange="updateCities()">
+                                    <option value="pakistan">Pakistan</option>
+                                    <option value="india">India</option>
+                                    <option value="uae">UAE</option>
+                                    <option value="saudi">Saudi Arabia</option>
+                                    <option value="uk">United Kingdom</option>
+                                    <option value="usa">USA</option>
+                                </select>
+                                <select id="home-search-location" class="search-input">
+                                    <option value="">All Cities</option>
+                                </select>
+                            </div>
+                            <div class="wizard-actions">
+                                <button class="btn btn-secondary" type="button" onclick="nextWizardStep(1)"><i
+                                        class="fa-solid fa-arrow-left"></i></button>
+                                <button class="btn btn-primary" type="button" onclick="nextWizardStep(3)"
+                                    style="flex: 1;">Next <i class="fa-solid fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Keywords & Submit -->
+                        <div class="wizard-step" id="wizard-step-3" style="display: none;">
+                            <label><i class="fa-solid fa-magnifying-glass"></i> Keywords (Optional)</label>
+                            <div class="wizard-input-group">
+                                <input type="text" id="home-search-input" class="search-input"
+                                    placeholder="e.g. Electrician, Data Entry...">
+                            </div>
+                            <div class="wizard-actions">
+                                <button class="btn btn-secondary" type="button" onclick="nextWizardStep(2)"><i
+                                        class="fa-solid fa-arrow-left"></i></button>
+                                <button class="btn btn-primary" type="button" onclick="submitWizardSearch()"
+                                    style="flex: 1;"><i class="fa-solid fa-search"></i> Search Now</button>
+                            </div>
+                        </div>
+
+                        <div class="wizard-progress">
+                            <span class="progress-dot active" id="dot-1"></span>
+                            <span class="progress-dot" id="dot-2"></span>
+                            <span class="progress-dot" id="dot-3"></span>
+                        </div>
+                    </div>
+
+                    <!-- Video Advertisement Box (Always Visible) -->
+                    <div class="home-video-ad-section" id="home-video-ad-section">
+                        <div class="video-ad-header">
+                            <h3 id="video-ad-title"><i class="fa-solid fa-star"></i> Featured Promotion</h3>
+                        </div>
+                        <p class="video-ad-description" id="video-ad-desc">
+                            Promote your business here to reach thousands of daily visitors. Contact us for paid
+                            sponsorship!
+                        </p>
+                        <div id="video-ad-container">
+                            <!-- Video/Iframe or Placeholder injected by settings-sync.js -->
+                            <div class="video-placeholder-content">
+                                <i class="fa-solid fa-bullhorn"></i>
+                                <p>Your Ad Video Here</p>
+                                <small>Click below to learn more</small>
+                            </div>
+                        </div>
+                        <div class="video-ad-footer">
+                            <a href="https://wa.me/923012233445?text=I%20want%20to%20buy%20a%20video%20ad%20on%20WorkBridge"
+                                target="_blank" class="btn-ad-click" id="video-ad-promo-btn">
+                                Promote Here <i class="fa-solid fa-external-link"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-right-column">
+                    <!-- The Event Notice Section will load exactly here now -->
+                    <div id="event-notice-hero"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Jobs & Sidebar Event Layout -->
+    <section class="section reveal">
+        <div class="container">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Latest Job Listings</h2>
+                    <p class="section-subtitle">Find daily work and remote jobs</p>
+                </div>
+                <a href="jobs.html" class="btn-view-all">View All <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <div class="home-main-layout">
+                <!-- Left Content: Latest Jobs -->
+                <div class="main-column">
+
+                    <div id="home-latest-jobs" class="cards-grid grid-4">
+                        <p style="text-align:center; grid-column: 1/-1; padding: 3rem; color: var(--text-secondary);">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Loading latest jobs...
+                        </p>
+                    </div>
+
+                    <!-- Job Card 5 -->
+                    <div class="card">
+                        <div class="card-body" style="padding: 1.25rem;">
+                            <div class="job-card-header">
+                                <div class="job-icon"><i class="fa-solid fa-people-carry-box"></i></div>
+                                <div>
+                                    <h3 class="card-title">Office Boy / Helper</h3>
+                                    <div class="card-subtitle"><i class="fa-solid fa-location-dot"></i> Islamabad
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="badge badge-full"><i class="fa-solid fa-briefcase"></i> Full Time</span>
+                            <div class="card-meta">
+                                <div class="price">Rs 25k <span>/ mo</span></div>
+                                <div class="time-ago"><i class="fa-regular fa-clock"></i> 2d ago</div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-whatsapp" style="width: 100%;"><i class="fa-brands fa-whatsapp"></i>
+                                Contact</button>
+                        </div>
+                    </div>
+
+                    <!-- Job Card 6 -->
+                    <div class="card">
+                        <div class="card-body" style="padding: 1.25rem;">
+                            <div class="job-card-header">
+                                <div class="job-icon"><i class="fa-solid fa-palette"></i></div>
+                                <div>
+                                    <h3 class="card-title">Graphic Designer</h3>
+                                    <div class="card-subtitle"><i class="fa-solid fa-location-dot"></i> Online</div>
+                                </div>
+                            </div>
+                            <span class="badge badge-part"><i class="fa-solid fa-clock-rotate-left"></i> Part
+                                Time</span>
+                            <div class="card-meta">
+                                <div class="price">Rs 20k <span>/ mo</span></div>
+                                <div class="time-ago"><i class="fa-regular fa-clock"></i> 3d ago</div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" style="width: 100%;"
+                                onclick="applyToPost('job_graphic_designer', this)">Apply Now</button>
+                        </div>
+                    </div>
+
+                    <!-- Job Card 7 -->
+                    <div class="card">
+                        <div class="card-body" style="padding: 1.25rem;">
+                            <div class="job-card-header">
+                                <div class="job-icon"><i class="fa-solid fa-bolt"></i></div>
+                                <div>
+                                    <h3 class="card-title">Expert Electrician</h3>
+                                    <div class="card-subtitle"><i class="fa-solid fa-location-dot"></i> Rawalpindi
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="badge badge-wage"><i class="fa-solid fa-coins"></i> Daily Wage</span>
+                            <div class="card-meta">
+                                <div class="price">Rs 1800 <span>/ visit</span></div>
+                                <div class="time-ago"><i class="fa-regular fa-clock"></i> 4d ago</div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-whatsapp" style="width: 100%;"><i class="fa-brands fa-whatsapp"></i>
+                                Contact</button>
+                        </div>
+                    </div>
+
+                    <!-- Job Card 8 -->
+                    <div class="card">
+                        <div class="card-body" style="padding: 1.25rem;">
+                            <div class="job-card-header">
+                                <div class="job-icon"><i class="fa-solid fa-utensils"></i></div>
+                                <div>
+                                    <h3 class="card-title">House Cook / Chef</h3>
+                                    <div class="card-subtitle"><i class="fa-solid fa-location-dot"></i> Faisalabad
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="badge badge-full"><i class="fa-solid fa-briefcase"></i> Full Time</span>
+                            <div class="card-meta">
+                                <div class="price">Rs 40k <span>/ mo</span></div>
+                                <div class="time-ago"><i class="fa-regular fa-clock"></i> 5d ago</div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-whatsapp" style="width: 100%;"><i class="fa-brands fa-whatsapp"></i>
+                                Contact</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar: Event Widget -->
+            <div class="sidebar-column">
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Featured Freelancers -->
+    <section class="section reveal" style="background-color: var(--bg-color);">
+        <div class="container">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Featured Freelancers</h2>
+                    <p class="section-subtitle">Hire top-rated professionals for your tasks</p>
+                </div>
+                <a href="profiles.html" class="btn-view-all">View All <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <div class="cards-grid grid-4">
+                <!-- Freelancer 1 -->
+                <div class="card">
+                    <div class="card-header-flex">
+                        <img src="https://ui-avatars.com/api/?name=Ali+Khan&background=random" alt="Ali Khan"
+                            class="avatar">
+                        <div>
+                            <h3 class="card-title">Ali Khan</h3>
+                            <div class="card-subtitle">Expert Electrician</div>
+                            <div class="rating">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star-half-stroke"></i>
+                                <span>(4.8 • 120 reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">10+ years
+                            experience in domestic and commercial electrical repairs, wiring, and maintenance.</p>
+                        <div class="card-subtitle"><i class="fa-solid fa-location-dot"></i> Islamabad, PK</div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="profile-ali.html" class="btn" style="border: 1px solid var(--border-color);">View
+                            Profile</a>
+                        <button class="btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Chat</button>
+                    </div>
+                </div>
+
+                <!-- Freelancer 2 -->
+                <div class="card">
+                    <div class="card-header-flex">
+                        <img src="https://ui-avatars.com/api/?name=Sara+Ahmed&background=random" alt="Sara Ahmed"
+                            class="avatar">
+                        <div>
+                            <h3 class="card-title">Sara Ahmed</h3>
+                            <div class="card-subtitle">Graphic Designer</div>
+                            <div class="rating">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i>
+                                <span>(5.0 • 85 reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">I create
+                            stunning logos, social media posts, and banners. Fast delivery guaranteed.</p>
+                        <div class="card-subtitle"><i class="fa-solid fa-location-dot"></i> Remote</div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="profile-sara.html" class="btn" style="border: 1px solid var(--border-color);">View
+                            Profile</a>
+                        <div style="display: flex; gap: 0.5rem; flex: 1; justify-content: flex-end;">
+                            <button class="btn btn-whatsapp" style="flex: 1;"><i class="fa-brands fa-whatsapp"></i>
+                                Chat</button>
+                            <button class="btn-share"
+                                onclick="shareContent('Sara Ahmed - Graphic Designer', 'Check out this expert freelancer on WorkBridge!', window.location.href)"
+                                title="Share Profile">
+                                <i class="fa-solid fa-share-nodes"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Freelancer 3 -->
+                <div class="card">
+                    <div class="card-header-flex">
+                        <img src="https://ui-avatars.com/api/?name=Usman+Tariq&background=random" alt="Usman Tariq"
+                            class="avatar">
+                        <div>
+                            <h3 class="card-title">Usman Tariq</h3>
+                            <div class="card-subtitle">Video Editor</div>
+                            <div class="rating">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-regular fa-star"></i>
+                                <span>(4.2 • 42 reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">YouTube
+                            video
+                            editing, reels, and short form content creator relying on Premiere Pro.</p>
+                        <div class="card-subtitle"><i class="fa-solid fa-location-dot"></i> Lahore, PK</div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="profiles.html" class="btn" style="border: 1px solid var(--border-color);">View
+                            Profile</a>
+                        <button class="btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Chat</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Earning & Promotion Plans Section -->
+    <section id="earning-plans" class="section bg-light reveal">
+        <div class="container">
+            <div class="section-header" style="text-align: center; display: block; margin-bottom: 4rem;">
+                <h2 class="section-title">Earning & Promotion Plans</h2>
+                <p class="section-subtitle">Earn money daily with our flexible task-based plans.</p>
+            </div>
+
+            <div class="investment-grid">
+                <!-- Plan 1: Free Visitor -->
+                <div class="invest-card">
+                    <div class="invest-icon">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Free Visitor Plan</h3>
+                    <div class="invest-price">Free <span>/ Lifetime</span></div>
+                    <div class="invest-return">Up to 20 pts / day</div>
+                    <ul class="invest-features">
+                        <li><i class="fa-solid fa-check"></i> Stay active for 10 mins</li>
+                        <li><i class="fa-solid fa-check"></i> Share website (Screenshot)</li>
+                        <li><i class="fa-solid fa-check"></i> Converts: 100 pts = $1</li>
+                        <li><i class="fa-solid fa-check"></i> Min. Withdrawal: $5</li>
+                    </ul>
+                    <div style="display: flex; gap: 0.5rem; margin-top: auto;">
+                        <button class="btn btn-primary btn-invest" style="flex: 1;"
+                            onclick="activateFreeVisitor(this)">Activate Plan Now</button>
+                    </div>
+                </div>
+
+                <!-- Plan 2: Task Promoter -->
+                <div class="invest-card"
+                    style="border-color: var(--primary-color); transform: scale(1.05); box-shadow: var(--shadow-lg);">
+                    <div
+                        style="position: absolute; top: 20px; left: -30px; background: var(--primary-color); color: white; padding: 5px 40px; transform: rotate(-45deg); font-size: 0.75rem; font-weight: 700; z-index: 3;">
+                        POPULAR</div>
+                    <div class="invest-icon" style="background: var(--primary-color); color: white;">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Task Promoter Plan</h3>
+                    <div class="invest-price">$5 - $10 <span>/ Registration</span></div>
+                    <div class="invest-return">25-30 pts / task</div>
+                    <ul class="invest-features">
+                        <li><i class="fa-solid fa-check"></i> 1 Daily Admin Task</li>
+                        <li><i class="fa-solid fa-check"></i> Require Screenshot Proof</li>
+                        <li><i class="fa-solid fa-check"></i> Converts: 100 pts = $1</li>
+                        <li><i class="fa-solid fa-check"></i> Min. Withdrawal: $5</li>
+                    </ul>
+                    <div style="display: flex; gap: 0.5rem; margin-top: auto;">
+                        <button class="btn btn-primary btn-invest" style="flex: 1;"
+                            onclick="openPremiumModal('Task Promoter', '10')">Join Plan Now</button>
+                    </div>
+                </div>
+
+                <!-- Plan 3: Business Promotion -->
+                <div class="invest-card">
+                    <div class="invest-icon">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Business Promotion</h3>
+                    <div class="invest-price">$30 - $50 <span>/ Plan</span></div>
+                    <div class="invest-return">50 pts / day</div>
+                    <ul class="invest-features">
+                        <li><i class="fa-solid fa-check"></i> 5 Daily Tasks</li>
+                        <li><i class="fa-solid fa-check"></i> Like, Share, Visit & Proof</li>
+                        <li><i class="fa-solid fa-check"></i> Converts: 200 pts = $1</li>
+                        <li><i class="fa-solid fa-check"></i> Premium Support</li>
+                    </ul>
+                    <div style="display: flex; gap: 0.5rem; margin-top: auto;">
+                        <button class="btn btn-primary btn-invest" style="flex: 1;"
+                            onclick="openPremiumModal('Business Promotion', '50')">Join Plan Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Latest News Section -->
+        <section class="section reveal" style="background-color: #f8fafc;">
+            <div class="container">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Latest Platform News</h2>
+                        <p class="section-subtitle">Stay updated with WorkBridge announcements and career tips</p>
+                    </div>
+                    <a href="news.html" class="btn-view-all">View All News <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div class="news-grid" id="news-home-grid">
+                    <!-- News items loaded dynamically via js/news-system.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- WorkBridge Foundation (Donation Section) -->
+        <section id="home-donations" class="donation-section reveal">
+            <div class="container">
+                <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+                    <h2 class="section-title" style="color: #991b1b;"><i class="fa-solid fa-heart heart-pulse"></i>
+                        WorkBridge Foundation</h2>
+                    <p class="section-subtitle">Aapki thori si madad, kisi ki zindagi badal sakti hai. (Your small
+                        support
+                        can change a life.)</p>
+                </div>
+
+                <div class="charity-grid" id="home-donation-grid">
+                    <!-- Loaded dynamically via js/donations-system.js -->
+                    <div style="text-align: center; grid-column: 1/-1; padding: 3rem;">
+                        <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #ef4444;"></i>
+                        <p style="margin-top: 1rem; color: var(--text-secondary);">Loading causes...</p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 3rem;">
+                    <a href="donations.html"
+                        style="color: #ef4444; font-weight: 700; text-decoration: none; border-bottom: 2px solid #ef4444; padding-bottom: 5px;">View
+                        All Charity Cases <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <h4 class="logo" style="color: white; margin-bottom: 1rem;">
+                            <i class="fa-solid fa-bridge-water"></i> Work<span>Bridge</span>
+                        </h4>
+                        <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.6;">Connecting talent with
+                            opportunity on a global scale. Discover reliable jobs and world-class services at your
+                            fingertips.</p>
+
+                        <div class="footer-social"
+                            style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <a href="javascript:void(0)" class="social-fb" id="social-fb" target="_blank"
+                                title="Facebook"
+                                style="display: none; width: 32px; height: 32px; border-radius: 50%; background: #1e293b; color: white; align-items: center; justify-content: center; text-decoration: none; font-size: 0.9rem;">
+                                <i class="fa-brands fa-facebook-f"></i>
+                            </a>
+                            <a href="javascript:void(0)" class="social-ig" id="social-ig" target="_blank"
+                                title="Instagram"
+                                style="display: none; width: 32px; height: 32px; border-radius: 50%; background: #1e293b; color: white; align-items: center; justify-content: center; text-decoration: none; font-size: 0.9rem;">
+                                <i class="fa-brands fa-instagram"></i>
+                            </a>
+                            <a href="javascript:void(0)" class="social-tw" id="social-tw" target="_blank"
+                                title="Twitter (X)"
+                                style="display: none; width: 32px; height: 32px; border-radius: 50%; background: #1e293b; color: white; align-items: center; justify-content: center; text-decoration: none; font-size: 0.9rem;">
+                                <i class="fa-brands fa-x-twitter"></i>
+                            </a>
+                            <a href="javascript:void(0)" class="social-li" id="social-li" target="_blank"
+                                title="LinkedIn"
+                                style="display: none; width: 32px; height: 32px; border-radius: 50%; background: #1e293b; color: white; align-items: center; justify-content: center; text-decoration: none; font-size: 0.9rem;">
+                                <i class="fa-brands fa-linkedin-in"></i>
+                            </a>
+                            <a href="javascript:void(0)" class="social-tk" id="social-tk" target="_blank" title="TikTok"
+                                style="display: none; width: 32px; height: 32px; border-radius: 50%; background: #1e293b; color: white; align-items: center; justify-content: center; text-decoration: none; font-size: 0.9rem;">
+                                <i class="fa-brands fa-tiktok"></i>
+                            </a>
+                            <a href="javascript:void(0)" class="social-yt" id="social-yt" target="_blank"
+                                title="YouTube"
+                                style="display: none; width: 32px; height: 32px; border-radius: 50%; background: #1e293b; color: white; align-items: center; justify-content: center; text-decoration: none; font-size: 0.9rem;">
+                                <i class="fa-brands fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="footer-col">
+                        <h4>For Workers</h4>
+                        <ul>
+                            <li><a href="jobs.html">Find Jobs</a></li>
+                            <li><a href="profiles.html">Freelancers</a></li>
+                            <li><a href="news.html">Success Stories</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>For Employers</h4>
+                        <ul>
+                            <li><a href="post-job.html">Post a Job</a></li>
+                            <li><a href="profiles.html">Browse Freelancers</a></li>
+                            <li><a href="#earning-plans">Earning Plans</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="donations.html">Donations / Charity</a></li>
+                            <li><a href="https://wa.me/923012233445" target="_blank">Help Center / Chat</a></li>
+                            <li><a href="terms.html">Terms of Service</a></li>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    &copy; 2026 WorkBridge. All rights reserved.
+                </div>
+            </div>
+        </footer>
+
+
+        <!-- Auth Modal (Login/Signup) -->
+        <div id="login-modal" class="modal-overlay">
+            <div class="modal-content">
+                <button onclick="closeLoginModal()"
+                    style="position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: color 0.3s;"
+                    onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='#94a3b8'">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <div
+                        style="width: 65px; height: 65px; background: rgba(37, 99, 235, 0.1); color: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.8rem;">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h2 id="auth-modal-title"
+                        style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-primary);">
+                        Join WorkBridge</h2>
+                    <p id="auth-modal-subtitle" style="color: var(--text-secondary);">Sign in to your account or create
+                        a new one.</p>
+                </div>
+
+                <!-- Google Social Login -->
+                <div id="google-auth-container" style="margin-bottom: 1.5rem;">
+                    <div id="g_id_onload"
+                        data-client_id="308431344271-bersc4ijmq99glsi9530apft4ci8ji60.apps.googleusercontent.com"
+                        data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
+                        data-auto_prompt="true">
+                    </div>
+                    <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
+                        data-text="continue_with" data-size="large" data-logo_alignment="left" data-width="400">
+                    </div>
+                </div>
+
+                <div
+                    style="display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.85rem;">
+                    <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+                    <span>OR</span>
+                    <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+                </div>
+
+                <!-- Tabs -->
+                <div style="display: flex; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                    <button id="tab-login-btn" onclick="switchAuthTab('login')"
+                        style="flex: 1; padding: 0.75rem; background: none; border: none; border-bottom: 2px solid transparent; font-weight: 600; font-size: 1rem; cursor: pointer; color: var(--text-secondary);">Sign
+                        In</button>
+                    <button id="tab-signup-btn" onclick="switchAuthTab('signup')"
+                        style="flex: 1; padding: 0.75rem; background: none; border: none; border-bottom: 2px solid var(--primary-color); font-weight: 700; font-size: 1rem; cursor: pointer; color: var(--primary-color);">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form-element" style="display: none;">
+                    <div class="form-group" style="margin-bottom: 1.25rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">Email
+                            Address</label>
+                        <div style="position: relative;">
+                            <i class="fa-solid fa-envelope"
+                                style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                            <input type="email" id="login-email" required placeholder="user@workbridge.com"
+                                style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label style="font-weight: 600; color: var(--text-primary);">Password</label>
+                            <a href="javascript:void(0)"
+                                style="font-size: 0.85rem; color: var(--primary-color); text-decoration: none;">Forgot?</a>
+                        </div>
+                        <div style="position: relative;">
+                            <i class="fa-solid fa-key"
+                                style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                            <input type="password" id="login-password" required placeholder="••••••••"
+                                style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; padding: 1rem; border-radius: 12px; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 1rem; cursor: pointer;">
+                        Sign In Now <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    </button>
+                    <div style="text-align: center; font-size: 0.9rem; color: var(--text-secondary);">
+                        Don't have an account? <a href="javascript:void(0)" onclick="switchAuthTab('signup')"
+                            style="color: var(--primary-color); font-weight: 700; text-decoration: none;">Register
+                            Here</a>
+                    </div>
+                </form>
+
+                <!-- Signup Form -->
+                <form id="signup-form-element" style="display: block;">
+                    <div class="form-group" style="margin-bottom: 1.25rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">Full
+                            Name</label>
+                        <div style="position: relative;">
+                            <i class="fa-solid fa-user"
+                                style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                            <input type="text" id="signup-name" required placeholder="John Doe"
+                                style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.25rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">Email
+                            Address</label>
+                        <div style="position: relative;">
+                            <i class="fa-solid fa-envelope"
+                                style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                            <input type="email" id="signup-email" required placeholder="user@example.com"
+                                style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.25rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">Contact
+                            Number</label>
+                        <div style="position: relative;">
+                            <i class="fa-solid fa-phone"
+                                style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; z-index: 10;"></i>
+                            <div class="phone-input-group">
+                                <select id="signup-country-code" class="form-control country-code-select"
+                                    style="padding-left: 2.5rem; width: 110px;">
+                                    <option value="+92">+92 (PK)</option>
+                                    <option value="+91">+91 (IN)</option>
+                                    <option value="+971">+971 (AE)</option>
+                                    <option value="+966">+966 (SA)</option>
+                                    <option value="+44">+44 (UK)</option>
+                                    <option value="+1">+1 (US)</option>
+                                </select>
+                                <input type="tel" id="signup-phone" required placeholder="3XXXXXXXXX"
+                                    style="width: 100%; padding: 0.8rem 1rem 0.8rem 1rem; border: 1px solid var(--border-color); border-left: none; border-radius: 0 12px 12px 0; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label
+                            style="font-weight: 600; color: var(--text-primary); display:block; margin-bottom:0.5rem;">Password</label>
+                        <div style="position: relative;">
+                            <i class="fa-solid fa-key"
+                                style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                            <input type="password" id="signup-password" required placeholder="••••••••"
+                                style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; padding: 1rem; border-radius: 12px; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 1rem; cursor: pointer;">
+                        Create Account <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                    <div style="text-align: center; font-size: 0.9rem; color: var(--text-secondary);">
+                        Already have an account? <a href="javascript:void(0)" onclick="switchAuthTab('login')"
+                            style="color: var(--primary-color); font-weight: 700; text-decoration: none;">Sign In</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Premium / Investment Modal -->
+        <div id="premiumModal" class="modal-overlay">
+            <div class="modal-content">
+                <button onclick="closePremiumModal()"
+                    style="position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: color 0.3s;"
+                    onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='#94a3b8'">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div
+                        style="width: 65px; height: 65px; background: rgba(37, 99, 235, 0.1); color: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.8rem;">
+                        <i class="fa-solid fa-gem"></i>
+                    </div>
+                    <h2
+                        style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-primary);">
+                        Join <span id="premium-plan-name">Premium</span></h2>
+                    <p style="color: var(--text-secondary);">Complete your registration to start earning.</p>
+                </div>
+
+                <form id="premiumForm">
+                    <input type="hidden" id="premium-plan-price">
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">Your
+                            Full Name / User ID</label>
+                        <div style="position: relative;">
+                            <i class="fa-solid fa-user"
+                                style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                            <input type="text" id="premium-user-name" required placeholder="Enter your identify name"
+                                style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border: 1px solid var(--border-color); border-radius: 12px; font-family: inherit; font-size: 1rem; background: var(--bg-color); color: var(--text-primary);">
+                        </div>
+                    </div>
+
+                    <label
+                        style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; display: block;">Select
+                        Payment Method</label>
+                    <div class="payment-grid">
+                        <div class="payment-option active" onclick="switchInvPayment('easypaisa', event)">
+                            <i class="fa-solid fa-mobile-screen"></i>
+                            <div style="font-size: 0.85rem; font-weight: 600;">EasyPaisa</div>
+                        </div>
+                        <div class="payment-option" onclick="switchInvPayment('bank', event)">
+                            <i class="fa-solid fa-building-columns"></i>
+                            <div style="font-size: 0.85rem; font-weight: 600;">Bank Transfer</div>
+                        </div>
+                        <div class="payment-option" onclick="switchInvPayment('paypal', event)">
+                            <i class="fa-brands fa-paypal"></i>
+                            <div style="font-size: 0.85rem; font-weight: 600;">PayPal</div>
+                        </div>
+                        <div class="payment-option" onclick="switchInvPayment('crypto', event)">
+                            <i class="fa-brands fa-bitcoin"></i>
+                            <div style="font-size: 0.85rem; font-weight: 600;">USDT / Crypto</div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Details Boxes -->
+                    <div id="inv-easypaisa-details" class="payment-details-box" style="display: block;">
+                        <p style="font-weight: 700; color: #1e293b;"><span class="dynamic-don-bankname">EasyPaisa</span>
+                            Dashboard</p>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Title: <strong
+                                class="dynamic-don-acctitle">Muhammad Bilal</strong></p>
+                        <p style="font-size: 0.95rem;">Number: <strong class="dynamic-don-easypaisa">0301
+                                2233445</strong>
+                            <button type="button" class="copy-btn" onclick="copyText('0301 2233445')">Copy</button>
+                        </p>
+                    </div>
+
+                    <div id="inv-bank-details" class="payment-details-box">
+                        <p style="font-weight: 700; color: #1e293b;"><span class="dynamic-don-bankname">HBL Bank</span>
+                            Account</p>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">IBAN: <strong class="dynamic-don-accnum">PK00
+                                HBL 1234 5678 9012</strong>
+                            <button type="button" class="copy-btn"
+                                onclick="copyText('PK00 HBL 1234 5678 9012')">Copy</button>
+                        </p>
+                        <p style="font-size: 0.95rem;">Title: <strong class="dynamic-don-acctitle">Muhammad
+                                Bilal</strong></p>
+                    </div>
+
+                    <div id="inv-paypal-details" class="payment-details-box">
+                        <p style="font-weight: 700; color: #1e293b;">PayPal Global</p>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Email: <strong
+                                class="dynamic-don-paypal">payments@workbridge.com</strong>
+                            <button type="button" class="copy-btn"
+                                onclick="copyText('payments@workbridge.com')">Copy</button>
+                        </p>
+                    </div>
+
+                    <div id="inv-crypto-details" class="payment-details-box">
+                        <p style="font-weight: 700; color: #1e293b;">Crypto Wallet (USDT-TRC20)</p>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Address: <strong
+                                class="dynamic-don-binance">TXXXXX....XXXXX</strong>
+                            <button type="button" class="copy-btn" onclick="copyText('TXXXXX....XXXXX')">Copy</button>
+                        </p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; margin-top: 2rem; padding: 1rem; border-radius: 12px; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;">
+                        Proceed to WhatsApp <i class="fa-brands fa-whatsapp"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Floating WhatsApp Support Button -->
+        <a href="javascript:void(0)" onclick="window.open(getWhatsAppLink(), '_blank')"
+            class="floating-support btn-whatsapp" id="floating-support-btn">
+            <div class="support-label">Need Help? Chat with Us</div>
+            <div class="support-btn">
+                <i class="fa-brands fa-whatsapp"></i>
+            </div>
+        </a>
+
+        <script src="./js/news-data.js"></script>
+        <script src="./js/news-system.js"></script>
+        <script src="./js/settings-sync.js"></script>
+        <script src="./js/theme.js"></script>
+        <script src="./js/donations-data.js"></script>
+        <script src="./js/donations-system.js"></script>
+        <script src="./js/app.js"></script>
+        <script src="./js/auth.js"></script>
+        <script src="./js/events.js"></script>
+        <script>
+            function openPremiumModal(plan, price) {
+                const modal = document.getElementById('premiumModal');
+                const planSpan = document.getElementById('premium-plan-name');
+                const priceInput = document.getElementById('premium-plan-price');
+
+                if (planSpan) planSpan.textContent = plan;
+                if (priceInput) priceInput.value = price;
+                if (modal) {
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closePremiumModal() {
+                document.getElementById('premiumModal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+
+            document.getElementById('premiumForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const plan = document.getElementById('premium-plan-name').textContent;
+                const price = document.getElementById('premium-plan-price').value;
+                const userName = document.getElementById('premium-user-name').value;
+                const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                // Save to pending investments
+                const pendingInvestments = JSON.parse(localStorage.getItem('workbridge_pending_investments') || '[]');
+                pendingInvestments.push({
+                    date: date,
+                    userName: userName,
+                    plan: plan,
+                    amount: price,
+                    cycle: '6 Months',
+                    status: 'Pending Proof'
+                });
+                localStorage.setItem('workbridge_pending_investments', JSON.stringify(pendingInvestments));
+
+                // Get WhatsApp number from settings
+                const settings = JSON.parse(localStorage.getItem('workbridge_settings') || '{}');
+                const whatsapp = settings.whatsapp || '923012233445';
+
+                const message = `Hello! I want to join the *${plan}* Plan ($${price}).\n\n*Details:*\n- Name/ID: ${userName}\n- Platform: WorkBridge\n\nI have made the payment. Please verify and upgrade my account.`;
+
+                const waUrl = `https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}`;
+                window.open(waUrl, '_blank');
+
+                alert('Redirecting to WhatsApp to send payment proof... 🚀');
+                closePremiumModal();
+            });
+
+            function switchInvPayment(type, event) {
+                const boxes = ['inv-easypaisa-details', 'inv-bank-details', 'inv-paypal-details', 'inv-crypto-details'];
+                boxes.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.style.display = 'none';
+                });
+
+                const opts = document.querySelectorAll('#premiumModal .payment-option');
+                opts.forEach(opt => opt.classList.remove('active'));
+
+                // Show selected
+                const targetBox = document.getElementById('inv-' + type + '-details');
+                if (targetBox) targetBox.style.display = 'block';
+                if (event) event.currentTarget.classList.add('active');
+            }
+
+            function copyText(text) {
+                navigator.clipboard.writeText(text);
+                alert('Copied: ' + text);
+            }
+
+            function activateFreeVisitor(btn) {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Activating...';
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    const user = JSON.parse(localStorage.getItem('workbridge_user') || '{}');
+                    user.earning_plan = 'Free Visitor Plan';
+                    localStorage.setItem('workbridge_user', JSON.stringify(user));
+
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Plan Activated!';
+                    btn.style.background = '#10b981';
+
+                    // Update UI or show toast
+                    setTimeout(() => {
+                        alert('Congratulations! Your Free Visitor Plan is now active. Start your daily tasks to earn points.');
+                        btn.innerHTML = originalText;
+                        btn.style.background = '';
+                        btn.disabled = false;
+                        window.location.reload(); // Refresh to update role/plan info in UI
+                    }, 1000);
+                }, 1500);
+            }
+
+            // Close modal when clicking on the overlay background
+            const premiumModal = document.getElementById('premiumModal');
+            if (premiumModal) {
+                premiumModal.addEventListener('click', (e) => {
+                    if (e.target === premiumModal) closePremiumModal();
+                });
+            }
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typists | WorkBridge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+
+<body style="background-color: var(--bg-color);">
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="profiles.html">Freelancers</a>
+                <a href="home.html#home-donations">Donation</a>
+                <a href="home.html#earning-plans">Earning</a>
+                <a href="javascript:void(0)" onclick="openLoginModal()">Login</a>
+                <button class="theme-toggle" id="themeToggleBtn" title="Change Theme">
+                    <i class="fa-solid fa-palette"></i>
+                </button>
+            </div>
+            <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- Page Header (Category Specific) -->
+    <header class="section reveal"
+        style="padding: 4rem 0; text-align: center; background: linear-gradient(-45deg, var(--hero-gradient-1), var(--hero-gradient-2));">
+        <div class="container">
+            <button onclick="history.back()" class="back-btn" style="color: white; border-color: white;"><i
+                    class="fa-solid fa-arrow-left"></i> Back</button>
+            <i class="fa-solid fa-keyboard category-icon"
+                style="font-size: 4rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+            <h1 class="section-title">Speed Typists & Transcribers</h1>
+            <p class="section-subtitle" style="font-size: 1.25rem;">Fast document typing, Urdu InPage, and audio
+                transcription services.</p>
+        </div>
+    </header>
+
+    <!-- Profiles Grid -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <div>
+                    <h2 class="section-title">Available Typists</h2>
+                </div>
+            </div>
+
+            <div class="cards-grid reveal">
+                <!-- Profile 1 -->
+                <div class="card">
+                    <div class="card-header-flex">
+                        <img src="https://ui-avatars.com/api/?name=Kamran+Akmal&background=random" alt="Kamran Akmal"
+                            class="avatar">
+                        <div>
+                            <h3 class="card-title">Kamran Akmal</h3>
+                            <div class="card-subtitle">Fast Typist (80 WPM)</div>
+                            <div class="rating">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                    class="fa-solid fa-star"></i>
+                                <span>(5.0)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="badge">English Typing</span> <span class="badge">Urdu InPage</span>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 1rem;">Accurate typing
+                            from scanned PDFs, images, and handwritten notes.</p>
+                        <div class="card-subtitle" style="margin-top: 1rem;"><i class="fa-solid fa-location-dot"></i>
+                            Remote / Islamabad</div>
+                    </div>
+                    <div class="card-footer" style="display: flex; gap: 0.5rem; flex-direction: column;">
+                        <button class="btn btn-whatsapp" style="width: 100%;"><i class="fa-brands fa-whatsapp"></i>
+                            WhatsApp Me</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <button class="btn" style="border: 1px solid var(--border-color); padding: 0.75rem 2rem;">Load More
+                    Typists</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom" style="margin-top: 0;">
+                &copy; 2026 WorkBridge (KaamLink). All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="./js/events.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+
+</html>

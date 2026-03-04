@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | WorkBridge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="./js/auth-guard.js"></script>
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: calc(100vh - 4rem);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: var(--surface-color);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 0;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-item {
+            padding: 1rem 2rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-item:hover,
+        .sidebar-item.active {
+            background: #f8fafc;
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: var(--bg-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                display: flex;
+                overflow-x: auto;
+                padding: 1rem;
+            }
+
+            .sidebar-item {
+                padding: 0.5rem 1rem;
+                white-space: nowrap;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+
+            .sidebar-item.active {
+                border-bottom-color: var(--primary-color);
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .data-table-wrapper {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container" style="max-width: 100%; padding: 0 2rem;">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span> <span
+                    style="font-size: 1rem; font-weight: normal; color: var(--text-secondary);">| Admin</span>
+            </a>
+            <div class="nav-links">
+                <a href="donations.html">Donations</a>
+                <a href="index.html">Back to Site</a>
+                <a href="javascript:void(0)" onclick="handleLogout()" class="btn btn-secondary">Logout</a>
+            </div>
+            <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="sidebar-item active">
+                    <i class="fa-solid fa-chart-line"></i> Overview
+                </a>
+                <a href="profiles.html" class="sidebar-item">
+                    <i class="fa-solid fa-users"></i> Users Management <span id="count-pending-users" class="badge"
+                        style="background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; display: none;">0</span>
+                </a>
+                <a href="jobs.html" class="sidebar-item">
+                    <i class="fa-solid fa-briefcase"></i> Job Posts <span id="count-pending-posts" class="badge"
+                        style="background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; display: none;">0</span>
+                </a>
+                <a href="admin-events.html" class="sidebar-item">
+                    <i class="fa-solid fa-calendar-check"></i> Manage Events
+                </a>
+                <a href="admin-video-ad.html" class="sidebar-item">
+                    <i class="fa-solid fa-video"></i> Manage Video Ads
+                </a>
+                <a href="admin-ads.html" class="sidebar-item">
+                    <i class="fa-solid fa-rectangle-ad"></i> Manage Ads
+                </a>
+                <a href="admin-news.html" class="sidebar-item">
+                    <i class="fa-solid fa-newspaper"></i> News Management
+                </a>
+                <a href="admin-donations.html" class="sidebar-item">
+                    <i class="fa-solid fa-hand-holding-heart"></i> Donor Records
+                </a>
+                <a href="admin-donation-posts.html" class="sidebar-item">
+                    <i class="fa-solid fa-square-rss"></i> Donation Posts
+                </a>
+                <a href="admin-investments.html" class="sidebar-item">
+                    <i class="fa-solid fa-money-bill-trend-up"></i> Earning Payments
+                </a>
+                <hr style="border: none; border-top: 1px solid var(--border-color); margin: 0.5rem 2rem;">
+                <a href="settings.html?tab=inv" class="sidebar-item">
+                    <i class="fa-solid fa-credit-card"></i> Manage Earning Payments
+                </a>
+                <a href="settings.html?tab=don" class="sidebar-item">
+                    <i class="fa-solid fa-heart-circle-check"></i> Manage Don Payments
+                </a>
+                <a href="admin-legal.html" class="sidebar-item">
+                    <i class="fa-solid fa-file-contract"></i> ToS & Privacy
+                </a>
+                <a href="settings.html" class="sidebar-item">
+                    <i class="fa-solid fa-gears"></i> Site Settings
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <button onclick="history.back()" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <h2 style="margin-bottom: 1.5rem;">Dashboard Overview</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value">1,248</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Job Posts</div>
+                    <div class="stat-value">84</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Services Listed</div>
+                    <div class="stat-value">312</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Messages Sent Today</div>
+                    <div class="stat-value">450+</div>
+                </div>
+            </div>
+
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2.5rem;">
+        <!-- User Verification Column -->
+        <div>
+            <h3 style="margin-bottom: 1rem;">Pending User Verifications</h3>
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>User (Profession)</th>
+                            <th>Exp / Skills</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pending-users-list">
+                        <!-- Loaded from localStorage -->
+                        <tr>
+                            <td colspan="4" style="text-align:center;">Checking for pending users...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Post Approval Column -->
+        <div>
+            <h3 style="margin-bottom: 1rem;">Pending Post Approvals</h3>
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>User</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pending-posts-list">
+                        <!-- Loaded from localStorage -->
+                        <tr>
+                            <td colspan="3" style="text-align:center;">Checking for pending posts...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div
+        style="margin-top: 2.5rem; background: white; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+        <h3 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-paper-plane"></i> Recent Job Applications</h3>
+        <div class="data-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Applicant</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="job-applications-list">
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding: 2rem;">No applications received yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </main>
+    </div>
+
+    <!-- User Details Modal -->
+    <div id="user-details-modal" class="modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <span class="close-modal" id="close-user-modal">&times;</span>
+            <div id="user-details-body">
+                <!-- Injected via JS -->
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button id="modal-approve-btn" class="btn btn-primary" style="flex: 1;">Approve Professional</button>
+                <button id="modal-reject-btn" class="btn"
+                    style="flex: 1; background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5;">Reject
+                    Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSidebarCounts();
+            loadPendingData();
+
+            function updateSidebarCounts() {
+                const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+                const pendingPostsCount = posts.filter(p => p.status === 'pending').length;
+                const allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
+                const pendingUsersCount = allUsers.filter(u => u.profileStatus === 'pending').length;
+
+                const usersCountEl = document.getElementById('count-pending-users');
+                const postsCountEl = document.getElementById('count-pending-posts');
+
+                if (usersCountEl) {
+                    usersCountEl.textContent = pendingUsersCount;
+                    usersCountEl.style.display = pendingUsersCount > 0 ? 'inline-block' : 'none';
+                }
+                if (postsCountEl) {
+                    postsCountEl.textContent = pendingPostsCount;
+                    postsCountEl.style.display = pendingPostsCount > 0 ? 'inline-block' : 'none';
+                }
+            }
+
+            function loadPendingData() {
+                // Pending Posts
+                const postsList = document.getElementById('pending-posts-list');
+                const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+                const pendingPosts = posts.filter(p => p.status === 'pending');
+
+                if (pendingPosts.length === 0) {
+                    postsList.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 2rem;">No pending posts.</td></tr>';
+                } else {
+                    postsList.innerHTML = pendingPosts.map(post => `
+                        <tr>
+                            <td>${post.title}</td>
+                            <td>${post.userName}</td>
+                            <td>
+                                <button onclick="approvePost('${post.id}')" class="btn" style="background: #dcfce7; color: #166534; padding: 0.25rem 0.5rem; border: none; cursor:pointer; border-radius: 4px;">Approve</button>
+                                <button onclick="rejectPost('${post.id}')" class="btn" style="background: #fee2e2; color: #991b1b; padding: 0.25rem 0.5rem; border: none; cursor:pointer; border-radius: 4px;">Reject</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+
+                // Pending User Profile Verifications
+                const usersList = document.getElementById('pending-users-list');
+                // In this simulated environment, we check the current logged in user if they are pending, 
+                // OR we can look for users in a hypothetical 'workbridge_all_users' list.
+                // For demonstration, we'll check 'workbridge_user' and simulated 'workbridge_temp_users'
+                const currentUser = JSON.parse(localStorage.getItem('workbridge_user'));
+                const allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
+
+                // Ensure current user is in allUsers for the admin to see them
+                if (currentUser && currentUser.profileStatus === 'pending') {
+                    if (!allUsers.find(u => u.email === currentUser.email)) {
+                        allUsers.push(currentUser);
+                        localStorage.setItem('workbridge_all_users', JSON.stringify(allUsers));
+                    }
+                }
+
+                const pendingUsers = allUsers.filter(u => u.profileStatus === 'pending');
+
+                if (pendingUsers.length === 0) {
+                    usersList.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">All users verified.</td></tr>';
+                } else {
+                    usersList.innerHTML = pendingUsers.map(u => `
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 32px; height: 32px; background: var(--primary-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">
+                                        ${u.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600;">${u.name}</div>
+                                        <div style="font-size: 0.75rem; color: var(--primary-color); font-weight: 600;">${u.title || 'No Title'}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-size: 0.85rem;"><strong>${u.experience || 0}y Exp</strong></div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${u.about || 'No details'}</div>
+                            </td>
+                            <td><span class="badge-non-verified">Pending</span></td>
+                            <td style="display: flex; gap: 5px;">
+                                <button onclick="viewUserDetails('${u.email}')" class="btn" style="background: var(--bg-color); color: var(--text-primary); padding: 0.25rem 0.5rem; border: 1px solid var(--border-color); cursor:pointer; border-radius: 4px;"><i class="fa-solid fa-eye"></i></button>
+                                <button onclick="approveUser('${u.email}')" class="btn" style="background: #dcfce7; color: #166534; padding: 0.25rem 0.5rem; border: none; cursor:pointer; border-radius: 4px;"><i class="fa-solid fa-check"></i></button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+
+                // Job Applications
+                const appsList = document.getElementById('job-applications-list');
+                const apps = JSON.parse(localStorage.getItem('workbridge_applications') || '[]');
+                if (apps && appsList) {
+                    if (apps.length === 0) {
+                        appsList.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">No applications received yet.</td></tr>';
+                    } else {
+                        appsList.innerHTML = apps.map(app => `
+                            <tr>
+                                <td><strong>${app.postTitle}</strong></td>
+                                <td>
+                                    <div style="font-weight: 600;">${app.userName}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary);">${app.userEmail}</div>
+                                </td>
+                                <td>${new Date(app.timestamp).toLocaleDateString()}</td>
+                                <td><span class="badge-wage" style="background: #eff6ff; color: #2563eb;">${app.status.toUpperCase()}</span></td>
+                                <td>
+                                    <a href="${getWhatsAppLink('', `Hi ${app.userName}, I'm following up on your application for ${app.postTitle} on WorkBridge.`)}" target="_blank" class="btn" style="background: #25d366; color: white; padding: 0.25rem 0.5rem; border: none; cursor:pointer; border-radius: 4px; text-decoration: none; font-size: 0.8rem;"><i class="fa-brands fa-whatsapp"></i> Reply</a>
+                                </td>
+                            </tr>
+                        `).join('');
+                    }
+                }
+            }
+
+            window.approveUser = (email) => {
+                let allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
+                const index = allUsers.findIndex(u => u.email === email);
+                if (index !== -1) {
+                    allUsers[index].profileStatus = 'approved';
+                    allUsers[index].isVerified = true;
+                    localStorage.setItem('workbridge_all_users', JSON.stringify(allUsers));
+
+                    // If the approved user is the current user, update their session too
+                    const currentUser = JSON.parse(localStorage.getItem('workbridge_user'));
+                    if (currentUser && currentUser.email === email) {
+                        currentUser.profileStatus = 'approved';
+                        currentUser.isVerified = true;
+                        localStorage.setItem('workbridge_user', JSON.stringify(currentUser));
+                    }
+
+                    alert('User Profile Approved!');
+                    loadPendingData();
+                }
+            };
+
+            window.rejectUser = (email) => {
+                if (confirm('Are you sure you want to reject this profile?')) {
+                    let allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
+                    const index = allUsers.findIndex(u => u.email === email);
+                    if (index !== -1) {
+                        allUsers[index].profileStatus = 'rejected';
+                        localStorage.setItem('workbridge_all_users', JSON.stringify(allUsers));
+
+                        // Update session if it's the current user
+                        const currentUser = JSON.parse(localStorage.getItem('workbridge_user'));
+                        if (currentUser && currentUser.email === email) {
+                            currentUser.profileStatus = 'rejected';
+                            localStorage.setItem('workbridge_user', JSON.stringify(currentUser));
+                        }
+
+                        alert('User Profile Rejected.');
+                        loadPendingData();
+                    }
+                }
+            };
+
+            window.approvePost = (id) => {
+                const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+                const index = posts.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    posts[index].status = 'approved';
+                    localStorage.setItem('workbridge_posts', JSON.stringify(posts));
+                    alert('Post Approved!');
+                    loadPendingData();
+                }
+            };
+
+            window.rejectPost = (id) => {
+                if (confirm('Are you sure you want to reject and delete this post?')) {
+                    const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+                    const filtered = posts.filter(p => p.id !== id);
+                    localStorage.setItem('workbridge_posts', JSON.stringify(filtered));
+                    loadPendingData();
+                }
+            };
+
+            window.viewUserDetails = (email) => {
+                const allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
+                const u = allUsers.find(user => user.email === email);
+                if (!u) return;
+
+                const body = document.getElementById('user-details-body');
+                body.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <img src="${u.profileImg || 'https://ui-avatars.com/api/?name=' + u.name + '&background=random&size=100'}" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1rem;">
+                        <h2 style="margin-bottom: 0.25rem;">${u.name}</h2>
+                        <p style="color: var(--primary-color); font-weight: 600;">${u.title || 'Professional'}</p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div style="padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Experience</label>
+                            <span style="font-weight: 600;">${u.experience || 0} Years</span>
+                        </div>
+                        <div style="padding: 1rem; background: #f8fafc; border-radius: 8px;">
+                            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">WhatsApp</label>
+                            <span style="font-weight: 600;">${u.whatsapp || 'Not provided'}</span>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem;">
+                        <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Work History & Skills</label>
+                        <p style="font-size: 0.9rem; line-height: 1.6;">${u.about || 'No details provided.'}</p>
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                        Email: ${u.email}
+                    </div>
+                `;
+
+                document.getElementById('modal-approve-btn').onclick = () => {
+                    approveUser(email);
+                    document.getElementById('user-details-modal').style.display = 'none';
+                };
+                document.getElementById('modal-reject-btn').onclick = () => {
+                    rejectUser(email);
+                    document.getElementById('user-details-modal').style.display = 'none';
+                };
+
+                document.getElementById('user-details-modal').style.display = 'flex';
+            };
+
+            const closeUserModal = document.getElementById('close-user-modal');
+            if (closeUserModal) {
+                closeUserModal.onclick = () => {
+                    document.getElementById('user-details-modal').style.display = 'none';
+                };
+            }
+        });
+
+        // Background stats animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const stats = document.querySelectorAll('.stat-value');
+            stats.forEach(stat => {
+                const finalValue = parseInt(stat.innerText.replace(',', '').replace('+', ''));
+                let startValue = 0;
+                const duration = 2000;
+                const increment = Math.ceil(finalValue / (duration / 16));
+
+                const timer = setInterval(() => {
+                    startValue += increment;
+                    if (startValue >= finalValue) {
+                        stat.innerText = finalValue.toLocaleString() + (stat.innerText.includes('+') ? '+' : '');
+                        clearInterval(timer);
+                    } else {
+                        stat.innerText = startValue.toLocaleString();
+                    }
+                }, 16);
+            });
+        });
+
+        // Handle sidebar item switching
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        sidebarItems.forEach(item => {
+            if (item.getAttribute('href') === 'dashboard.html') return;
+
+            item.addEventListener('click', (e) => {
+                // If it's a page link, let it navigate
+                // If we want to simulate SPA, we could prevent default
+            });
+        });
+    </script>
+    <script src="./js/app.js"></script>
+    <script src="./js/auth.js"></script>
+</body>
+
+</html>

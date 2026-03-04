@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Job | WorkBridge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="./js/auth-guard.js"></script>
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        select.form-control {
+            background-color: white;
+            cursor: pointer;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body style="background-color: var(--bg-color);">
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="home.html#home-donations">Donation</a>
+                <a href="home.html#earning-plans">Earning</a>
+                <a href="javascript:void(0)" onclick="openLoginModal()">Login</a>
+            </div>
+            <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <section class="section">
+        <div class="container">
+            <button onclick="history.back()" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <div class="form-container">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h1 class="section-title" style="font-size: 2rem;">Post a Job / Request Service</h1>
+                    <p class="section-subtitle">Find the right person for your task quickly.</p>
+                </div>
+
+                <form action="#" id="postJobForm">
+                    <div class="form-group">
+                        <label class="form-label" for="jobTitle">Job / Task Title</label>
+                        <input type="text" id="jobTitle" class="form-control" placeholder="e.g. Need a reliable Plumber"
+                            required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="jobType">Job Type</label>
+                            <select id="jobType" class="form-control" required>
+                                <option value="" disabled selected>Select type</option>
+                                <option value="daily">Daily Wage / One-time task</option>
+                                <option value="monthly">Monthly Salary</option>
+                                <option value="freelance">Freelance Contract</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="workMode">Work Mode</label>
+                            <select id="workMode" class="form-control" required>
+                                <option value="onsite">On-site</option>
+                                <option value="remote">Remote</option>
+                                <option value="hybrid">Hybrid</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="salary">Salary / Budget</label>
+                            <input type="text" id="salary" class="form-control"
+                                placeholder="e.g. Rs 5000 or Mention 'Negotiable'">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="location">Location (City/Area)</label>
+                            <input type="text" id="location" class="form-control" placeholder="e.g. Clifton, Karachi">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="contact">Contact Number (WhatsApp preferred)</label>
+                        <div class="phone-input-group">
+                            <select id="country-code" class="form-control country-code-select">
+                                <option value="+92">+92</option>
+                                <option value="+91">+91</option>
+                                <option value="+971">+971</option>
+                                <option value="+966">+966</option>
+                                <option value="+44">+44</option>
+                                <option value="+1">+1</option>
+                            </select>
+                            <input type="tel" id="contact" class="form-control" placeholder="3XX XXXXXXX" required
+                                style="border-left: none; border-radius: 0 12px 12px 0;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="description">Job Description</label>
+                        <textarea id="description" class="form-control"
+                            placeholder="Describe the task, requirements, and any specific skills needed..."
+                            required></textarea>
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <button type="submit" class="btn btn-primary"
+                            style="width: 100%; font-size: 1.125rem; padding: 1rem;"><i
+                                class="fa-solid fa-paper-plane"></i> Publish Job Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom" style="margin-top: 0;">
+                &copy; 2026 WorkBridge (KaamLink). All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.getElementById('postJobForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const user = JSON.parse(localStorage.getItem('workbridge_user'));
+            if (!user) {
+                alert('Please login to post a job.');
+                if (window.openLoginModal) window.openLoginModal();
+                return;
+            }
+
+            if (!user.isVerified) {
+                alert('Your account is currently pending verification. Please wait up to 24 hours for your account to be verified before you can post highly visible jobs.');
+                return;
+            }
+
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Posting...';
+            btn.disabled = true;
+
+            const title = document.getElementById('jobTitle').value;
+            const type = document.getElementById('jobType').value;
+            const mode = document.getElementById('workMode').value;
+            const salary = document.getElementById('salary').value;
+            const locationValue = document.getElementById('location').value;
+            const countryCode = document.getElementById('country-code').value;
+            const combinedContact = countryCode + document.getElementById('contact').value;
+            const descriptionValue = document.getElementById('description').value;
+
+            const postData = {
+                id: 'job-' + Date.now(),
+                userId: user.email,
+                userName: user.name,
+                userTitle: user.title || 'Professional',
+                userImg: user.profileImg || `https://ui-avatars.com/api/?name=${user.name}&background=random`,
+                userVerified: true,
+                title: title,
+                type: type,
+                mode: mode,
+                salary: salary,
+                location: locationValue,
+                description: descriptionValue,
+                contact: combinedContact,
+                date: new Date().toISOString(),
+                status: 'approved', // Directly approved for verified users
+                views: 0,
+                likes: 0,
+                comments: []
+            };
+
+            // Save to localStorage
+            const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+            posts.push(postData);
+            localStorage.setItem('workbridge_posts', JSON.stringify(posts));
+
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Posted Successfully!';
+                btn.style.backgroundColor = '#10b981';
+
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+                }, 1500);
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkBridge Admin - Site Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="./js/auth-guard.js"></script>
+    <style>
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .settings-card {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-header i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+        }
+
+        .btn-save {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body style="background: #f1f5f9;">
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-bridge-water"></i>
+                Work<span>Bridge</span> <span
+                    style="font-weight: 400; color: var(--text-secondary); margin-left:10px;">| Admin</span>
+            </a>
+            <div class="nav-links">
+                <a href="dashboard.html"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header style="margin-top: 4rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 800;">Site Configuration</h1>
+            <p style="color: var(--text-secondary);">Manage global variables and platform settings.</p>
+        </header>
+
+        <div class="settings-grid">
+            <!-- Professional Contact Settings -->
+            <div class="settings-card">
+                <div class="settings-header">
+                    <i class="fa-solid fa-headset"></i>
+                    <h2 style="font-size: 1.25rem;">Support & Contact</h2>
+                </div>
+                <form id="support-settings">
+                    <div class="form-group">
+                        <label>Main WhatsApp Number (Global)</label>
+                        <input type="text" id="setting-whatsapp" class="form-control" placeholder="e.g. 923012233445"
+                            value="923012233445">
+                        <small style="color: var(--text-secondary);">Used for all "Chat" and "Help" triggers.</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Support Email</label>
+                        <input type="email" id="setting-email" class="form-control" value="support@workbridge.pk">
+                    </div>
+                    <button type="submit" class="btn-save">Save Support Info</button>
+                </form>
+            </div>
+
+            <!-- Branding Settings -->
+            <div class="settings-card">
+                <div class="settings-header">
+                    <i class="fa-solid fa-palette"></i>
+                    <h2 style="font-size: 1.25rem;">Branding & Info</h2>
+                </div>
+                <form id="branding-settings">
+                    <div class="form-group">
+                        <label>Platform Display Name</label>
+                        <input type="text" id="setting-name" class="form-control" value="WorkBridge">
+                    </div>
+                    <div class="form-group">
+                        <label>Platform Tagline (SEO)</label>
+                        <input type="text" id="setting-tagline" class="form-control"
+                            value="Connecting Skills with Opportunity">
+                    </div>
+                    <button type="submit" class="btn-save">Update Branding</button>
+                </form>
+            </div>
+
+            <!-- Social Media Settings -->
+            <div class="settings-card">
+                <div class="settings-header">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <h2 style="font-size: 1.25rem;">Social Media Links</h2>
+                </div>
+                <form id="social-settings">
+                    <div class="form-group">
+                        <label><i class="fa-brands fa-facebook" style="color: #1877f2;"></i> Facebook URL</label>
+                        <input type="url" id="setting-fb" class="form-control"
+                            placeholder="https://facebook.com/yourpage">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-brands fa-instagram" style="color: #e4405f;"></i> Instagram URL</label>
+                        <input type="url" id="setting-ig" class="form-control"
+                            placeholder="https://instagram.com/yourpage">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa-brands fa-x-twitter" style="color: #000000;"></i> Twitter (X) URL</label>
+                        <input type="url" id="setting-tw" class="form-control"
+                            placeholder="https://twitter.com/yourpage">
+                    </div>
+                    <button type="submit" class="btn-save">Save Social Links</button>
+                </form>
+            </div>
+
+            <!-- Video Advertisement Management -->
+            <div class="settings-card" id="video-ad-card">
+                <div class="settings-header">
+                    <i class="fa-solid fa-video"></i>
+                    <h2 style="font-size: 1.25rem;">Video Ad (Paid Promotion)</h2>
+                </div>
+                <form id="video-ad-settings">
+                    <div class="form-group">
+                        <label>Video URL (YouTube Embed or .mp4)</label>
+                        <input type="text" id="setting-video-url" class="form-control"
+                            placeholder="https://www.youtube.com/embed/...">
+                        <small style="color: var(--text-secondary);">Use 'Embed' URL for YouTube videos.</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Promo Title</label>
+                        <input type="text" id="setting-video-title" class="form-control"
+                            placeholder="e.g. Premium Business Ad">
+                    </div>
+                    <div class="form-group">
+                        <label>Promo Description</label>
+                        <textarea id="setting-video-desc" class="form-control" rows="2"
+                            placeholder="Briefly describe the promotion..."></textarea>
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>Promotion / Click Link</label>
+                        <input type="text" id="setting-video-link" class="form-control"
+                            placeholder="https://example.com/promotion">
+                        <small style="color: var(--text-secondary);">Where visitors go when they click the ad.</small>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="setting-video-active"> Show Promotion on Homepage
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-save">Update Promotion</button>
+                </form>
+            </div>
+
+            <!-- Investment Payment Account Management -->
+            <div class="settings-card" id="inv-card">
+                <div class="settings-header">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <h2 style="font-size: 1.25rem;">Earning Payment Accounts</h2>
+                </div>
+                <form id="inv-payment-settings">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Bank Name</label>
+                            <input type="text" id="setting-inv-bank-name" class="form-control"
+                                placeholder="e.g. HBL Bank">
+                        </div>
+                        <div class="form-group">
+                            <label>Account Holder Name</label>
+                            <input type="text" id="setting-inv-acc-title" class="form-control"
+                                placeholder="Name on Account">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Account / IBAN Number</label>
+                        <input type="text" id="setting-inv-acc-num" class="form-control" placeholder="PK00 HBL...">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>EasyPaisa Number</label>
+                            <input type="text" id="setting-inv-easypaisa" class="form-control"
+                                placeholder="03xx xxxxxxx">
+                        </div>
+                        <div class="form-group">
+                            <label>JazzCash Number</label>
+                            <input type="text" id="setting-inv-jazzcash" class="form-control"
+                                placeholder="03xx xxxxxxx">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>PayPal Email (Intl)</label>
+                            <input type="email" id="setting-inv-paypal" class="form-control"
+                                placeholder="your@paypal.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Binance ID / USDT Address (Crypto)</label>
+                            <input type="text" id="setting-inv-binance" class="form-control"
+                                placeholder="TRC20 Address or Pay ID">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-save">Save Earning Info</button>
+                </form>
+            </div>
+
+            <!-- Donation Payment Account Management -->
+            <div class="settings-card" id="don-card">
+                <div class="settings-header">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                    <h2 style="font-size: 1.25rem;">Donation Payment Accounts</h2>
+                </div>
+                <form id="don-payment-settings">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Bank Name</label>
+                            <input type="text" id="setting-don-bank-name" class="form-control"
+                                placeholder="e.g. HBL Bank">
+                        </div>
+                        <div class="form-group">
+                            <label>Account Holder Name</label>
+                            <input type="text" id="setting-don-acc-title" class="form-control"
+                                placeholder="Name on Account">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Account / IBAN Number</label>
+                        <input type="text" id="setting-don-acc-num" class="form-control" placeholder="PK00 HBL...">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>EasyPaisa Number</label>
+                            <input type="text" id="setting-don-easypaisa" class="form-control"
+                                placeholder="03xx xxxxxxx">
+                        </div>
+                        <div class="form-group">
+                            <label>JazzCash Number</label>
+                            <input type="text" id="setting-don-jazzcash" class="form-control"
+                                placeholder="03xx xxxxxxx">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>PayPal Email (Intl)</label>
+                            <input type="email" id="setting-don-paypal" class="form-control"
+                                placeholder="donations@paypal.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Binance ID / USDT Address (Crypto)</label>
+                            <input type="text" id="setting-don-binance" class="form-control"
+                                placeholder="TRC20 Address or Pay ID">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-save">Save Donation Info</button>
+                </form>
+            </div>
+        </div>
+
+        <div
+            style="margin-top: 2rem; padding: 1.5rem; background: #fffbeb; border: 1px solid #fef3c7; border-radius: 8px; color: #92400e;">
+            <strong><i class="fa-solid fa-circle-info"></i> Experimental Feature:</strong> Site settings currently use
+            <code>localStorage</code> to simulate persistence. In a live environment, these would be exported to a
+            config file.
+        </div>
+    </div>
+
+    <script>
+        // Load settings
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('workbridge_settings');
+            if (saved) {
+                const s = JSON.parse(saved);
+                document.getElementById('setting-whatsapp').value = s.whatsapp || '923012233445';
+                document.getElementById('setting-email').value = s.email || 'support@workbridge.pk';
+                document.getElementById('setting-name').value = s.siteName || 'WorkBridge';
+                document.getElementById('setting-tagline').value = s.tagline || 'Connecting Skills with Opportunity';
+
+                // Social Links
+                document.getElementById('setting-fb').value = s.socialFb || '';
+                document.getElementById('setting-ig').value = s.socialIg || '';
+                document.getElementById('setting-tw').value = s.socialTw || '';
+
+                // Video Ad Settings
+                document.getElementById('setting-video-url').value = s.videoUrl || '';
+                document.getElementById('setting-video-title').value = s.videoTitle || '';
+                document.getElementById('setting-video-desc').value = s.videoDesc || '';
+                document.getElementById('setting-video-link').value = s.videoLink || '';
+                document.getElementById('setting-video-active').checked = s.videoActive || false;
+
+                // Investment Payment Info
+                document.getElementById('setting-inv-bank-name').value = s.invBankName || '';
+                document.getElementById('setting-inv-acc-title').value = s.invAccTitle || '';
+                document.getElementById('setting-inv-acc-num').value = s.invAccNum || '';
+                document.getElementById('setting-inv-easypaisa').value = s.invEasypaisa || '';
+                document.getElementById('setting-inv-jazzcash').value = s.invJazzcash || '';
+                document.getElementById('setting-inv-paypal').value = s.invPaypal || '';
+                document.getElementById('setting-inv-binance').value = s.invBinance || '';
+
+                // Donation Payment Info
+                document.getElementById('setting-don-bank-name').value = s.donBankName || '';
+                document.getElementById('setting-don-acc-title').value = s.donAccTitle || '';
+                document.getElementById('setting-don-acc-num').value = s.donAccNum || '';
+                document.getElementById('setting-don-easypaisa').value = s.donEasypaisa || '';
+                document.getElementById('setting-don-jazzcash').value = s.donJazzcash || '';
+                document.getElementById('setting-don-paypal').value = s.donPaypal || '';
+                document.getElementById('setting-don-binance').value = s.donBinance || '';
+            }
+
+            // Tab Parameter Logic
+            const urlParams = new URLSearchParams(window.location.search);
+            const tab = urlParams.get('tab');
+            if (tab === 'inv') {
+                const card = document.getElementById('inv-card');
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    card.style.borderColor = 'var(--primary-color)';
+                    card.style.boxShadow = '0 0 15px rgba(37, 99, 235, 0.2)';
+                }
+            } else if (tab === 'don') {
+                const card = document.getElementById('don-card');
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    card.style.borderColor = 'var(--primary-color)';
+                    card.style.boxShadow = '0 0 15px rgba(37, 99, 235, 0.2)';
+                }
+            }
+        });
+
+        // Save Support
+        document.getElementById('support-settings').onsubmit = (e) => {
+            e.preventDefault();
+            saveAll();
+        };
+
+        // Save Branding
+        document.getElementById('branding-settings').onsubmit = (e) => {
+            e.preventDefault();
+            saveAll();
+        };
+
+        // Save Social
+        document.getElementById('social-settings').onsubmit = (e) => {
+            e.preventDefault();
+            saveAll();
+        };
+
+        // Save Video Ad
+        document.getElementById('video-ad-settings').onsubmit = (e) => {
+            e.preventDefault();
+            saveAll();
+        };
+
+        // Save Investment Info
+        document.getElementById('inv-payment-settings').onsubmit = (e) => {
+            e.preventDefault();
+            saveAll();
+        };
+
+        // Save Donation Info
+        document.getElementById('don-payment-settings').onsubmit = (e) => {
+            e.preventDefault();
+            saveAll();
+        };
+
+        function saveAll() {
+            const settings = {
+                whatsapp: document.getElementById('setting-whatsapp').value,
+                email: document.getElementById('setting-email').value,
+                siteName: document.getElementById('setting-name').value,
+                tagline: document.getElementById('setting-tagline').value,
+                socialFb: document.getElementById('setting-fb').value,
+                socialIg: document.getElementById('setting-ig').value,
+                socialTw: document.getElementById('setting-tw').value,
+
+                // Video Ad
+                videoUrl: document.getElementById('setting-video-url').value,
+                videoTitle: document.getElementById('setting-video-title').value,
+                videoDesc: document.getElementById('setting-video-desc').value,
+                videoLink: document.getElementById('setting-video-link').value,
+                videoActive: document.getElementById('setting-video-active').checked,
+
+                // Investment
+                invBankName: document.getElementById('setting-inv-bank-name').value,
+                invAccTitle: document.getElementById('setting-inv-acc-title').value,
+                invAccNum: document.getElementById('setting-inv-acc-num').value,
+                invEasypaisa: document.getElementById('setting-inv-easypaisa').value,
+                invJazzcash: document.getElementById('setting-inv-jazzcash').value,
+                invPaypal: document.getElementById('setting-inv-paypal').value,
+                invBinance: document.getElementById('setting-inv-binance').value,
+
+                // Donation
+                donBankName: document.getElementById('setting-don-bank-name').value,
+                donAccTitle: document.getElementById('setting-don-acc-title').value,
+                donAccNum: document.getElementById('setting-don-acc-num').value,
+                donEasypaisa: document.getElementById('setting-don-easypaisa').value,
+                donJazzcash: document.getElementById('setting-don-jazzcash').value,
+                donPaypal: document.getElementById('setting-don-paypal').value,
+                donBinance: document.getElementById('setting-don-binance').value
+            };
+            localStorage.setItem('workbridge_settings', JSON.stringify(settings));
+            alert('Settings updated successfully!');
+        }
+    </script>
+</body>
+
+</html>
