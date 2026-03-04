@@ -100,8 +100,8 @@
                 <form id="support-settings">
                     <div class="form-group">
                         <label>Main WhatsApp Number (Global)</label>
-                        <input type="text" id="setting-whatsapp" class="form-control" placeholder="e.g. 923012233445"
-                            value="923012233445">
+                        <input type="text" id="setting-whatsapp" class="form-control" placeholder="e.g. 923489353023"
+                            value="923489353023">
                         <small style="color: var(--text-secondary);">Used for all "Chat" and "Help" triggers.</small>
                     </div>
                     <div class="form-group">
@@ -207,12 +207,12 @@
                         <div class="form-group">
                             <label>Bank Name</label>
                             <input type="text" id="setting-inv-bank-name" class="form-control"
-                                placeholder="e.g. HBL Bank">
+                                placeholder="e.g. UBL Bank">
                         </div>
                         <div class="form-group">
                             <label>Account Holder Name</label>
                             <input type="text" id="setting-inv-acc-title" class="form-control"
-                                placeholder="Name on Account">
+                                placeholder="Muhammad Asif">
                         </div>
                     </div>
                     <div class="form-group">
@@ -223,7 +223,7 @@
                         <div class="form-group">
                             <label>EasyPaisa Number</label>
                             <input type="text" id="setting-inv-easypaisa" class="form-control"
-                                placeholder="03xx xxxxxxx">
+                                placeholder="03489353023">
                         </div>
                         <div class="form-group">
                             <label>JazzCash Number</label>
@@ -258,7 +258,7 @@
                         <div class="form-group">
                             <label>Bank Name</label>
                             <input type="text" id="setting-don-bank-name" class="form-control"
-                                placeholder="e.g. HBL Bank">
+                                placeholder="e.g. UBL Bank">
                         </div>
                         <div class="form-group">
                             <label>Account Holder Name</label>
@@ -313,7 +313,7 @@
             const saved = localStorage.getItem('workbridge_settings');
             if (saved) {
                 const s = JSON.parse(saved);
-                document.getElementById('setting-whatsapp').value = s.whatsapp || '923012233445';
+                document.getElementById('setting-whatsapp').value = s.whatsapp || '923489353023';
                 document.getElementById('setting-email').value = s.email || 'support@workbridge.pk';
                 document.getElementById('setting-name').value = s.siteName || 'WorkBridge';
                 document.getElementById('setting-tagline').value = s.tagline || 'Connecting Skills with Opportunity';

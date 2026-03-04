@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Get WhatsApp number from settings
                 const settings = JSON.parse(localStorage.getItem('workbridge_settings') || '{}');
-                const whatsapp = settings.whatsapp || '923012233445';
+                const whatsapp = settings.whatsapp || '923489353023';
 
                 const message = `JazakAllah! I have donated to the cause: *${cause}* (Event Widget).\n\n*Donation Details:*\n- Amount: Rs. ${amount}\n- Donor: ${donorName}\n- Method: ${method}\n\nI am sending the payment proof. Please confirm receipt.`;
 

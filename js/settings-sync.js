@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+window.syncSettingsUI = function () {
     // Load Global Settings
     const savedSettings = localStorage.getItem('workbridge_settings');
     if (!savedSettings) return;

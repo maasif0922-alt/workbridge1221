@@ -973,7 +973,7 @@ window.fixAllWhatsAppLinks = function () {
         // If it's a generic link or needs admin fallback
         if (btn.href && (btn.href.includes('923012233445') || btn.href.includes('923000000000'))) {
             const settings = JSON.parse(localStorage.getItem('workbridge_settings') || '{}');
-            const adminWA = settings.whatsapp || '923012233445';
+            const adminWA = settings.whatsapp || '923489353023';
             btn.href = btn.href.replace(/923012233445|923000000000|923000000001|923000000002|923000000003/, adminWA);
         }
     });
@@ -981,7 +981,7 @@ window.fixAllWhatsAppLinks = function () {
 
 window.getWhatsAppLink = function (phone, message) {
     const settings = JSON.parse(localStorage.getItem('workbridge_settings') || '{}');
-    const adminWA = settings.whatsapp || '923012233445';
+    const adminWA = settings.whatsapp || '923489353023';
     const finalPhone = phone || adminWA;
     return `https://wa.me/${finalPhone.replace(/\D/g, '')}?text=${encodeURIComponent(message || 'Hi, I found your listing on WorkBridge.')}`;
 };
@@ -1256,7 +1256,7 @@ window.openPremiumModal = function (planName, price) {
         titleEl.textContent = planName + ' ($' + price + ')';
 
         // Use global admin WhatsApp if available
-        const adminWA = settings.whatsapp || '923012233445';
+        const adminWA = settings.whatsapp || '923489353023';
         const msg = encodeURIComponent(`I want to join the ${planName} ($${price}). My email: ${user.email}`);
         whatsappBtn.href = `https://wa.me/${adminWA}?text=${msg}`;
 
