@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         phone: fullPhone,
                         role: role,
                         isVerified: isVerified,
-                        profileStatus: role === 'admin' ? 'approved' : 'pending',
+                        profileStatus: 'approved', // Always approved for immediate login
                         earning_plan: selectedPlan || "Free Visitor Plan",
                         loginDate: new Date().toISOString()
                     };
@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         email: email,
                         role: role,
                         isVerified: isVerified,
-                        profileStatus: role === 'admin' ? 'approved' : 'approved', // Simplified - allow login
+                        profileStatus: 'approved', // Always approved for login
                         earning_plan: selectedPlan || null,
                         loginDate: new Date().toISOString()
                     }));
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             email: email,
                             role: role,
                             isVerified: isVerified,
-                            profileStatus: 'approved',
+                            profileStatus: 'approved', // Always approved
                             earning_plan: selectedPlan || null,
                             loginDate: new Date().toISOString()
                         };
