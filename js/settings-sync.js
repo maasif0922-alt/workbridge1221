@@ -121,13 +121,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Special Case: Sync "Contact Support" buttons that might not be whatsapp-only
-    const genericContactLinks = document.querySelectorAll('.contact-support-link');
-    genericContactLinks.forEach(link => {
-        if (settings.whatsapp) {
-            link.href = `https://wa.me/${settings.whatsapp}`;
-        }
-    });
+    // Special Case: Hero Ad Sync
+    const heroAdLink = document.getElementById('hero-ad-link');
+    const heroAdTitle = document.getElementById('hero-ad-title');
+    const heroAdText = document.getElementById('hero-ad-text');
+
+    if (heroAdLink && settings.whatsapp) {
+        // Use the global WhatsApp number if no specific link is provided
+        const adLink = settings.heroAdLink || `https://wa.me/${settings.whatsapp}?text=I%20want%20to%20learn%20more%20about%20promotion`;
+        heroAdLink.setAttribute('onclick', `window.open('${adLink}', '_blank')`);
+
+        if (settings.heroAdTitle) heroAdTitle.textContent = settings.heroAdTitle;
+        if (settings.heroAdText) heroAdText.textContent = settings.heroAdText;
+    }
 
     // Special Case: Video Ad Sync
     const videoSection = document.getElementById('home-video-ad-section');
