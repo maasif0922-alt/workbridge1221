@@ -617,26 +617,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.9rem;">
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: var(--text-secondary);">JazzCash/Easypaisa:</span>
-                            <strong class="dynamic-inv-jazzcash">0301-2233445</strong>
+                            <strong class="dynamic-inv-jazzcash">03489353023</strong>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: var(--text-secondary);">Bank Account:</span>
-                            <strong class="dynamic-inv-bankname">HBL Bank</strong>
+                            <strong class="dynamic-inv-bankname">UBL Bank</strong>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: var(--text-secondary);">Acc Number:</span>
-                            <strong class="dynamic-inv-accnum">1234 5678 9012</strong>
+                            <strong class="dynamic-inv-accnum">PK2601010497948</strong>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: var(--text-secondary);">Account Title:</span>
-                            <strong class="dynamic-inv-acctitle">WorkBridge Admin</strong>
+                            <strong class="dynamic-inv-acctitle">Muhammad Asif</strong>
                         </div>
                     </div>
                 </div>
 
                 <div style="text-align: center; margin-bottom: 1.5rem;">
                     <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">After payment, send your screenshot to our WhatsApp for activation.</p>
-                    <a href="https://wa.me/923012233445" id="premium-whatsapp-btn" target="_blank" class="btn btn-whatsapp" style="width: 100%; padding: 1rem; border-radius: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;">
+                    <a href="https://wa.me/923489353023" id="premium-whatsapp-btn" target="_blank" class="btn btn-whatsapp" style="width: 100%; padding: 1rem; border-radius: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;">
                         <i class="fa-brands fa-whatsapp"></i> Send Payment Proof 
                     </a>
                 </div>

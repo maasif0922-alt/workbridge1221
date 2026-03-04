@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (videoFooter) {
-            const defaultPromo = "https://wa.me/923012233445?text=I%20want%20to%20buy%20a%20video%20ad%20on%20WorkBridge";
+            const defaultPromo = "https://wa.me/923489353023?text=I%20want%20to%20buy%20a%20video%20ad%20on%20WorkBridge";
             const promoLink = settings.videoLink || defaultPromo;
             const buttonText = settings.videoLink ? 'Visit Promoter Website' : 'Promote Your Business Here';
 
