@@ -140,48 +140,52 @@ window.syncSettingsUI = function () {
     const videoDesc = document.getElementById('video-ad-desc');
     const videoFooter = document.querySelector('.video-ad-footer');
 
-    if (settings.videoActive) {
-        if (videoSection) videoSection.style.display = 'block';
-        if (videoTitle) videoTitle.innerHTML = `<i class="fa-solid fa-star"></i> ${settings.videoTitle || 'Premium Promotion'}`;
-        if (videoDesc) videoDesc.textContent = settings.videoDesc || 'Promote your business here to reach thousands of daily visitors.';
+    if (videoSection) {
+        if (settings.videoActive) {
+            videoSection.style.display = 'block';
+            if (videoTitle) videoTitle.innerHTML = `<i class="fa-solid fa-star"></i> ${settings.videoTitle || 'Premium Promotion'}`;
+            if (videoDesc) videoDesc.textContent = settings.videoDesc || 'Promote your business here to reach thousands of daily visitors.';
 
-        if (videoContainer) {
-            if (settings.videoUrl) {
-                if (settings.videoUrl.includes('youtube.com') || settings.videoUrl.includes('youtu.be')) {
-                    let embedUrl = settings.videoUrl;
-                    if (!embedUrl.includes('embed/')) {
-                        const videoId = settings.videoUrl.split('v=')[1] || settings.videoUrl.split('/').pop();
-                        embedUrl = `https://www.youtube.com/embed/${videoId.split('&')[0]}?autoplay=0&mute=1`;
+            if (videoContainer) {
+                if (settings.videoUrl) {
+                    if (settings.videoUrl.includes('youtube.com') || settings.videoUrl.includes('youtu.be')) {
+                        let embedUrl = settings.videoUrl;
+                        if (!embedUrl.includes('embed/')) {
+                            const videoId = settings.videoUrl.split('v=')[1] || settings.videoUrl.split('/').pop();
+                            embedUrl = `https://www.youtube.com/embed/${videoId.split('&')[0]}?autoplay=0&mute=1`;
+                        }
+                        videoContainer.innerHTML = `<iframe width="100%" height="100%" src="${embedUrl}" frameborder="0" allowfullscreen style="border: none;"></iframe>`;
+                    } else if (settings.videoUrl.endsWith('.mp4') || settings.videoUrl.endsWith('.webm')) {
+                        videoContainer.innerHTML = `<video controls style="width: 100%; height: 100%; object-fit: cover;"><source src="${settings.videoUrl}" type="video/mp4"></video>`;
+                    } else {
+                        videoContainer.innerHTML = `<div class="video-placeholder-content"><i class="fa-solid fa-play"></i><p>Click below to watch the promotion</p></div>`;
                     }
-                    videoContainer.innerHTML = `<iframe width="100%" height="100%" src="${embedUrl}" frameborder="0" allowfullscreen style="border: none;"></iframe>`;
-                } else if (settings.videoUrl.endsWith('.mp4') || settings.videoUrl.endsWith('.webm')) {
-                    videoContainer.innerHTML = `<video controls style="width: 100%; height: 100%; object-fit: cover;"><source src="${settings.videoUrl}" type="video/mp4"></video>`;
                 } else {
-                    videoContainer.innerHTML = `<div class="video-placeholder-content"><i class="fa-solid fa-play"></i><p>Click below to watch the promotion</p></div>`;
+                    videoContainer.innerHTML = `
+                        <div class="video-placeholder-content">
+                            <i class="fa-solid fa-bullhorn"></i>
+                            <p>Your Ad Video Here</p>
+                            <small>Contact us for paid promotion</small>
+                        </div>`;
                 }
-            } else {
-                // Placeholder when active but no video
-                videoContainer.innerHTML = `
-                    <div class="video-placeholder-content">
-                        <i class="fa-solid fa-bullhorn"></i>
-                        <p>Your Ad Video Here</p>
-                        <small>Contact us for paid promotion</small>
-                    </div>`;
             }
-        }
 
-        if (videoFooter) {
-            const defaultPromo = "https://wa.me/923489353023?text=I%20want%20to%20buy%20a%20video%20ad%20on%20WorkBridge";
-            const promoLink = settings.videoLink || defaultPromo;
-            const buttonText = settings.videoLink ? 'Visit Promoter Website' : 'Promote Your Business Here';
+            if (videoFooter) {
+                const adminWA = settings.whatsapp || '923489353023';
+                const defaultPromo = `https://wa.me/${adminWA}?text=I%20want%20to%20buy%20a%20video%20ad%20on%20WorkBridge`;
+                const promoLink = settings.videoLink || defaultPromo;
+                const buttonText = settings.videoLink ? 'Visit Promoter Website' : 'Promote Your Business Here';
 
-            videoFooter.innerHTML = `
-                <a href="${promoLink}" target="_blank" class="btn-ad-click">
+                videoFooter.innerHTML = `
+                <a href="${promoLink}" target="_blank" class="btn-ad-click" id="video-ad-promo-btn">
                     ${buttonText} <i class="fa-solid fa-external-link"></i>
                 </a>
                 <div class="video-ad-badge" style="margin-top:1rem; font-size:0.75rem; color:var(--text-secondary); font-weight:700; text-transform:uppercase;">
                     <i class="fa-solid fa-circle-check" style="color:#10b981"></i> Verified Promotion
                 </div>`;
+            }
+        } else {
+            videoSection.style.display = 'none';
         }
     }
 };

@@ -37,10 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const badgeStyle = getBadgeStyle(item.category);
             const causeTitle = item.title.replace(/'/g, "\\'");
 
-            // Button logic: On home page link to donations.html with cause, otherwise open modal directly
-            const donateAction = isHomepage
-                ? `window.location.href='donations.html?cause=${encodeURIComponent(item.title)}'`
-                : `openDonationModal('${causeTitle}')`;
+            // Button logic: Open modal directly if it exists on the page, otherwise redirect to donations.html
+            const donateAction = document.getElementById('donationModal')
+                ? `openDonationModal('${causeTitle}')`
+                : `window.location.href='donations.html?cause=${encodeURIComponent(item.title)}'`;
 
             return `
                 <article class="charity-card reveal">
@@ -84,5 +84,91 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'Completed': return { bg: '#f1f5f9', color: '#64748b' };
             default: return { bg: '#eff6ff', color: '#3b82f6' };
         }
+    }
+});
+
+// Global Donation Modal Logic
+window.openDonationModal = function (cause) {
+    const modal = document.getElementById('donationModal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+    const causeInput = document.getElementById('selectedCause');
+    if (causeInput) causeInput.value = cause;
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeModal = function () {
+    const modal = document.getElementById('donationModal');
+    if (!modal) return;
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+};
+
+window.showDonationDetails = function (type, event) {
+    // Reset options
+    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
+    document.querySelectorAll('.payment-details-box').forEach(box => box.style.display = 'none');
+
+    // Show selected
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
+    const detailsBox = document.getElementById(type + '-details');
+    if (detailsBox) detailsBox.style.display = 'block';
+};
+
+// Handle Donation Form Submission
+document.addEventListener('DOMContentLoaded', () => {
+    const donationForm = document.getElementById('donationForm');
+    if (donationForm) {
+        donationForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const cause = document.getElementById('selectedCause').value;
+            const donorName = document.getElementById('donor-name').value;
+            const amount = document.getElementById('donation-amount').value;
+            const message = document.getElementById('donation-message') ? document.getElementById('donation-message').value : "";
+            const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+            // Save to pending donations
+            const pendingDonations = JSON.parse(localStorage.getItem('workbridge_pending_donations') || '[]');
+            pendingDonations.push({
+                date: date,
+                name: donorName,
+                cause: cause,
+                amount: amount,
+                message: message,
+                method: 'WhatsApp (Pending)',
+                status: 'Pending'
+            });
+            localStorage.setItem('workbridge_pending_donations', JSON.stringify(pendingDonations));
+
+            // Get WhatsApp number from settings
+            const settings = JSON.parse(localStorage.getItem('workbridge_settings') || '{}');
+            const whatsapp = settings.whatsapp || '923489353023';
+
+            const waMessage = `JazakAllah! I have donated to the cause: *${cause}*.\n\n*Donation Details:*\n- Amount: ${amount}\n- Donor: ${donorName}\n${message ? '- Message: ' + message + '\n' : ''}\nI am sending the payment proof. Please confirm receipt.`;
+
+            // Use global getWhatsAppLink if available, otherwise fallback
+            if (window.getWhatsAppLink) {
+                window.open(window.getWhatsAppLink(whatsapp, waMessage), '_blank');
+            } else {
+                const cleanPhone = whatsapp.replace(/\D/g, '');
+                window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(waMessage)}`, '_blank');
+            }
+
+            alert('Redirecting to WhatsApp to send donation proof... JazakAllah! 🌟');
+            window.closeModal();
+        });
+    }
+
+    // Close modal when clicking on overlay
+    const donationModal = document.getElementById('donationModal');
+    if (donationModal) {
+        donationModal.onclick = function (event) {
+            if (event.target == donationModal) {
+                window.closeModal();
+            }
+        };
     }
 });
