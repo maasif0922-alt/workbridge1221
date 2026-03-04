@@ -568,6 +568,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         </div>
+
+        <!-- Application Modal -->
+        <div id="application-modal" class="modal">
+            <div class="modal-content" style="max-width: 500px; padding: 2.5rem;">
+                <span class="close-modal" id="close-app-modal">&times;</span>
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="width: 60px; height: 60px; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem;">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </div>
+                    <h2 id="app-modal-title" style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary);">Apply for Job</h2>
+                    <p id="app-modal-subtitle" style="color: var(--text-secondary); font-size: 0.9rem;">Send a professional message to the recruiter.</p>
+                </div>
+                <form id="application-form">
+                    <input type="hidden" id="app-post-id">
+                    <input type="hidden" id="app-post-title">
+                    <input type="hidden" id="app-target-email">
+                    <input type="hidden" id="app-type">
+                    
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">Your Message</label>
+                        <textarea id="app-message" class="form-control" style="width: 100%; padding: 1rem; border: 1px solid var(--border-color); border-radius: 12px; min-height: 120px; font-family: inherit;" placeholder="Briefly describe why you are a good fit..." required></textarea>
+                    </div>
+                    <button type="submit" id="submit-app-btn" class="btn btn-primary" style="width: 100%; padding: 1rem; border-radius: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        Submit Application <i class="fa-solid fa-check-circle"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
     `;
 
     // Inject Modal into body
@@ -610,9 +638,27 @@ document.addEventListener('DOMContentLoaded', () => {
         closePostBtn.onclick = () => modal.style.display = "none";
     }
 
+    // Application Modal Global Event Listeners
+    const appModal = document.getElementById("application-modal");
+    const closeAppBtn = document.getElementById("close-app-modal");
+    if (closeAppBtn) {
+        closeAppBtn.onclick = () => appModal.style.display = "none";
+    }
+
+    const appForm = document.getElementById("application-form");
+    if (appForm) {
+        appForm.onsubmit = (e) => {
+            e.preventDefault();
+            submitApplication();
+        };
+    }
+
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
+        }
+        if (event.target == appModal) {
+            appModal.style.display = "none";
         }
     }
 });
@@ -1007,28 +1053,100 @@ function applyToPost(postId, btn) {
 
     if (alreadyApplied) {
         alert("You have already applied for this position!");
-        btn.innerHTML = 'Applied!';
-        btn.disabled = true;
+        if (btn) {
+            btn.innerHTML = 'Applied!';
+            btn.disabled = true;
+        }
         return;
     }
 
-    const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
-    const post = posts.find(p => p.id === postId);
+    // Support for static job cards with generic IDs
+    let post = null;
+    if (postId.startsWith('job_')) {
+        post = {
+            id: postId,
+            title: postId.includes('graphic') ? 'Graphic Designer' : (postId.includes('electrician') ? 'Expert Electrician' : 'Professional'),
+            userId: 'admin@workbridge.com' // Fallback for static demo posts
+        };
+    } else {
+        const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+        post = posts.find(p => p.id === postId);
+    }
+
     if (!post) return;
 
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+    // Open Modal instead of immediate application
+    const appModal = document.getElementById('application-modal');
+    if (!appModal) return;
+
+    document.getElementById('app-modal-title').textContent = 'Apply for ' + (post.title || 'Job');
+    document.getElementById('app-modal-subtitle').textContent = 'Send a professional proposal to ' + (post.userName || 'the recruiter') + '.';
+    document.getElementById('app-post-id').value = post.id;
+    document.getElementById('app-post-title').value = post.title;
+    document.getElementById('app-target-email').value = post.userId;
+    document.getElementById('app-type').value = 'job_apply';
+    document.getElementById('app-message').value = '';
+
+    appModal.style.display = 'flex';
+
+    // Store button reference to update after submission
+    window.currentApplyBtn = btn;
+}
+
+function hireFreelancer(email, name, btn) {
+    const user = JSON.parse(localStorage.getItem('workbridge_user'));
+    if (!user) {
+        alert("Please login to hire freelancers.");
+        openLoginModal();
+        return;
+    }
+
+    // Open Modal for hiring
+    const appModal = document.getElementById('application-modal');
+    if (!appModal) return;
+
+    document.getElementById('app-modal-title').textContent = 'Hire ' + name;
+    document.getElementById('app-modal-subtitle').textContent = 'Describe the service or task you want to hire for.';
+    document.getElementById('app-post-id').value = 'hire_' + email.replace(/[@.]/g, '_');
+    document.getElementById('app-post-title').value = 'Direct Hire: ' + name;
+    document.getElementById('app-target-email').value = email;
+    document.getElementById('app-type').value = 'freelancer_hire';
+    document.getElementById('app-message').value = '';
+
+    appModal.style.display = 'flex';
+    window.currentApplyBtn = btn;
+}
+
+function submitApplication() {
+    const user = JSON.parse(localStorage.getItem('workbridge_user'));
+    const message = document.getElementById('app-message').value.trim();
+    const postId = document.getElementById('app-post-id').value;
+    const postTitle = document.getElementById('app-post-title').value;
+    const targetEmail = document.getElementById('app-target-email').value;
+    const type = document.getElementById('app-type').value;
+
+    if (!message) {
+        alert("Please enter a message.");
+        return;
+    }
+
+    const btn = document.getElementById('submit-app-btn');
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
     btn.disabled = true;
 
-    // Simulate server delay
+    // Simulate delay
     setTimeout(() => {
         // Record application
         const newApplication = {
             id: 'app_' + Date.now(),
             postId: postId,
-            postTitle: post.title,
-            postUserEmail: post.userId,
+            postTitle: postTitle,
+            postUserEmail: targetEmail,
             userEmail: user.email,
             userName: user.name,
+            message: message,
+            type: type,
             timestamp: new Date().toISOString(),
             status: 'pending'
         };
@@ -1041,17 +1159,25 @@ function applyToPost(postId, btn) {
         const userActivity = JSON.parse(localStorage.getItem('user_activity') || '[]');
         userActivity.unshift({
             id: 'un_' + Date.now(),
-            type: 'apply',
-            text: `Applied for: ${post.title}`,
+            type: type === 'job_apply' ? 'apply' : 'hire',
+            text: type === 'job_apply' ? `Applied for: ${postTitle}` : `Hired: ${postTitle}`,
             time: new Date().toISOString()
         });
         localStorage.setItem('user_activity', JSON.stringify(userActivity.slice(0, 10)));
 
-        if (btn) {
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> Applied!';
-            btn.style.background = '#10b981';
+        // Update the button that triggered the modal
+        if (window.currentApplyBtn) {
+            window.currentApplyBtn.innerHTML = '<i class="fa-solid fa-check"></i> ' + (type === 'job_apply' ? 'Applied!' : 'Proposal Sent!');
+            window.currentApplyBtn.style.background = '#10b981';
+            window.currentApplyBtn.disabled = true;
         }
-        alert(`Successfully applied for: ${post.title}. The recruiter will contact you soon.`);
+
+        // Close modal and feedback
+        document.getElementById('application-modal').style.display = 'none';
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+
+        alert(`Your ${type === 'job_apply' ? 'application' : 'proposal'} has been sent successfully!`);
     }, 1200);
 }
 

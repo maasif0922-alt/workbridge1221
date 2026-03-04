@@ -556,16 +556,43 @@
                 `;
             } else if (view === 'proposals') {
                 title.textContent = 'My Proposals';
-                content.innerHTML = `
-                    <div style="border: 1px solid var(--border-color); padding: 1.5rem; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <h4 style="font-size: 1rem;">Website Data Entry</h4>
-                            <p style="font-size: 0.85rem; color: var(--text-secondary);">Status: <span style="color: var(--primary-color); font-weight: 600;">Pending</span></p>
+                const user = JSON.parse(localStorage.getItem('workbridge_user'));
+                const applications = JSON.parse(localStorage.getItem('workbridge_applications') || '[]');
+                const myApps = applications.filter(app => app.userEmail === user?.email);
+
+                if (myApps.length === 0) {
+                    content.innerHTML = `
+                        <div style="text-align: center; padding: 3rem 0;">
+                            <i class="fa-solid fa-file-circle-exclamation" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                            <p style="color: var(--text-secondary);">You haven't sent any proposals yet.</p>
+                            <a href="home.html" class="btn btn-primary" style="margin-top: 1rem; display: inline-block; text-decoration: none;">Find Jobs</a>
                         </div>
-                        <button class="btn" style="border: 1px solid var(--border-color); font-size: 0.85rem;">View Details</button>
-                    </div>
-                    <p style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">You have 1 active proposal.</p>
-                `;
+                    `;
+                } else {
+                    content.innerHTML = myApps.map(app => `
+                        <div style="border: 1px solid var(--border-color); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                                <div>
+                                    <h4 style="font-size: 1.1rem; margin-bottom: 0.3rem;">${app.postTitle}</h4>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                                        <i class="fa-solid fa-tag"></i> ${app.type === 'job_apply' ? 'Job Application' : 'Hiring Proposal'}
+                                    </p>
+                                </div>
+                                <span class="badge" style="background: ${app.status === 'pending' ? '#fffbe6' : '#dcfce7'}; color: ${app.status === 'pending' ? '#d4a017' : '#166534'};">
+                                    ${app.status.toUpperCase()}
+                                </span>
+                            </div>
+                            <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                                <strong>Message:</strong><br>
+                                ${app.message}
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: #94a3b8;">
+                                <span><i class="fa-regular fa-clock"></i> ${new Date(app.timestamp).toLocaleDateString()}</span>
+                                <button class="btn" style="border: 1px solid var(--border-color); font-size: 0.8rem; padding: 0.4rem 0.8rem;">View Post</button>
+                            </div>
+                        </div>
+                    `).join('') + `<p style="text-align: center; color: var(--text-secondary); font-size: 0.9rem; margin-top: 1rem;">You have ${myApps.length} active ${myApps.length === 1 ? 'proposal' : 'proposals'}.</p>`;
+                }
             } else if (view === 'saved') {
                 title.textContent = 'Saved Jobs';
                 content.innerHTML = `
