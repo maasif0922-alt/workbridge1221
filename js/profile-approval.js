@@ -30,6 +30,15 @@ window.createApprovalRequest = function (userData) {
     if (!approvals.find(a => a.userId === userData.email)) {
         approvals.push(approvalRequest);
         localStorage.setItem('workbridge_approvals', JSON.stringify(approvals));
+        
+        // Create notification for admin
+        createNotification('NEW_APPROVAL_REQUEST', {
+            approvalId: approvalRequest.id,
+            userName: userData.name,
+            userEmail: userData.email,
+            timestamp: new Date().toISOString()
+        });
+        
         console.log('Approval request created for:', userData.email);
         return approvalRequest;
     }
@@ -37,7 +46,116 @@ window.createApprovalRequest = function (userData) {
 };
 
 /**
- * Get all pending approval requests
+ * Create a notification for admin
+ */
+window.createNotification = function (type, data) {
+    const notification = {
+        id: 'NOTIF_' + Date.now(),
+        type: type, // NEW_APPROVAL_REQUEST, APPROVAL_STATUS_CHANGE
+        data: data,
+        isRead: false,
+        createdAt: new Date().toISOString()
+    };
+
+    let notifications = JSON.parse(localStorage.getItem('workbridge_notifications') || '[]');
+    notifications.unshift(notification); // Add to beginning
+    
+    // Keep only last 100 notifications
+    notifications = notifications.slice(0, 100);
+    
+    localStorage.setItem('workbridge_notifications', JSON.stringify(notifications));
+    
+    // Show browser notification if available
+    if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('New Profile Approval Request', {
+            body: `${data.userName} (${data.userEmail}) has submitted a profile for approval.`,
+            icon: 'https://ui-avatars.com/api/?name=WorkBridge&background=0066cc',
+            tag: notification.id
+        });
+    }
+    
+    return notification;
+};
+
+/**
+ * Request browser notification permission
+ */
+window.requestNotificationPermission = function () {
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+};
+
+/**
+ * Get unread notifications
+ */
+window.getUnreadNotifications = function () {
+    const notifications = JSON.parse(localStorage.getItem('workbridge_notifications') || '[]');
+    return notifications.filter(n => !n.isRead);
+};
+
+/**
+ * Get all notifications
+ */
+window.getAllNotifications = function () {
+    return JSON.parse(localStorage.getItem('workbridge_notifications') || '[]');
+};
+
+/**
+ * Get unread notification count
+ */
+window.getUnreadNotificationCount = function () {
+    return getUnreadNotifications().length;
+};
+
+/**
+ * Mark notification as read
+ */
+window.markNotificationAsRead = function (notificationId) {
+    let notifications = JSON.parse(localStorage.getItem('workbridge_notifications') || '[]');
+    const notification = notifications.find(n => n.id === notificationId);
+    if (notification) {
+        notification.isRead = true;
+        localStorage.setItem('workbridge_notifications', JSON.stringify(notifications));
+    }
+};
+
+/**
+ * Mark all notifications as read
+ */
+window.markAllNotificationsAsRead = function () {
+    let notifications = JSON.parse(localStorage.getItem('workbridge_notifications') || '[]');
+    notifications.forEach(n => n.isRead = true);
+    localStorage.setItem('workbridge_notifications', JSON.stringify(notifications));
+};
+
+/**
+ * Delete notification
+ */
+window.deleteNotification = function (notificationId) {
+    let notifications = JSON.parse(localStorage.getItem('workbridge_notifications') || '[]');
+    notifications = notifications.filter(n => n.id !== notificationId);
+    localStorage.setItem('workbridge_notifications', JSON.stringify(notifications));
+};
+
+/**
+ * Get pending approval notifications
+ */
+window.getPendingNotifications = function () {
+    const notifications = getAllNotifications();
+    return notifications.filter(n => n.type === 'NEW_APPROVAL_REQUEST');
+};
+
+/**
+ * Get notification count by type
+ */
+window.getNotificationCountByType = function (type) {
+    const notifications = getAllNotifications();
+    return notifications.filter(n => n.type === type && !n.isRead).length;
+};
+
+/**
+ * Get all pending approvals
  */
 window.getPendingApprovals = function () {
     const approvals = JSON.parse(localStorage.getItem('workbridge_approvals') || '[]');
@@ -340,3 +458,18 @@ window.downloadApprovalReport = function () {
 };
 
 console.log('Profile Approval System loaded successfully');
+
+/**
+ * TEST FUNCTION - Create a test notification (for debugging)
+ * Run this in browser console: testCreateNotification()
+ */
+window.testCreateNotification = function() {
+    createNotification('NEW_APPROVAL_REQUEST', {
+        approvalId: 'TEST_' + Date.now(),
+        userName: 'Test User',
+        userEmail: 'testuser@example.com',
+        timestamp: new Date().toISOString()
+    });
+    console.log('Test notification created! Check admin-profile-approvals.html');
+    return true;
+};

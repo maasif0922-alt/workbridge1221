@@ -368,9 +368,33 @@
                 <a href="admin-news.html">News</a>
                 <a href="javascript:void(0)" onclick="handleLogout()">Logout</a>
             </div>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-right: 1rem;">
+                <!-- Notification Bell -->
+                <div style="position: relative;">
+                    <button onclick="toggleNotificationPanel()" 
+                        style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-primary);">
+                        <i class="fa-solid fa-bell"></i>
+                        <span id="notification-badge" 
+                            style="position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold;">0</span>
+                    </button>
+                </div>
+            </div>
             <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
         </div>
     </nav>
+
+    <!-- Notification Panel -->
+    <div id="notification-panel" style="display: none; position: fixed; top: 60px; right: 20px; width: 350px; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 999; max-height: 500px; overflow-y: auto;">
+        <div style="padding: 1rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 1rem;">Notifications</h3>
+            <button onclick="toggleNotificationPanel()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div id="notifications-list" style="padding: 0;">
+            <!-- Notifications will be rendered here -->
+        </div>
+    </div>
 
     <!-- Main Content -->
     <section class="section">
@@ -702,6 +726,178 @@
                     modal.classList.remove('active');
                 }
             });
+        });
+
+        // ===== NOTIFICATION SYSTEM =====
+        function updateNotificationBadge() {
+            const count = getUnreadNotificationCount();
+            const badge = document.getElementById('notification-badge');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'flex' : 'none';
+            }
+        }
+
+        function renderNotifications() {
+            const notificationsList = document.getElementById('notifications-list');
+            const notifications = getAllNotifications();
+
+            if (notifications.length === 0) {
+                notificationsList.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--text-secondary);"><i class="fa-solid fa-inbox" style="font-size: 2rem; margin-bottom: 0.5rem;"></i><p>No notifications</p></div>';
+                return;
+            }
+
+            notificationsList.innerHTML = notifications.map(notif => {
+                const isNewApproval = notif.type === 'NEW_APPROVAL_REQUEST';
+                const timeAgo = getTimeAgo(notif.createdAt);
+
+                return `
+                    <div style="padding: 1rem; border-bottom: 1px solid var(--border-color); cursor: pointer; background: ${notif.isRead ? 'transparent' : '#f0f7ff'};"
+                        onclick="handleNotificationClick('${notif.id}', '${notif.data.approvalId || ''}')">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; color: var(--text-primary);">
+                                    ${isNewApproval ? '✓ New Profile Submission' : 'Notification'}
+                                    ${!notif.isRead ? '<span style="display: inline-block; width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; margin-left: 0.5rem; vertical-align: middle;"></span>' : ''}
+                                </div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.3rem;">
+                                    ${isNewApproval ? `<strong>${notif.data.userName}</strong> submitted a profile for approval` : 'New notification'}
+                                </div>
+                                <div style="font-size: 0.8rem; color: #999; margin-top: 0.5rem;">${timeAgo}</div>
+                            </div>
+                            <button onclick="event.stopPropagation(); deleteNotification('${notif.id}'); renderNotifications(); updateNotificationBadge();"
+                                style="background: none; border: none; color: #999; cursor: pointer; font-size: 1.2rem;">
+                                <i class="fa-solid fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getTimeAgo(timestamp) {
+            const now = new Date();
+            const notifTime = new Date(timestamp);
+            const diff = Math.floor((now - notifTime) / 1000);
+
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            return `${Math.floor(diff / 86400)}d ago`;
+        }
+
+        function handleNotificationClick(notificationId, approvalId) {
+            markNotificationAsRead(notificationId);
+            updateNotificationBadge();
+            renderNotifications();
+
+            // Scroll to the approval in the table
+            if (approvalId) {
+                const approvals = getAllApprovals();
+                const approval = approvals.find(a => a.id === approvalId);
+                if (approval) {
+                    filterApprovals('pending');
+                }
+            }
+        }
+
+        function toggleNotificationPanel() {
+            const panel = document.getElementById('notification-panel');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                renderNotifications();
+                markAllNotificationsAsRead();
+                updateNotificationBadge();
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        // Initialize notifications on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Request notification permission
+            requestNotificationPermission();
+            
+            // Initial update
+            updateNotificationBadge();
+
+            // Check for new notifications every 5 seconds
+            setInterval(function() {
+                const count = getUnreadNotificationCount();
+                const badge = document.getElementById('notification-badge');
+                if (badge) {
+                    const currentCount = parseInt(badge.textContent) || 0;
+                    if (count !== currentCount) {
+                        updateNotificationBadge();
+                        // Show toast for new notifications
+                        if (count > currentCount) {
+                            showNotificationToast(`You have ${count} new approval request(s)!`);
+                        }
+                    }
+                }
+            }, 5000);
+        }, { once: true });
+
+        function showNotificationToast(message) {
+            // Create a simple toast notification
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: var(--primary-color);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: var(--radius-md);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // Add CSS animations for toast
+        if (!document.querySelector('style[data-toast-animations]')) {
+            const style = document.createElement('style');
+            style.setAttribute('data-toast-animations', 'true');
+            style.textContent = `
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                @keyframes slideOut {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Close notification panel when clicking outside
+        document.addEventListener('click', function(e) {
+            const panel = document.getElementById('notification-panel');
+            const bellBtn = e.target.closest('button[onclick*="toggleNotificationPanel"]');
+            if (panel && !bellBtn && !panel.contains(e.target)) {
+                panel.style.display = 'none';
+            }
         });
     </script>
 </body>
