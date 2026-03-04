@@ -749,6 +749,14 @@
                     style="width: 100%; padding: 1rem; border-radius: 12px; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 1rem; cursor: pointer;">
                     Sign In Now <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
+                <button type="button" onclick="testLogin()" class="btn btn-secondary"
+                    style="width: 100%; padding: 0.8rem; border-radius: 12px; font-weight: 600; font-size: 0.9rem; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; margin-bottom: 1rem; cursor: pointer;">
+                    Test Login (Demo)
+                </button>
+                <button type="button" onclick="testLogin('maasif0922@gmail.com', 'admin123')" class="btn btn-secondary"
+                    style="width: 100%; padding: 0.8rem; border-radius: 12px; font-weight: 600; font-size: 0.9rem; background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; margin-bottom: 1rem; cursor: pointer;">
+                    Admin Login (Demo)
+                </button>
                 <div style="text-align: center; font-size: 0.9rem; color: var(--text-secondary);">
                     Don't have an account? <a href="javascript:void(0)" onclick="switchAuthTab('signup')"
                         style="color: var(--primary-color); font-weight: 700; text-decoration: none;">Register
@@ -825,7 +833,7 @@
     </div>
 
     <script src="./js/theme.js"></script>
-    <!-- <script src="./js/profile-approval.js"></script> -->
+    <script src="./js/profile-approval.js"></script>
     <script src="./js/auth.js"></script>
     <script>
         // Rotating text logic

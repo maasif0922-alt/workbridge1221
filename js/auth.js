@@ -266,10 +266,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Redirect to appropriate dashboard
                     setTimeout(() => {
+                        const timestamp = Date.now();
                         if (email.toLowerCase() === 'maasif0922@gmail.com') {
-                            window.location.href = './dashboard.html';
+                            window.location.href = `dashboard.html?t=${timestamp}`;
                         } else {
-                            window.location.href = './home.html';
+                            window.location.href = `home.html?t=${timestamp}`;
                         }
                         localStorage.removeItem('selected_earning_plan');
                     }, 1000);
@@ -413,4 +414,35 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target === loginModal) closeLoginModal();
         });
     }
+
+    // Helper function to test login
+    window.testLogin = function(email = 'test@example.com', password = 'test123') {
+        // Save mock session
+        const role = email.toLowerCase() === 'maasif0922@gmail.com' ? 'admin' : 'user';
+        const isVerified = (role === 'admin');
+
+        const userData = {
+            name: email.split('@')[0],
+            email: email,
+            role: role,
+            isVerified: isVerified,
+            profileStatus: 'approved',
+            earning_plan: null,
+            loginDate: new Date().toISOString()
+        };
+        
+        localStorage.setItem('workbridge_user', JSON.stringify(userData));
+        
+        // Redirect with a small delay to ensure localStorage is set
+        setTimeout(() => {
+            const timestamp = Date.now();
+            if (role === 'admin') {
+                window.location.href = `dashboard.html?t=${timestamp}`;
+            } else {
+                window.location.href = `home.html?t=${timestamp}`;
+            }
+        }, 500);
+        
+        return true;
+    };
 });
