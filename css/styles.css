@@ -2447,7 +2447,7 @@ footer {
   height: 100%;
   background: rgba(15, 23, 42, 0.7);
   backdrop-filter: blur(8px);
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
