@@ -1,9 +1,7 @@
 window.syncSettingsUI = function () {
     // Load Global Settings
     const savedSettings = localStorage.getItem('workbridge_settings');
-    if (!savedSettings) return;
-
-    const settings = JSON.parse(savedSettings);
+    const settings = savedSettings ? JSON.parse(savedSettings) : {};
 
     // Apply WhatsApp Number to all WhatsApp buttons
     if (settings.whatsapp) {
