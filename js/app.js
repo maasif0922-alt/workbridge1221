@@ -923,11 +923,11 @@ window.renderNavbar = function () {
         const isLanding = document.body.classList.contains('landing-page');
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-    // Build Nav Links
-    let navHtml = '';
-    if (user) {
-        const isAdmin = user.role === 'admin';
-        navHtml = `
+        // Build Nav Links
+        let navHtml = '';
+        if (user) {
+            const isAdmin = user.role === 'admin';
+            navHtml = `
             <a href="home.html" class="${currentPage === 'home.html' ? 'active' : ''}">Home</a>
             <a href="services.html" class="${currentPage === 'services.html' ? 'active' : ''}">Services</a>
             <a href="profiles.html" class="${currentPage === 'profiles.html' ? 'active' : ''}">Freelancers</a>
@@ -946,30 +946,32 @@ window.renderNavbar = function () {
                 </button>
             </div>
         `;
-    } else if (isLanding) {
-        navHtml = `
+        } else if (isLanding) {
+            navHtml = `
             <a href="#about" style="color: inherit; font-weight: 600;">How it Works</a>
             <a href="#pathways" style="color: inherit; font-weight: 600;">Freelancers</a>
             <a href="javascript:void(0)" onclick="openLoginModal()" style="color: inherit; font-weight: 600;">Sign In</a>
             <button onclick="openLoginModal(); switchAuthTab('signup')" class="btn btn-primary" style="padding: 0.6rem 1.5rem; border-radius: 10px; font-weight: 700;">Join</button>
         `;
-    } else {
-        navHtml = `
+        } else {
+            navHtml = `
             <a href="index.html">Home</a>
             <a href="javascript:void(0)" onclick="openLoginModal()">Login</a>
             <button onclick="openLoginModal(); switchAuthTab('signup')" class="btn btn-primary">Join Free</button>
         `;
-    }
+        }
 
-    const navLinks = document.querySelector('.nav-links');
-    if (navLinks) {
-        console.log('Rendering navbar for user:', user, 'currentPage:', currentPage);
-        console.log('Navbar HTML:', navHtml);
+        const navLinks = document.querySelector('.nav-links');
+        if (navLinks) {
+            console.log('Rendering navbar for user:', user, 'currentPage:', currentPage);
+            // navLinks.innerHTML = navHtml; // Actually inject the HTML
+            navLinks.innerHTML = navHtml;
+        }
 
-    // Also update logos
-    document.querySelectorAll('.logo').forEach(logo => {
-        logo.href = user ? 'home.html' : 'index.html';
-    });
+        // Also update logos
+        document.querySelectorAll('.logo').forEach(logo => {
+            logo.href = user ? 'home.html' : 'index.html';
+        });
     } catch (err) {
         console.error('Error in renderNavbar:', err);
     }
@@ -1276,8 +1278,11 @@ window.openPremiumModal = function (planName, price) {
     }
 }
 
-// Initialize dynamic content based on page
+// Initialize everything
 document.addEventListener('DOMContentLoaded', () => {
+    if (typeof renderNavbar === 'function') {
+        renderNavbar();
+    }
     // Determine which container to use
     try {
         if (document.getElementById('home-latest-jobs')) {

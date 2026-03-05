@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
     <script src="./js/auth-guard.js"></script>
     <style>
         .dashboard-container {
@@ -151,7 +152,8 @@
                 <a href="donations.html">Donations</a>
                 <a href="admin-profile-approvals.html" style="display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-user-check"></i>
-                    Approvals <span id="approvals-badge" style="background: #ef4444; color: white; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 10px; display: none;">0</span>
+                    Approvals <span id="approvals-badge"
+                        style="background: #ef4444; color: white; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 10px; display: none;">0</span>
                 </a>
                 <a href="index.html">Back to Site</a>
                 <a href="javascript:void(0)" onclick="handleLogout()" class="btn btn-secondary">Logout</a>
@@ -214,8 +216,17 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <button onclick="history.back()" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</button>
-            <h2 style="margin-bottom: 1.5rem;">Dashboard Overview</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2>Dashboard Overview</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="downloadApprovalsAsExcel()" class="btn btn-secondary" style="background: #10b981;">
+                        <i class="fa-solid fa-file-excel"></i> Export Approvals
+                    </button>
+                    <button onclick="downloadAllUsersAsExcel()" class="btn" style="background: #1e293b; color: white;">
+                        <i class="fa-solid fa-users"></i> Export All Users
+                    </button>
+                </div>
+            </div>
 
             <div class="stats-grid">
                 <div class="stat-card">
@@ -369,51 +380,54 @@
                     `).join('');
                 }
 
-                // Pending User Profile Verifications
                 const usersList = document.getElementById('pending-users-list');
-                // In this simulated environment, we check the current logged in user if they are pending, 
-                // OR we can look for users in a hypothetical 'workbridge_all_users' list.
-                // For demonstration, we'll check 'workbridge_user' and simulated 'workbridge_temp_users'
-                const currentUser = JSON.parse(localStorage.getItem('workbridge_user'));
-                const allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
+                const adminUser = JSON.parse(localStorage.getItem('workbridge_user'));
 
-                // Ensure current user is in allUsers for the admin to see them
-                if (currentUser && currentUser.profileStatus === 'pending') {
-                    if (!allUsers.find(u => u.email === currentUser.email)) {
-                        allUsers.push(currentUser);
-                        localStorage.setItem('workbridge_all_users', JSON.stringify(allUsers));
-                    }
+                // Use profile-approval.js system
+                let pendingApprovals = [];
+                if (typeof getPendingApprovals === 'function') {
+                    pendingApprovals = getPendingApprovals();
+                } else {
+                    // Fallback to legacy if library not loaded
+                    const allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
+                    pendingApprovals = allUsers.filter(u => u.profileStatus === 'pending').map(u => ({
+                        id: 'LEGACY_' + u.email,
+                        name: u.name,
+                        email: u.email,
+                        userData: u
+                    }));
                 }
 
-                const pendingUsers = allUsers.filter(u => u.profileStatus === 'pending');
-
-                if (pendingUsers.length === 0) {
-                    usersList.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">All users verified.</td></tr>';
+                if (pendingApprovals.length === 0) {
+                    usersList.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">No pending approvals.</td></tr>';
                 } else {
-                    usersList.innerHTML = pendingUsers.map(u => `
+                    usersList.innerHTML = pendingApprovals.map(a => {
+                        const u = a.userData || {};
+                        return `
                         <tr>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <div style="width: 32px; height: 32px; background: var(--primary-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">
-                                        ${u.name.charAt(0).toUpperCase()}
+                                        ${a.name.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <div style="font-weight: 600;">${u.name}</div>
-                                        <div style="font-size: 0.75rem; color: var(--primary-color); font-weight: 600;">${u.title || 'No Title'}</div>
+                                        <div style="font-weight: 600;">${a.name}</div>
+                                        <div style="font-size: 0.75rem; color: var(--primary-color); font-weight: 600;">${u.earning_plan || 'Pending approval'}</div>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <div style="font-size: 0.85rem;"><strong>${u.experience || 0}y Exp</strong></div>
-                                <div style="font-size: 0.75rem; color: var(--text-secondary); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${u.about || 'No details'}</div>
+                                <div style="font-size: 0.85rem;"><strong>${u.phone || 'N/A'}</strong></div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">${a.email}</div>
                             </td>
                             <td><span class="badge-non-verified">Pending</span></td>
                             <td style="display: flex; gap: 5px;">
-                                <button onclick="viewUserDetails('${u.email}')" class="btn" style="background: var(--bg-color); color: var(--text-primary); padding: 0.25rem 0.5rem; border: 1px solid var(--border-color); cursor:pointer; border-radius: 4px;"><i class="fa-solid fa-eye"></i></button>
-                                <button onclick="approveUser('${u.email}')" class="btn" style="background: #dcfce7; color: #166534; padding: 0.25rem 0.5rem; border: none; cursor:pointer; border-radius: 4px;"><i class="fa-solid fa-check"></i></button>
+                                <button onclick="viewApprovalDetails('${a.id}')" class="btn" style="background: var(--bg-color); color: var(--text-primary); padding: 0.25rem 0.5rem; border: 1px solid var(--border-color); cursor:pointer; border-radius: 4px;"><i class="fa-solid fa-eye"></i></button>
+                                <button onclick="handleApproveClick('${a.id}')" class="btn" style="background: #dcfce7; color: #166534; padding: 0.25rem 0.5rem; border: none; cursor:pointer; border-radius: 4px;"><i class="fa-solid fa-check"></i></button>
                             </td>
                         </tr>
-                    `).join('');
+                    `;
+                    }).join('');
                 }
 
                 // Job Applications
@@ -441,24 +455,19 @@
                 }
             }
 
-            window.approveUser = (email) => {
-                let allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
-                const index = allUsers.findIndex(u => u.email === email);
-                if (index !== -1) {
-                    allUsers[index].profileStatus = 'approved';
-                    allUsers[index].isVerified = true;
-                    localStorage.setItem('workbridge_all_users', JSON.stringify(allUsers));
-
-                    // If the approved user is the current user, update their session too
-                    const currentUser = JSON.parse(localStorage.getItem('workbridge_user'));
-                    if (currentUser && currentUser.email === email) {
-                        currentUser.profileStatus = 'approved';
-                        currentUser.isVerified = true;
-                        localStorage.setItem('workbridge_user', JSON.stringify(currentUser));
+            window.handleApproveClick = (id) => {
+                const admin = JSON.parse(localStorage.getItem('workbridge_user'));
+                if (typeof approveUserProfile === 'function') {
+                    const result = approveUserProfile(id, admin.email);
+                    if (result.success) {
+                        alert(result.message);
+                        loadPendingData();
+                        updateApprovalsBadge();
                     }
-
-                    alert('User Profile Approved!');
-                    loadPendingData();
+                } else {
+                    // Fallback
+                    const email = id.replace('LEGACY_', '');
+                    approveUser(email);
                 }
             };
 
@@ -503,44 +512,59 @@
                 }
             };
 
-            window.viewUserDetails = (email) => {
-                const allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
-                const u = allUsers.find(user => user.email === email);
-                if (!u) return;
+            window.viewApprovalDetails = (id) => {
+                const approvals = JSON.parse(localStorage.getItem('workbridge_approvals') || '[]');
+                const a = approvals.find(app => app.id === id);
+                if (!a) {
+                    // Fallback to legacy
+                    const allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
+                    const u = allUsers.find(user => user.email === id.replace('LEGACY_', ''));
+                    if (!u) return;
+                    a = { id: id, name: u.name, email: u.email, userData: u };
+                }
 
+                const u = a.userData || {};
                 const body = document.getElementById('user-details-body');
                 body.innerHTML = `
                     <div style="text-align: center; margin-bottom: 2rem;">
-                        <img src="${u.profileImg || 'https://ui-avatars.com/api/?name=' + u.name + '&background=random&size=100'}" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1rem;">
-                        <h2 style="margin-bottom: 0.25rem;">${u.name}</h2>
-                        <p style="color: var(--primary-color); font-weight: 600;">${u.title || 'Professional'}</p>
+                        <img src="${u.profileImg || 'https://ui-avatars.com/api/?name=' + a.name + '&background=random&size=100'}" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1rem;">
+                        <h2 style="margin-bottom: 0.25rem;">${a.name}</h2>
+                        <p style="color: var(--primary-color); font-weight: 600;">${u.earning_plan || 'Approval Request'}</p>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
                         <div style="padding: 1rem; background: #f8fafc; border-radius: 8px;">
-                            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Experience</label>
-                            <span style="font-weight: 600;">${u.experience || 0} Years</span>
+                            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Phone / Contact</label>
+                            <span style="font-weight: 600;">${u.phone || 'Not provided'}</span>
                         </div>
                         <div style="padding: 1rem; background: #f8fafc; border-radius: 8px;">
-                            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">WhatsApp</label>
-                            <span style="font-weight: 600;">${u.whatsapp || 'Not provided'}</span>
+                            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Method</label>
+                            <span style="font-weight: 600;">${u.method || 'Manual'}</span>
                         </div>
                     </div>
                     <div style="padding: 1rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem;">
-                        <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Work History & Skills</label>
-                        <p style="font-size: 0.9rem; line-height: 1.6;">${u.about || 'No details provided.'}</p>
+                        <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Account Info</label>
+                        <p style="font-size: 0.9rem; line-height: 1.6;">User requested joining with plan: <strong>${u.earning_plan || 'Standard'}</strong></p>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Registered on: ${new Date(a.createdAt || Date.now()).toLocaleString()}</p>
                     </div>
                     <div style="font-size: 0.8rem; color: var(--text-secondary);">
-                        Email: ${u.email}
+                        Email: ${a.email}
                     </div>
                 `;
 
                 document.getElementById('modal-approve-btn').onclick = () => {
-                    approveUser(email);
+                    handleApproveClick(id);
                     document.getElementById('user-details-modal').style.display = 'none';
                 };
                 document.getElementById('modal-reject-btn').onclick = () => {
-                    rejectUser(email);
-                    document.getElementById('user-details-modal').style.display = 'none';
+                    if (confirm('Reject this profile?')) {
+                        const admin = JSON.parse(localStorage.getItem('workbridge_user'));
+                        if (typeof rejectUserProfile === 'function') {
+                            rejectUserProfile(id, 'Admin rejection', admin.email);
+                            loadPendingData();
+                            updateApprovalsBadge();
+                        }
+                        document.getElementById('user-details-modal').style.display = 'none';
+                    }
                 };
 
                 document.getElementById('user-details-modal').style.display = 'flex';
@@ -605,9 +629,9 @@
         }
 
         // Initialize badge on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             updateApprovalsBadge();
-            
+
             // Check for new approvals every 10 seconds
             setInterval(updateApprovalsBadge, 10000);
         });
