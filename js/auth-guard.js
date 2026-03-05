@@ -20,17 +20,12 @@
     ];
 
     // List of user-only/protected pages (registered users)
+    // pages that require authentication to access
     const protectedPages = [
-        'home.html',
         'user-profile.html',
         'earning-dashboard.html',
         'post-job.html',
-        'post-service.html',
-        'services.html',
-        'profiles.html',
-        'jobs.html',
-        'donations.html',
-        'news.html'
+        'post-service.html'
     ];
 
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';

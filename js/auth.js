@@ -106,6 +106,13 @@ window.handleCredentialResponse = function (response) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Hide Google sign-in elements on pages other than index.html
+    if (!window.location.pathname.endsWith('index.html')) {
+        document.querySelectorAll('#google-auth-container, .g_id_signin, #g_id_onload').forEach(el => {
+            if (el) el.style.display = 'none';
+        });
+    }
+
     const loginForm = document.getElementById('login-form-element');
     const signupForm = document.getElementById('signup-form-element');
 

@@ -926,6 +926,7 @@ window.renderNavbar = function () {
             <a href="home.html" class="${currentPage === 'home.html' ? 'active' : ''}">Home</a>
             <a href="services.html" class="${currentPage === 'services.html' ? 'active' : ''}">Services</a>
             <a href="profiles.html" class="${currentPage === 'profiles.html' ? 'active' : ''}">Freelancers</a>
+            <a href="news.html" class="${currentPage === 'news.html' ? 'active' : ''}">News</a>
             <a href="jobs.html" class="${currentPage === 'jobs.html' ? 'active' : ''}">Jobs</a>
             <a href="donations.html" class="${currentPage === 'donations.html' ? 'active' : ''}">Donation</a>
             <a href="earning-dashboard.html" class="${currentPage === 'earning-dashboard.html' ? 'active' : ''}">Earning</a>
