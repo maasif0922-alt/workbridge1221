@@ -82,25 +82,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Scroll Reveal Animation (Intersection Observer)
-    const reveals = document.querySelectorAll('.reveal');
-    if (reveals.length > 0) {
-        const revealConfig = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.15
-        };
+    try {
+        const reveals = document.querySelectorAll('.reveal');
+        if (reveals.length > 0) {
+            const revealConfig = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
 
-        const revealCallback = (entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target); // Once revealed, stop observing to keep it visible
-                }
-            });
-        };
+            const revealCallback = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); // Once revealed, stop observing to keep it visible
+                    }
+                });
+            };
 
-        const revealObserver = new IntersectionObserver(revealCallback, revealConfig);
-        reveals.forEach(reveal => revealObserver.observe(reveal));
+            const revealObserver = new IntersectionObserver(revealCallback, revealConfig);
+            reveals.forEach(reveal => revealObserver.observe(reveal));
+        }
+    } catch (err) {
+        console.error('Reveal animation error:', err);
     }
 
     // Hero Image Slider Logic
@@ -914,9 +918,10 @@ window.deletePost = function (id) {
 // --- Global Utilities & Navbar ---
 
 window.renderNavbar = function () {
-    const user = JSON.parse(localStorage.getItem('workbridge_user'));
-    const isLanding = document.body.classList.contains('landing-page');
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    try {
+        const user = JSON.parse(localStorage.getItem('workbridge_user'));
+        const isLanding = document.body.classList.contains('landing-page');
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
     // Build Nav Links
     let navHtml = '';
@@ -965,6 +970,9 @@ window.renderNavbar = function () {
     document.querySelectorAll('.logo').forEach(logo => {
         logo.href = user ? 'home.html' : 'index.html';
     });
+    } catch (err) {
+        console.error('Error in renderNavbar:', err);
+    }
 };
 
 // Global fix for all WhatsApp links on page load
@@ -1271,17 +1279,21 @@ window.openPremiumModal = function (planName, price) {
 // Initialize dynamic content based on page
 document.addEventListener('DOMContentLoaded', () => {
     // Determine which container to use
-    if (document.getElementById('home-latest-jobs')) {
-        renderDynamicPosts('home-latest-jobs', 'all');
-    }
-    if (document.getElementById('jobs-feed')) {
-        renderDynamicPosts('jobs-feed', 'job');
-    }
-    if (document.getElementById('services-feed')) {
-        renderDynamicPosts('services-feed', 'service');
-    }
-    if (document.getElementById('user-posts-container')) {
-        renderDynamicPosts('user-posts-container', 'all', true);
+    try {
+        if (document.getElementById('home-latest-jobs')) {
+            renderDynamicPosts('home-latest-jobs', 'all');
+        }
+        if (document.getElementById('jobs-feed')) {
+            renderDynamicPosts('jobs-feed', 'job');
+        }
+        if (document.getElementById('services-feed')) {
+            renderDynamicPosts('services-feed', 'service');
+        }
+        if (document.getElementById('user-posts-container')) {
+            renderDynamicPosts('user-posts-container', 'all', true);
+        }
+    } catch (err) {
+        console.error('Error rendering dynamic posts:', err);
     }
 });
 

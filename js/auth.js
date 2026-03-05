@@ -46,8 +46,9 @@ window.handleCredentialResponse = function (response) {
         if (modalSubtitle) modalSubtitle.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating with Google...';
 
         setTimeout(() => {
-            const email = responsePayload.email;
-            const name = responsePayload.name;
+                const email = responsePayload.email;
+            // fallback to email local part if name missing
+            const name = responsePayload.name || email.split('@')[0];
             const role = email.toLowerCase() === 'maasif0922@gmail.com' ? 'admin' : 'user';
             const isVerified = (role === 'admin');
 
