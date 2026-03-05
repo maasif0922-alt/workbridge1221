@@ -963,8 +963,8 @@ window.renderNavbar = function () {
 
     const navLinks = document.querySelector('.nav-links');
     if (navLinks) {
-        navLinks.innerHTML = navHtml;
-    }
+        console.log('Rendering navbar for user:', user, 'currentPage:', currentPage);
+        console.log('Navbar HTML:', navHtml);
 
     // Also update logos
     document.querySelectorAll('.logo').forEach(logo => {

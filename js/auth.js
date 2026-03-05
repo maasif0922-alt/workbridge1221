@@ -63,8 +63,7 @@ window.handleCredentialResponse = function (response) {
                 method: 'google'
             };
             localStorage.setItem('workbridge_user', JSON.stringify(userObj));
-
-            // Sync with all users list for admin visibility
+                    console.log('Stored user in localStorage:', userObj);                    if (typeof renderNavbar === 'function') renderNavbar();            // Sync with all users list for admin visibility
             let allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
             if (!allUsers.find(u => u.email === email)) {
                 allUsers.push(userObj);
@@ -156,6 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
 
                     localStorage.setItem('workbridge_user', JSON.stringify(userData));
+                    console.log('Stored new signup user in localStorage:', userData);
+                    if (typeof renderNavbar === 'function') renderNavbar();
 
                     // Add user to all users list and create approval request if not admin
                     let allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
@@ -240,6 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         earning_plan: selectedPlan || null,
                         loginDate: new Date().toISOString()
                     }));
+                    console.log('Stored manual login user in localStorage for', email);
+                    if (typeof renderNavbar === 'function') renderNavbar();
 
                     // Only add to all users list if not already exists
                     let allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');

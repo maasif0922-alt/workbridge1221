@@ -30,6 +30,7 @@
 
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     const user = JSON.parse(localStorage.getItem('workbridge_user'));
+    console.log('AuthGuard running, page=', currentPage, 'user=', user);
 
     // 1. Check if user is logged in for protected/admin pages
     if (!user) {
