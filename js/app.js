@@ -921,7 +921,11 @@ window.renderNavbar = function () {
     try {
         const user = JSON.parse(localStorage.getItem('workbridge_user'));
         const isLanding = document.body.classList.contains('landing-page');
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        const path = window.location.pathname;
+        let currentPage = path.split('/').filter(Boolean).pop() || 'index.html';
+        if (path.endsWith('/') || currentPage === 'index' || currentPage === '') {
+            currentPage = 'index.html';
+        }
 
         // Build Nav Links
         let navHtml = '';
@@ -961,15 +965,14 @@ window.renderNavbar = function () {
         `;
         }
 
-        const navLinks = document.querySelector('.nav-links');
-        if (navLinks) {
+        const allNavLinks = document.querySelectorAll('.nav-links');
+        allNavLinks.forEach(navLinks => {
             console.log('Rendering navbar for user:', user, 'currentPage:', currentPage);
-            // navLinks.innerHTML = navHtml; // Actually inject the HTML
             navLinks.innerHTML = navHtml;
-        }
+        });
 
-        // Also update logos
-        document.querySelectorAll('.logo').forEach(logo => {
+        // Also update all logos
+        document.querySelectorAll('.logo, a.logo').forEach(logo => {
             logo.href = user ? 'home.html' : 'index.html';
         });
     } catch (err) {

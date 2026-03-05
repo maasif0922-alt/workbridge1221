@@ -27,17 +27,12 @@
         'earning-dashboard.html',
         'post-job.html',
         'post-service.html',
-        'profiles.html',
-        'services.html',
-        'news.html',
-        'donations.html'
+        'dashboard.html'
     ];
 
     let path = window.location.pathname;
-    let currentPage = path.split('/').pop() || 'index.html';
-
-    // Handle cases where there might be a trailing slash or directory access
-    if (path.endsWith('/')) {
+    let currentPage = path.split('/').filter(Boolean).pop() || 'index.html';
+    if (path.endsWith('/') || currentPage === 'index' || currentPage === '') {
         currentPage = 'index.html';
     }
 

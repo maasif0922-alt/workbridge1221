@@ -102,6 +102,77 @@
             font-size: 0.875rem;
         }
 
+        .btn-filter {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: var(--surface-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .btn-filter.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.rejected {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-buttons button {
+            padding: 0.4rem;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-approve {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .btn-reject {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-view {
+            background: #f1f5f9;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color) !important;
+        }
+
         @media (max-width: 768px) {
             .dashboard-container {
                 flex-direction: column;
@@ -150,7 +221,7 @@
             </a>
             <div class="nav-links" style="display: flex; align-items: center; gap: 1.5rem;">
                 <a href="donations.html">Donations</a>
-                <a href="admin-profile-approvals.html" style="display: flex; align-items: center; gap: 0.5rem;">
+                <a href="dashboard.html" style="display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-user-check"></i>
                     Approvals <span id="approvals-badge"
                         style="background: #ef4444; color: white; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 10px; display: none;">0</span>
@@ -230,93 +301,107 @@
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-label">Total Users</div>
-                    <div class="stat-value">1,248</div>
+                    <div class="stat-label">Total Requests</div>
+                    <div class="stat-value" id="stat-total-req">0</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid #f59e0b;">
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-value" id="stat-pending-req">0</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid #10b981;">
+                    <div class="stat-label">Approved</div>
+                    <div class="stat-value" id="stat-approved-req">0</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Active Job Posts</div>
+                    <div class="stat-label">Active Jobs</div>
                     <div class="stat-value">84</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Services Listed</div>
-                    <div class="stat-value">312</div>
+            </div>
+
+            <!-- Profile Approvals Section -->
+            <div
+                style="background: var(--surface-color); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 2.5rem;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h3><i class="fa-solid fa-user-check"></i> Profile Approval Management</h3>
+                    <div class="filter-buttons" style="display: flex; gap: 0.5rem;">
+                        <button onclick="filterApprovals('all')" class="btn-filter active" id="filter-all">All</button>
+                        <button onclick="filterApprovals('pending')" class="btn-filter"
+                            id="filter-pending">Pending</button>
+                        <button onclick="filterApprovals('approved')" class="btn-filter"
+                            id="filter-approved">Approved</button>
+                        <button onclick="filterApprovals('rejected')" class="btn-filter"
+                            id="filter-rejected">Rejected</button>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Messages Sent Today</div>
-                    <div class="stat-value">450+</div>
+
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email/Phone</th>
+                                <th>Earning Plan</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approvals-tbody">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-    </div>
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2.5rem;">
-        <!-- User Verification Column -->
-        <div>
-            <h3 style="margin-bottom: 1rem;">Pending User Verifications</h3>
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>User (Profession)</th>
-                            <th>Exp / Skills</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pending-users-list">
-                        <!-- Loaded from localStorage -->
-                        <tr>
-                            <td colspan="4" style="text-align:center;">Checking for pending users...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+                <!-- Post Approval Column -->
+                <div>
+                    <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-clipboard-check"></i> Pending Post Approvals
+                    </h3>
+                    <div class="data-table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pending-posts-list">
+                                <!-- Loaded from localStorage -->
+                                <tr>
+                                    <td colspan="3" style="text-align:center;">Checking for pending posts...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Post Approval Column -->
-        <div>
-            <h3 style="margin-bottom: 1rem;">Pending Post Approvals</h3>
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>User</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pending-posts-list">
-                        <!-- Loaded from localStorage -->
-                        <tr>
-                            <td colspan="3" style="text-align:center;">Checking for pending posts...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div
+                style="margin-top: 2.5rem; background: white; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                <h3 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-paper-plane"></i> Recent Job Applications</h3>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Applicant</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="job-applications-list">
+                            <tr>
+                                <td colspan="4" style="text-align:center; padding: 2rem;">No applications received yet.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-    </div>
-    <div
-        style="margin-top: 2.5rem; background: white; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
-        <h3 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-paper-plane"></i> Recent Job Applications</h3>
-        <div class="data-table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Job Title</th>
-                        <th>Applicant</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="job-applications-list">
-                    <tr>
-                        <td colspan="4" style="text-align:center; padding: 2rem;">No applications received yet.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    </main>
+        </main>
     </div>
 
     <!-- User Details Modal -->
@@ -336,279 +421,307 @@
     </div>
 
     <script>
+        let currentFilter = 'all';
+
         document.addEventListener('DOMContentLoaded', () => {
             updateSidebarCounts();
-            loadPendingData();
+            loadDashboardData();
 
-            function updateSidebarCounts() {
-                const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
-                const pendingPostsCount = posts.filter(p => p.status === 'pending').length;
+            // Refresh every 30 seconds
+            setInterval(loadDashboardData, 30000);
+        });
+
+        function updateSidebarCounts() {
+            const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+            const pendingPostsCount = posts.filter(p => p.status === 'pending').length;
+
+            let pendingUsersCount = 0;
+            if (typeof getPendingApprovals === 'function') {
+                pendingUsersCount = getPendingApprovals().length;
+            } else {
                 const allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
-                const pendingUsersCount = allUsers.filter(u => u.profileStatus === 'pending').length;
-
-                const usersCountEl = document.getElementById('count-pending-users');
-                const postsCountEl = document.getElementById('count-pending-posts');
-
-                if (usersCountEl) {
-                    usersCountEl.textContent = pendingUsersCount;
-                    usersCountEl.style.display = pendingUsersCount > 0 ? 'inline-block' : 'none';
-                }
-                if (postsCountEl) {
-                    postsCountEl.textContent = pendingPostsCount;
-                    postsCountEl.style.display = pendingPostsCount > 0 ? 'inline-block' : 'none';
-                }
+                pendingUsersCount = allUsers.filter(u => u.profileStatus === 'pending').length;
             }
 
-            function loadPendingData() {
-                // Pending Posts
-                const postsList = document.getElementById('pending-posts-list');
-                const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
-                const pendingPosts = posts.filter(p => p.status === 'pending');
+            const usersCountEl = document.getElementById('count-pending-users');
+            const postsCountEl = document.getElementById('count-pending-posts');
+            const approvalsBadge = document.getElementById('approvals-badge');
 
-                if (pendingPosts.length === 0) {
-                    postsList.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 2rem;">No pending posts.</td></tr>';
-                } else {
-                    postsList.innerHTML = pendingPosts.map(post => `
-                        <tr>
-                            <td>${post.title}</td>
-                            <td>${post.userName}</td>
-                            <td>
-                                <button onclick="approvePost('${post.id}')" class="btn" style="background: #dcfce7; color: #166534; padding: 0.25rem 0.5rem; border: none; cursor:pointer; border-radius: 4px;">Approve</button>
-                                <button onclick="rejectPost('${post.id}')" class="btn" style="background: #fee2e2; color: #991b1b; padding: 0.25rem 0.5rem; border: none; cursor:pointer; border-radius: 4px;">Reject</button>
-                            </td>
-                        </tr>
-                    `).join('');
-                }
+            if (usersCountEl) {
+                usersCountEl.textContent = pendingUsersCount;
+                usersCountEl.style.display = pendingUsersCount > 0 ? 'inline-block' : 'none';
+            }
+            if (postsCountEl) {
+                postsCountEl.textContent = pendingPostsCount;
+                postsCountEl.style.display = pendingPostsCount > 0 ? 'inline-block' : 'none';
+            }
+            if (approvalsBadge) {
+                approvalsBadge.textContent = pendingUsersCount;
+                approvalsBadge.style.display = pendingUsersCount > 0 ? 'inline-block' : 'none';
+            }
+        }
 
-                const usersList = document.getElementById('pending-users-list');
-                const adminUser = JSON.parse(localStorage.getItem('workbridge_user'));
+        function loadDashboardData() {
+            loadApprovals();
+            loadPendingPosts();
+            loadJobApplications();
+            updateStats();
+            updateSidebarCounts();
+        }
 
-                // Use profile-approval.js system
-                let pendingApprovals = [];
-                if (typeof getPendingApprovals === 'function') {
-                    pendingApprovals = getPendingApprovals();
-                } else {
-                    // Fallback to legacy if library not loaded
-                    const allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
-                    pendingApprovals = allUsers.filter(u => u.profileStatus === 'pending').map(u => ({
-                        id: 'LEGACY_' + u.email,
-                        name: u.name,
-                        email: u.email,
-                        userData: u
-                    }));
-                }
+        function updateStats() {
+            if (typeof getAllApprovals !== 'function') return;
 
-                if (pendingApprovals.length === 0) {
-                    usersList.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">No pending approvals.</td></tr>';
-                } else {
-                    usersList.innerHTML = pendingApprovals.map(a => {
-                        const u = a.userData || {};
-                        return `
-                        <tr>
-                            <td>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <div style="width: 32px; height: 32px; background: var(--primary-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">
-                                        ${a.name.charAt(0).toUpperCase()}
-                                    </div>
-                                    <div>
-                                        <div style="font-weight: 600;">${a.name}</div>
-                                        <div style="font-size: 0.75rem; color: var(--primary-color); font-weight: 600;">${u.earning_plan || 'Pending approval'}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div style="font-size: 0.85rem;"><strong>${u.phone || 'N/A'}</strong></div>
-                                <div style="font-size: 0.75rem; color: var(--text-secondary);">${a.email}</div>
-                            </td>
-                            <td><span class="badge-non-verified">Pending</span></td>
-                            <td style="display: flex; gap: 5px;">
-                                <button onclick="viewApprovalDetails('${a.id}')" class="btn" style="background: var(--bg-color); color: var(--text-primary); padding: 0.25rem 0.5rem; border: 1px solid var(--border-color); cursor:pointer; border-radius: 4px;"><i class="fa-solid fa-eye"></i></button>
-                                <button onclick="handleApproveClick('${a.id}')" class="btn" style="background: #dcfce7; color: #166534; padding: 0.25rem 0.5rem; border: none; cursor:pointer; border-radius: 4px;"><i class="fa-solid fa-check"></i></button>
-                            </td>
-                        </tr>
-                    `;
-                    }).join('');
-                }
+            const all = getAllApprovals();
+            const pending = getAllApprovals('pending');
+            const approved = getAllApprovals('approved');
 
-                // Job Applications
-                const appsList = document.getElementById('job-applications-list');
-                const apps = JSON.parse(localStorage.getItem('workbridge_applications') || '[]');
-                if (apps && appsList) {
-                    if (apps.length === 0) {
-                        appsList.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">No applications received yet.</td></tr>';
-                    } else {
-                        appsList.innerHTML = apps.map(app => `
-                            <tr>
-                                <td><strong>${app.postTitle}</strong></td>
-                                <td>
-                                    <div style="font-weight: 600;">${app.userName}</div>
-                                    <div style="font-size: 0.75rem; color: var(--text-secondary);">${app.userEmail}</div>
-                                </td>
-                                <td>${new Date(app.timestamp).toLocaleDateString()}</td>
-                                <td><span class="badge-wage" style="background: #eff6ff; color: #2563eb;">${app.status.toUpperCase()}</span></td>
-                                <td>
-                                    <a href="${getWhatsAppLink('', `Hi ${app.userName}, I'm following up on your application for ${app.postTitle} on WorkBridge.`)}" target="_blank" class="btn" style="background: #25d366; color: white; padding: 0.25rem 0.5rem; border: none; cursor:pointer; border-radius: 4px; text-decoration: none; font-size: 0.8rem;"><i class="fa-brands fa-whatsapp"></i> Reply</a>
-                                </td>
-                            </tr>
-                        `).join('');
-                    }
-                }
+            document.getElementById('stat-total-req').textContent = all.length;
+            document.getElementById('stat-pending-req').textContent = pending.length;
+            document.getElementById('stat-approved-req').textContent = approved.length;
+        }
+
+        function loadApprovals() {
+            if (typeof getAllApprovals !== 'function') return;
+            const approvals = currentFilter === 'all' ? getAllApprovals() : getAllApprovals(currentFilter);
+            renderApprovals(approvals);
+        }
+
+        function renderApprovals(approvals) {
+            const tbody = document.getElementById('approvals-tbody');
+            if (!tbody) return;
+
+            if (approvals.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem;">No ${currentFilter !== 'all' ? currentFilter : ''} requests found.</td></tr>`;
+                return;
             }
 
-            window.handleApproveClick = (id) => {
-                const admin = JSON.parse(localStorage.getItem('workbridge_user'));
-                if (typeof approveUserProfile === 'function') {
-                    const result = approveUserProfile(id, admin.email);
-                    if (result.success) {
-                        alert(result.message);
-                        loadPendingData();
-                        updateApprovalsBadge();
-                    }
-                } else {
-                    // Fallback
-                    const email = id.replace('LEGACY_', '');
-                    approveUser(email);
-                }
-            };
-
-            window.rejectUser = (email) => {
-                if (confirm('Are you sure you want to reject this profile?')) {
-                    let allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
-                    const index = allUsers.findIndex(u => u.email === email);
-                    if (index !== -1) {
-                        allUsers[index].profileStatus = 'rejected';
-                        localStorage.setItem('workbridge_all_users', JSON.stringify(allUsers));
-
-                        // Update session if it's the current user
-                        const currentUser = JSON.parse(localStorage.getItem('workbridge_user'));
-                        if (currentUser && currentUser.email === email) {
-                            currentUser.profileStatus = 'rejected';
-                            localStorage.setItem('workbridge_user', JSON.stringify(currentUser));
-                        }
-
-                        alert('User Profile Rejected.');
-                        loadPendingData();
-                    }
-                }
-            };
-
-            window.approvePost = (id) => {
-                const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
-                const index = posts.findIndex(p => p.id === id);
-                if (index !== -1) {
-                    posts[index].status = 'approved';
-                    localStorage.setItem('workbridge_posts', JSON.stringify(posts));
-                    alert('Post Approved!');
-                    loadPendingData();
-                }
-            };
-
-            window.rejectPost = (id) => {
-                if (confirm('Are you sure you want to reject and delete this post?')) {
-                    const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
-                    const filtered = posts.filter(p => p.id !== id);
-                    localStorage.setItem('workbridge_posts', JSON.stringify(filtered));
-                    loadPendingData();
-                }
-            };
-
-            window.viewApprovalDetails = (id) => {
-                const approvals = JSON.parse(localStorage.getItem('workbridge_approvals') || '[]');
-                const a = approvals.find(app => app.id === id);
-                if (!a) {
-                    // Fallback to legacy
-                    const allUsers = JSON.parse(localStorage.getItem('workbridge_all_users') || '[]');
-                    const u = allUsers.find(user => user.email === id.replace('LEGACY_', ''));
-                    if (!u) return;
-                    a = { id: id, name: u.name, email: u.email, userData: u };
-                }
-
-                const u = a.userData || {};
-                const body = document.getElementById('user-details-body');
-                body.innerHTML = `
-                    <div style="text-align: center; margin-bottom: 2rem;">
-                        <img src="${u.profileImg || 'https://ui-avatars.com/api/?name=' + a.name + '&background=random&size=100'}" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1rem;">
-                        <h2 style="margin-bottom: 0.25rem;">${a.name}</h2>
-                        <p style="color: var(--primary-color); font-weight: 600;">${u.earning_plan || 'Approval Request'}</p>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-                        <div style="padding: 1rem; background: #f8fafc; border-radius: 8px;">
-                            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Phone / Contact</label>
-                            <span style="font-weight: 600;">${u.phone || 'Not provided'}</span>
+            tbody.innerHTML = approvals.map(a => `
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 32px; height: 32px; background: var(--primary-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">
+                                ${a.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div style="font-weight: 600;">${a.name}</div>
                         </div>
-                        <div style="padding: 1rem; background: #f8fafc; border-radius: 8px;">
-                            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Method</label>
-                            <span style="font-weight: 600;">${u.method || 'Manual'}</span>
+                    </td>
+                    <td>
+                        <div style="font-size: 0.85rem;">${a.email}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">${a.phone || 'No phone'}</div>
+                    </td>
+                    <td><span style="font-size: 0.85rem;">${a.earningPlan || 'N/A'}</span></td>
+                    <td><span class="status-badge ${a.status}">${a.status}</span></td>
+                    <td><span style="font-size: 0.8rem;">${new Date(a.createdAt).toLocaleDateString()}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button onclick="viewApprovalDetails('${a.id}')" class="btn-view" title="View Details"><i class="fa-solid fa-eye"></i></button>
+                            ${a.status === 'pending' ? `
+                                <button onclick="handleDashboardApprove('${a.id}')" class="btn-approve" title="Approve"><i class="fa-solid fa-check"></i></button>
+                                <button onclick="handleDashboardReject('${a.id}')" class="btn-reject" title="Reject"><i class="fa-solid fa-times"></i></button>
+                            ` : ''}
                         </div>
-                    </div>
-                    <div style="padding: 1rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem;">
-                        <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Account Info</label>
-                        <p style="font-size: 0.9rem; line-height: 1.6;">User requested joining with plan: <strong>${u.earning_plan || 'Standard'}</strong></p>
-                        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Registered on: ${new Date(a.createdAt || Date.now()).toLocaleString()}</p>
-                    </div>
-                    <div style="font-size: 0.8rem; color: var(--text-secondary);">
-                        Email: ${a.email}
-                    </div>
-                `;
+                    </td>
+                </tr>
+            `).join('');
+        }
 
-                document.getElementById('modal-approve-btn').onclick = () => {
-                    handleApproveClick(id);
-                    document.getElementById('user-details-modal').style.display = 'none';
-                };
-                document.getElementById('modal-reject-btn').onclick = () => {
-                    if (confirm('Reject this profile?')) {
-                        const admin = JSON.parse(localStorage.getItem('workbridge_user'));
-                        if (typeof rejectUserProfile === 'function') {
-                            rejectUserProfile(id, 'Admin rejection', admin.email);
-                            loadPendingData();
-                            updateApprovalsBadge();
-                        }
-                        document.getElementById('user-details-modal').style.display = 'none';
-                    }
-                };
+        function filterApprovals(status) {
+            currentFilter = status;
+            document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('filter-' + status).classList.add('active');
+            loadApprovals();
+        }
 
-                document.getElementById('user-details-modal').style.display = 'flex';
+        function handleDashboardApprove(id) {
+            const admin = JSON.parse(localStorage.getItem('workbridge_user'));
+            if (typeof approveUserProfile === 'function') {
+                const result = approveUserProfile(id, admin.email);
+                if (result.success) {
+                    alert('Profile Approved!');
+                    loadDashboardData();
+                }
+            }
+        }
+
+        function handleDashboardReject(id) {
+            const reason = prompt('Reason for rejection:');
+            if (reason === null) return;
+
+            const admin = JSON.parse(localStorage.getItem('workbridge_user'));
+            if (typeof rejectUserProfile === 'function') {
+                const result = rejectUserProfile(id, reason || 'Incomplete profile data', admin.email);
+                if (result.success) {
+                    alert('Profile Rejected.');
+                    loadDashboardData();
+                }
+            }
+        }
+
+        function loadPendingPosts() {
+            const postsList = document.getElementById('pending-posts-list');
+            if (!postsList) return;
+
+            const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+            const pendingPosts = posts.filter(p => p.status === 'pending');
+
+            if (pendingPosts.length === 0) {
+                postsList.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 2rem;">No pending posts.</td></tr>';
+            } else {
+                postsList.innerHTML = pendingPosts.map(post => `
+                    <tr>
+                        <td><strong>${post.title}</strong></td>
+                        <td>${post.userName}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button onclick="approvePost('${post.id}')" class="btn-approve"><i class="fa-solid fa-check"></i> Approve</button>
+                                <button onclick="rejectPost('${post.id}')" class="btn-reject"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function loadJobApplications() {
+            const appsList = document.getElementById('job-applications-list');
+            if (!appsList) return;
+
+            const apps = JSON.parse(localStorage.getItem('workbridge_applications') || '[]');
+            if (apps.length === 0) {
+                appsList.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">No recent applications.</td></tr>';
+                return;
+            }
+
+            appsList.innerHTML = apps.slice(-5).reverse().map(app => `
+                <tr>
+                    <td><strong>${app.postTitle}</strong></td>
+                    <td>
+                        <div style="font-weight: 600;">${app.userName}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">${app.userEmail}</div>
+                    </td>
+                    <td>${new Date(app.timestamp).toLocaleDateString()}</td>
+                    <td><span class="status-badge approved">${app.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        window.approvePost = (id) => {
+            const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+            const index = posts.findIndex(p => p.id === id);
+            if (index !== -1) {
+                posts[index].status = 'approved';
+                localStorage.setItem('workbridge_posts', JSON.stringify(posts));
+                alert('Post Approved!');
+                loadPendingPosts();
+            }
+        };
+
+        window.rejectPost = (id) => {
+            if (confirm('Delete this post?')) {
+                const posts = JSON.parse(localStorage.getItem('workbridge_posts') || '[]');
+                const filtered = posts.filter(p => p.id !== id);
+                localStorage.setItem('workbridge_posts', JSON.stringify(filtered));
+                loadPendingPosts();
+            }
+        };
+
+        window.viewApprovalDetails = (id) => {
+            const approvals = JSON.parse(localStorage.getItem('workbridge_approvals') || '[]');
+            const a = approvals.find(app => app.id === id);
+            if (!a) return;
+
+            const u = a.userData || {};
+            const body = document.getElementById('user-details-body');
+            body.innerHTML = `
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <img src="${u.profileImg || 'https://ui-avatars.com/api/?name=' + a.name + '&background=random&size=100'}" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1rem; border: 3px solid var(--primary-color);">
+                    <h2 style="margin-bottom: 0.25rem;">${a.name}</h2>
+                    <p style="color: var(--primary-color); font-weight: 700; text-transform: uppercase; font-size: 0.8rem;">${a.status}</p>
+                </div>
+                <div style="grid-template-columns: 1fr 1fr; display: grid; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="padding: 1rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border-color);">
+                        <label style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">Phone</label>
+                        <div style="font-weight: 600;">${a.phone || 'N/A'}</div>
+                    </div>
+                    <div style="padding: 1rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border-color);">
+                        <label style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">Earning Plan</label>
+                        <div style="font-weight: 600;">${a.earningPlan || 'N/A'}</div>
+                    </div>
+                </div>
+                <div style="padding: 1rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 1rem;">
+                    <label style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">Account Email</label>
+                    <div style="font-weight: 600;">${a.email}</div>
+                </div>
+                ${a.rejectionReason ? `
+                    <div style="padding: 1rem; background: #fff1f2; border-radius: 12px; border: 1px solid #fecdd3; color: #9f1239;">
+                        <label style="font-size: 0.7rem; text-transform: uppercase; font-weight: 700;">Rejection Reason</label>
+                        <div style="font-size: 0.9rem;">${a.rejectionReason}</div>
+                    </div>
+                ` : ''}
+            `;
+
+            document.getElementById('modal-approve-btn').style.display = a.status === 'pending' ? 'block' : 'none';
+            document.getElementById('modal-reject-btn').style.display = a.status === 'pending' ? 'block' : 'none';
+
+            document.getElementById('modal-approve-btn').onclick = () => {
+                handleDashboardApprove(id);
+                document.getElementById('user-details-modal').style.display = 'none';
+            };
+            document.getElementById('modal-reject-btn').onclick = () => {
+                handleDashboardReject(id);
+                document.getElementById('user-details-modal').style.display = 'none';
             };
 
-            const closeUserModal = document.getElementById('close-user-modal');
-            if (closeUserModal) {
-                closeUserModal.onclick = () => {
-                    document.getElementById('user-details-modal').style.display = 'none';
-                };
+            document.getElementById('user-details-modal').style.display = 'flex';
+        };
+
+        // Modal Close Logic
+        const closeUserModal = document.getElementById('close-user-modal');
+        if (closeUserModal) {
+            closeUserModal.onclick = () => {
+                document.getElementById('user-details-modal').style.display = 'none';
+            };
+        }
+        window.onclick = (event) => {
+            const modal = document.getElementById('user-details-modal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
             }
-        });
+        };
+    </script>
 
-        // Background stats animation
-        document.addEventListener('DOMContentLoaded', () => {
-            const stats = document.querySelectorAll('.stat-value');
-            stats.forEach(stat => {
-                const finalValue = parseInt(stat.innerText.replace(',', '').replace('+', ''));
-                let startValue = 0;
-                const duration = 2000;
-                const increment = Math.ceil(finalValue / (duration / 16));
+    // Background stats animation
+    document.addEventListener('DOMContentLoaded', () => {
+    const stats = document.querySelectorAll('.stat-value');
+    stats.forEach(stat => {
+    const finalValue = parseInt(stat.innerText.replace(',', '').replace('+', ''));
+    let startValue = 0;
+    const duration = 2000;
+    const increment = Math.ceil(finalValue / (duration / 16));
 
-                const timer = setInterval(() => {
-                    startValue += increment;
-                    if (startValue >= finalValue) {
-                        stat.innerText = finalValue.toLocaleString() + (stat.innerText.includes('+') ? '+' : '');
-                        clearInterval(timer);
-                    } else {
-                        stat.innerText = startValue.toLocaleString();
-                    }
-                }, 16);
-            });
-        });
+    const timer = setInterval(() => {
+    startValue += increment;
+    if (startValue >= finalValue) {
+    stat.innerText = finalValue.toLocaleString() + (stat.innerText.includes('+') ? '+' : '');
+    clearInterval(timer);
+    } else {
+    stat.innerText = startValue.toLocaleString();
+    }
+    }, 16);
+    });
+    });
 
-        // Handle sidebar item switching
-        const sidebarItems = document.querySelectorAll('.sidebar-item');
-        sidebarItems.forEach(item => {
-            if (item.getAttribute('href') === 'dashboard.html') return;
+    // Handle sidebar item switching
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+    sidebarItems.forEach(item => {
+    if (item.getAttribute('href') === 'dashboard.html') return;
 
-            item.addEventListener('click', (e) => {
-                // If it's a page link, let it navigate
-                // If we want to simulate SPA, we could prevent default
-            });
-        });
+    item.addEventListener('click', (e) => {
+    // If it's a page link, let it navigate
+    // If we want to simulate SPA, we could prevent default
+    });
+    });
     </script>
     <script src="./js/app.js"></script>
     <script src="./js/profile-approval.js"></script>
